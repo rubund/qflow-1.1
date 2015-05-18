@@ -5,8 +5,9 @@
  * blifFanout[.c] parses a .blif netlist (typically, but not necessarily,
  * from synthesized verilog).  The fanout is analyzed, and fanout of each gate
  * is counted.  A value to parameterize the driving cell will be output.
- * Eventually, a critical path can be identified, and the gates sized to
- * improve it.
+ * Fanouts exceeding a maximum are broken into (possibly hierarchical)
+ * buffer trees.  Eventually, a critical path can be identified, and the
+ * gates sized to improve it.
  *
  * Original:  fanout.c by Steve Beccue
  * New: blifFanout.c by Tim Edwards.
