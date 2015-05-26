@@ -1387,19 +1387,25 @@ int find_clock_to_term_paths(connlistptr clockedlist, ddataptr *masterlist, netp
 		tdriver = 0.0;
 	    else
 		tdriver = selectedsource->trans;
+
+	    // Report on paths and their maximum delays
+	    if (verbose > 0)
+		fprintf(stdout, "Paths starting at flop \"%s\" clock:\n\n",
+				thisconn->refinst->name);
+
 	}
 	else {
 	    // Connection is an input pin;  must calculate both rising and falling edges.
 	    srcdir = EITHER;
 	    tdriver = 0.0;	// To-do: use designated input transition time
+
+	    // Report on paths and their maximum delays
+	    if (verbose > 0)
+		fprintf(stdout, "Paths starting at input pin \"%s\"\n\n",
+				thisconn->refnet->name);
 	}
 
-	// Report on paths and their maximum delays
-	if (verbose > 0) {
-	    fprintf(stdout, "Paths starting at flop \"%s\" clock:\n\n",
-			thisconn->refinst->name);
-	    fflush(stdout);
-	}
+	if (verbose > 0) fflush(stdout);
 
 	// Find all paths from "thisconn" to output or a flop input, and compute delay
 	n = find_path_delay(srcdir, 0.0, tdriver, thisconn, NULL, &delaylist, minmax);
