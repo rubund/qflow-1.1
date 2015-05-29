@@ -281,6 +281,7 @@ if ( ! -f ${userfile} ) then
    echo "# -------------------------------------------" >> ${userfile}
    echo "# set yosys_options = " >> ${userfile}
    echo "# set yosys_script = " >> ${userfile}
+   echo "# set yosys_nodebug = " >> ${userfile}
    echo "# set nobuffers = " >> ${userfile}
    echo "# set fanout_options = " >> ${userfile}
    echo "" >> ${userfile}

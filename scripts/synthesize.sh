@@ -224,6 +224,14 @@ abc -liberty ${techdir}/${libertyfile}
 flatten
 EOF
 
+# Purge buffering of internal net name aliases for a smaller,
+# non-debug output
+if ( ${?yosys_nodebug} ) then
+   cat >> ${rootname}.ys << EOF
+clean -purge
+EOF
+endif
+
 # Map tiehi and tielo, if they are defined
 
 if ( ${?tiehi} && ${?tiehipin_out} ) then
