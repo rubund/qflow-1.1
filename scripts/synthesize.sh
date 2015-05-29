@@ -178,10 +178,14 @@ if ( ${major} == 0 && ${minor} == 0 ) then
    echo "Output is likely to be incompatible with qflow."
 endif
 
+if ( ${major} == 0 && ${minor} < 5 ) then
+
 cat >> ${rootname}.ys << EOF
 # High-level synthesis
 hierarchy -top ${rootname}
 EOF
+
+endif
 
 if ( ${?yosys_script} ) then
    if ( -f ${yosys_script} ) then
@@ -189,20 +193,28 @@ if ( ${?yosys_script} ) then
    else
       echo "Error: yosys script ${yosys_script} specified but not found"
    endif
+else if ( ${major} != 0 || ${minor} >= 5 ) then
+
+   cat >> ${rootname}.ys << EOF
+
+# High-level synthesis
+synth -top ${rootname}
+EOF
+
 else
 
    cat >> ${rootname}.ys << EOF
 
 # High-level synthesis
 proc; memory; opt; fsm; opt
+
+# Map to internal cell library
+techmap; opt
 EOF
 
 endif
 
 cat >> ${rootname}.ys << EOF
-# Map to internal cell library
-techmap; opt
-
 # Map register flops
 dfflibmap -liberty ${techdir}/${libertyfile}
 opt
