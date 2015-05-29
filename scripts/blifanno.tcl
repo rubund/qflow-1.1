@@ -180,19 +180,15 @@ while {[gets $fnet line] >= 0} {
       set gateline ".gate $macroname"
       while {[regexp {[ \t]*([^ \t]+)[ \t]*=[ \t]*([^ \t]+)[ \t]*(.*)$} \
 		$rest lmatch pinname netname nextconn] > 0} {
-	 if {[catch {set netname [dict get $nets ${macroname}_${iidx}/${pinname}]}]} {
-	    set gateline $line
+	 if {[catch {set newnet [dict get $nets ${macroname}_${iidx}/${pinname}]}]} {
 	    # NOTE:  Dangling buffer outputs (for debug) do not show up in
 	    # graywolf output.  They cannot be sorted, so just copy them
 	    # as they are in the original blif file.
-	    #
-	    # puts -nonewline stderr "Error:  No connection "
-	    # puts stderr "${macroname}_${iidx}/${pinname} in DEF file\n"
-	    break;
-	 } else {
 	    set gateline "${gateline} ${pinname}=${netname}"
-	    set rest $nextconn
+	 } else {
+	    set gateline "${gateline} ${pinname}=${newnet}"
 	 }
+	 set rest $nextconn
       }
       puts $fout "$gateline"
    } else {
@@ -203,7 +199,7 @@ while {[gets $fnet line] >= 0} {
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
-# close $fnet
-# close $fout
+close $fnet
+if {$fout != "stdout"} {close $fout}
 
 puts stdout "Done with blifanno.tcl"
