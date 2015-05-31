@@ -265,7 +265,6 @@ typedef struct _net {
    connptr *receivers;
    double loadr;	/* Total load capacitance for rising input */
    double loadf;	/* Total load capacitance for falling input */
-   netptr next;
 } net;
 
 typedef struct _instance *instptr;
@@ -534,22 +533,38 @@ pinptr parse_pin(cellptr newcell, char *token, short sense_predef)
 /* Create a new net record					*/
 /*--------------------------------------------------------------*/
 
-netptr create_net(netptr *netlist) {
+netptr create_net() {
 
     netptr newnet;
 
     newnet = (netptr)malloc(sizeof(net));
     newnet->name = NULL;
-    newnet->next = *netlist;
-    *netlist = newnet;
     newnet->driver = NULL;
     newnet->fanout = 0;
     newnet->receivers = NULL;
     newnet->loadr = 0.0;
     newnet->loadf = 0.0;
     newnet->type = NET;
-
     return newnet;
+}
+
+/*----------------------------------------------------------------------*/
+/* Create and hash a net record (unless it's already in the hash table)	*/
+/*----------------------------------------------------------------------*/
+
+netptr hash_net(struct hashlist *nethash[], char *name)
+{
+    netptr np;
+
+    np = (netptr)HashLookup(name, nethash);
+
+    if (np == NULL)
+    {
+	np = create_net();
+	HashPtrInstall(name, np, nethash);
+	np->name = strdup(name);
+    }
+    return np;
 }
 
 /*----------------------------------------------------------------------*/
@@ -1330,8 +1345,8 @@ short find_edge_dir(short dir, netptr sourcenet, netptr destnet) {
 /* If minmax == MINIMUM_TIME, return the minimum delay.		*/
 /*--------------------------------------------------------------*/
 
-int find_clock_to_term_paths(connlistptr clockedlist, ddataptr *masterlist, netptr netlist,
-		char minmax)
+int find_clock_to_term_paths(connlistptr clockedlist, ddataptr *masterlist,
+		struct hashlist *nethash[], char minmax)
 {
     netptr	commonclock, testnet;
     connptr     testconn, thisconn;
@@ -1358,7 +1373,8 @@ int find_clock_to_term_paths(connlistptr clockedlist, ddataptr *masterlist, netp
 
 	// Remove all tags and reset delay metrics before each run
 
-	for (testnet = netlist; testnet; testnet = testnet->next) {
+	testnet = (netptr)HashFirst(nethash);
+	while (testnet != NULL) {
 	    for (i = 0; i < testnet->fanout; i++) {
 		testconn = testnet->receivers[i];
 		testconn->tag = NULL;
@@ -1367,6 +1383,7 @@ int find_clock_to_term_paths(connlistptr clockedlist, ddataptr *masterlist, netp
 		else
 		    testconn->metric = 1E50;
 	    }
+	    testnet = (netptr)HashNext(nethash);
 	}
 
 	thisconn = testlink->connection;
@@ -2314,7 +2331,7 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
 			    break;
 		    if (reftable == NULL)
 			fprintf(stderr, "Failed to find a valid table \"%s\"\n",
-				token);
+				    token);
 		    else {
 			// Fill in default values from template reftable
 			tableptr->invert = reftable->invert;
@@ -2515,8 +2532,9 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
 /*--------------------------------------------------------------*/
 
 void
-verilogRead(FILE *fsrc, cell *cells, net **netlist, instance **instlist,
-		connect **inputlist, connect **outputlist)
+verilogRead(FILE *fsrc, cell *cells, struct hashlist *nethash[],
+		instance **instlist, connect **inputlist,
+		connect **outputlist)
 {
     char *token;
     char *modname = NULL;
@@ -2529,14 +2547,6 @@ verilogRead(FILE *fsrc, cell *cells, net **netlist, instance **instlist,
     pinptr testpin;
 
     int vstart, vend, vtarget, isinput;
-    struct hashlist *Nethash[OBJHASHSIZE];
-
-    /* See hash.c for these routines and variables */
-    hashfunc = hash;
-    matchfunc = match;
-
-    /* Initialize net hash table */
-    InitializeHashTable(Nethash);
 
     /* Read tokens off of the line */
     token = advancetoken(fsrc, 0);
@@ -2586,9 +2596,7 @@ verilogRead(FILE *fsrc, cell *cells, net **netlist, instance **instlist,
 		    // Create a net entry for the input or output, add to the list of nets
 
 		    if (vstart == 0 && vend == 0) {
-			newnet = create_net(netlist);
-			newnet->name = strdup(token);
-			HashPtrInstall(newnet->name, newnet, Nethash);
+			newnet = hash_net(nethash, token);
 
 			testconn = (connptr)malloc(sizeof(connect));
 			testconn->refnet = newnet;
@@ -2613,10 +2621,11 @@ verilogRead(FILE *fsrc, cell *cells, net **netlist, instance **instlist,
 		    else {
 			vtarget = vend + (vstart < vend) ? 1 : -1;
 			while (vstart != vtarget) {
-			    newnet = create_net(netlist);
-			    newnet->name = (char *)malloc(strlen(token) + 6);
-			    sprintf(newnet->name, "%s[%d]", token, vstart);
-			    HashPtrInstall(newnet->name, newnet, Nethash);
+			    char *netname;
+			    netname = (char *)malloc(strlen(token) + 6);
+			    sprintf(netname, "%s[%d]", token, vstart);
+			    newnet = hash_net(nethash, netname);
+			    free(netname);
 
 			    vstart += (vtarget > vend) ? 1 : -1;
 
@@ -2740,12 +2749,10 @@ verilogRead(FILE *fsrc, cell *cells, net **netlist, instance **instlist,
 
 	    case PINCONN:
 		// Token is net name
-		testnet = (netptr)HashLookup(token, Nethash);
+		testnet = (netptr)HashLookup(token, nethash);
 		if (testnet == NULL) {
 		    // This is a new net, and we need to record it
-		    newnet = create_net(netlist);
-		    newnet->name = strdup(token);
-		    HashPtrInstall(newnet->name, newnet, Nethash);
+		    newnet = hash_net(nethash, token);
 		    newconn->refnet = newnet;
 		}
 		else
@@ -2758,9 +2765,6 @@ verilogRead(FILE *fsrc, cell *cells, net **netlist, instance **instlist,
 	else
 	    token = advancetoken(fsrc, 0);
     }
-
-    /* Hash table no longer needed */
-    HashKill(Nethash);
 }
 
 /*--------------------------------------------------------------*/
@@ -2772,7 +2776,7 @@ verilogRead(FILE *fsrc, cell *cells, net **netlist, instance **instlist,
 /*--------------------------------------------------------------*/
 
 void
-computeLoads(netptr netlist, instptr instlist, double out_load)
+computeLoads(struct hashlist *nethash[], instptr instlist, double out_load)
 {
     instptr testinst;
     pinptr testpin;
@@ -2780,7 +2784,8 @@ computeLoads(netptr netlist, instptr instlist, double out_load)
     connptr testconn;
     int i;
 
-    for (testnet = netlist; testnet; testnet = testnet->next) {
+    testnet = (netptr)HashFirst(nethash);
+    while (testnet != NULL) {
 	for (i = 0; i < testnet->fanout; i++) {
 	    testconn = testnet->receivers[i];
 	    testpin = testconn->refpin;
@@ -2793,6 +2798,7 @@ computeLoads(netptr netlist, instptr instlist, double out_load)
 		testnet->loadf += testpin->capf;
 	    }
 	}
+	testnet = (netptr)HashNext(nethash);
     }
 
     // For each instance input pin, collapse the pin's lookup table
@@ -2828,7 +2834,7 @@ computeLoads(netptr netlist, instptr instlist, double out_load)
 /* For diagnostics, return the number of entries in clockedlist	*/
 /*--------------------------------------------------------------*/
 
-int assign_net_types(netptr netlist, connlistptr *clockedlist)
+int assign_net_types(struct hashlist *nethash[], connlistptr *clockedlist)
 {
     int i, numterms;
     netptr testnet;
@@ -2838,7 +2844,8 @@ int assign_net_types(netptr netlist, connlistptr *clockedlist)
 
     numterms = 0;
 
-    for (testnet = netlist; testnet; testnet = testnet->next) {
+    testnet = (netptr)HashFirst(nethash);
+    while (testnet != NULL) {
 	for (i = 0; i < testnet->fanout; i++) {
 	    testrcvr = testnet->receivers[i];
 	    testpin = testrcvr->refpin;
@@ -2870,6 +2877,7 @@ int assign_net_types(netptr netlist, connlistptr *clockedlist)
 		}
 	    }
 	}
+	testnet = (netptr)HashNext(nethash);
     }
     return numterms;
 }
@@ -2898,7 +2906,7 @@ int assign_net_types(netptr netlist, connlistptr *clockedlist)
 /*--------------------------------------------------------------*/
 
 void
-createLinks(netptr netlist, instptr instlist, connptr inputlist, connptr outputlist)
+createLinks(instptr instlist, connptr inputlist, connptr outputlist)
 {
     netptr testnet;
     instptr testinst;
@@ -2989,11 +2997,13 @@ main(int objc, char *argv[])
     // Verilog netlist database
 
     instptr     instlist = NULL;
-    netptr      netlist = NULL;
     connlistptr clockconnlist = NULL;
     connlistptr newinputconn, inputconnlist = NULL;
     connptr     testconn, inputlist = NULL;
     connptr     outputlist = NULL;
+
+    // Net hashtable
+    struct hashlist *Nethash[OBJHASHSIZE];
 
     // Timing path database
     ddataptr	pathlist = NULL;
@@ -3005,6 +3015,8 @@ main(int objc, char *argv[])
 
     verbose = 0;
     exhaustive = 0;
+
+    InitializeHashTable(Nethash);
 
     while ((firstarg < objc) && (*argv[firstarg] == '-')) {
        if (!strcmp(argv[firstarg], "-d") || !strcmp(argv[firstarg], "--delay")) {
@@ -3136,7 +3148,7 @@ main(int objc, char *argv[])
     /*------------------------------------------------------------------*/
 
     fileCurrentLine = 0;
-    verilogRead(fsrc, cells, &netlist, &instlist, &inputlist, &outputlist);
+    verilogRead(fsrc, cells, Nethash, &instlist, &inputlist, &outputlist);
     fflush(stdout);
     fprintf(stdout, "Verilog netlist read:  Processed %d lines.\n", fileCurrentLine);
     if (fsrc != NULL) fclose(fsrc);
@@ -3148,8 +3160,8 @@ main(int objc, char *argv[])
     if (verbose > 1) {
 	connect *testoutput;
 	connect *testinput;
-	net *testnet;
 	instance *testinst;
+	netptr testnet;
 
 	for (testinput = inputlist; testinput; testinput = testinput->next) {
 	    if (testinput->refnet)
@@ -3159,8 +3171,10 @@ main(int objc, char *argv[])
 	    if (testoutput->refnet)
 		fprintf(stdout, "   Output: %s\n", testoutput->refnet->name);
 	}
-	for (testnet = netlist; testnet; testnet = testnet->next) {
+	testnet = (netptr)HashFirst(Nethash);
+	while (testnet != NULL) {
 	    fprintf(stdout, "   Net: %s\n", testnet->name);
+	    testnet = (netptr)HashNext(Nethash);
 	}
 	for (testinst = instlist; testinst; testinst = testinst->next) {
 	    fprintf(stdout, "   Gate: %s\n", testinst->name);
@@ -3171,7 +3185,7 @@ main(int objc, char *argv[])
     /* Generate internal links representing the network	*/
     /*--------------------------------------------------*/
 
-    createLinks(netlist, instlist, inputlist, outputlist);
+    createLinks(instlist, inputlist, outputlist);
 
     /* Generate a connection list from inputlist */
 
@@ -3187,14 +3201,14 @@ main(int objc, char *argv[])
     /* To do:  Add wire models or computed wire delays	*/
     /*--------------------------------------------------*/
 
-    computeLoads(netlist, instlist, outLoad);
+    computeLoads(Nethash, instlist, outLoad);
 
     /*--------------------------------------------------*/
     /* Assign net types, mainly to identify clocks	*/
     /* Return a list of clock nets			*/
     /*--------------------------------------------------*/
 
-    numterms = assign_net_types(netlist, &clockconnlist);
+    numterms = assign_net_types(Nethash, &clockconnlist);
 
     if (verbose > 1) 
 	fprintf(stdout, "Number of terminals to check: %d\n", numterms);
@@ -3203,7 +3217,7 @@ main(int objc, char *argv[])
     /* Identify all clock-to-terminal paths		*/
     /*--------------------------------------------------*/
 
-    numpaths = find_clock_to_term_paths(clockconnlist, &pathlist, netlist, MAXIMUM_TIME);
+    numpaths = find_clock_to_term_paths(clockconnlist, &pathlist, Nethash, MAXIMUM_TIME);
     fprintf(stdout, "Number of paths analyzed:  %d\n", numpaths);
 
     /*--------------------------------------------------*/
@@ -3292,7 +3306,7 @@ main(int objc, char *argv[])
     /* Now calculate minimum delay paths		*/
     /*--------------------------------------------------*/
 
-    numpaths = find_clock_to_term_paths(clockconnlist, &pathlist, netlist, MINIMUM_TIME);
+    numpaths = find_clock_to_term_paths(clockconnlist, &pathlist, Nethash, MINIMUM_TIME);
     fprintf(stdout, "Number of paths analyzed:  %d\n", numpaths);
 
     /*--------------------------------------------------*/
@@ -3373,7 +3387,7 @@ main(int objc, char *argv[])
     /* Identify all input-to-terminal paths		*/
     /*--------------------------------------------------*/
 
-    numpaths = find_clock_to_term_paths(inputconnlist, &pathlist, netlist, MAXIMUM_TIME);
+    numpaths = find_clock_to_term_paths(inputconnlist, &pathlist, Nethash, MAXIMUM_TIME);
     fprintf(stdout, "Number of paths analyzed:  %d\n", numpaths);
 
     /*--------------------------------------------------*/
@@ -3445,7 +3459,7 @@ main(int objc, char *argv[])
     /* Now calculate minimum delay paths from inputs	*/
     /*--------------------------------------------------*/
 
-    numpaths = find_clock_to_term_paths(inputconnlist, &pathlist, netlist, MINIMUM_TIME);
+    numpaths = find_clock_to_term_paths(inputconnlist, &pathlist, Nethash, MINIMUM_TIME);
     fprintf(stdout, "Number of paths analyzed:  %d\n", numpaths);
 
     /*--------------------------------------------------*/
@@ -3508,5 +3522,6 @@ main(int objc, char *argv[])
 
     free(orderedpaths);
 
+    // Should free netlist memory and HashKill(Nethash) here. . .
     return 0;
 }

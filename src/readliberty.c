@@ -430,7 +430,7 @@ read_liberty(char *libfile, char *pattern)
     double gval;
     char *iptr;
 
-    LUTable *newtable, *reftable;
+    LUTable *newtable, *reftable, *scalar;
     Cell *newcell, *lastcell;
     Pin *newpin, *lastpin;
     char *curfunc;
@@ -440,6 +440,24 @@ read_liberty(char *libfile, char *pattern)
 	fprintf(stderr, "Cannot open %s for reading\n", libfile);
 	return NULL;
     }
+
+    /* Generate one table template for the "scalar" case */
+
+    scalar = (LUTable *)malloc(sizeof(LUTable));
+    scalar->name = strdup("scalar");
+    scalar->invert = 0;
+    scalar->var1 = strdup("transition");
+    scalar->var2 = strdup("capacitance");
+    scalar->tsize = 1;
+    scalar->csize = 1;
+    scalar->times = (double *)malloc(sizeof(double));
+    scalar->caps = (double *)malloc(sizeof(double));
+
+    scalar->times[0] = 0.0;
+    scalar->caps[0] = 0.0;
+
+    scalar->next = NULL;
+    tables = scalar;
 
     /* Read the file.  This is not a rigorous parser! */
 
@@ -901,17 +919,15 @@ read_liberty(char *libfile, char *pattern)
 		    token = advancetoken(flib, 0);	// Open parens
 		    if (!strcmp(token, "("))
 			token = advancetoken(flib, ')');
-		    if (strcmp(token, "scalar")) {
 			
-		        for (reftable = tables; reftable; reftable = reftable->next)
-			    if (!strcmp(reftable->name, token))
-			        break;
-		        if (reftable == NULL)
-			    fprintf(stderr, "Failed to find a valid table \"%s\"\n",
-				    token);
-		        else if (newcell->reftable == NULL)
-			    newcell->reftable = reftable;
-		    }
+		    for (reftable = tables; reftable; reftable = reftable->next)
+			if (!strcmp(reftable->name, token))
+			    break;
+		    if (reftable == NULL)
+			fprintf(stderr, "Failed to find a valid table \"%s\"\n",
+				token);
+		    else if (newcell->reftable == NULL)
+			newcell->reftable = reftable;
 
 		    token = advancetoken(flib, 0);
 		    if (strcmp(token, "{"))
