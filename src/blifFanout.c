@@ -334,11 +334,50 @@ int main (int argc, char *argv[])
    if (buf_in_pin == NULL || buf_out_pin == NULL) {
       Pin *curpin;
 
-      if (Buffername == NULL) {
-         fprintf(stderr, "blifFanout:  Need name of buffer cell.\n");
-         return -1;
+      gl = (struct Gatelist *)NULL;
+
+      if (Buffername != NULL) {
+	 gl = (struct Gatelist *)HashLookup(Buffername, Gatehash);
+	 if (gl == NULL) {
+	    fprintf(stderr, "No buffer \"%s\" found in gate list\n", Buffername);
+	    fprintf(stderr, "Searching gate list for suitable buffer.\n");
+	 }
       }
-      gl = (struct Gatelist *)HashLookup(Buffername, Gatehash);
+
+      if ((gl == NULL) || (Buffername == NULL)) {
+	 // Find a suitable buffer
+	 gl = (struct Gatelist *)HashFirst(Gatehash);
+	 while (gl != NULL) {
+	    Cell *ctest;
+
+	    // Find the first gate with one input, one output,
+	    // and a function string that matches the input pin name.
+
+	    ctest = gl->gatecell;
+	    if (ctest->pins && ctest->pins->next && !ctest->pins->next->next) {
+		if (ctest->pins->type == PIN_INPUT &&
+				ctest->pins->next->type == PIN_OUTPUT) {
+		    if (!strcmp(ctest->function, ctest->pins->name)) {
+			fprintf(stdout, "Using cell \"%s\" for buffers.\n",
+				ctest->name);
+			break;
+		    }
+		}
+		else if (ctest->pins->type == PIN_OUTPUT &&
+				ctest->pins->next->type == PIN_INPUT) {
+		    if (!strcmp(ctest->function, ctest->pins->next->name)) {
+			fprintf(stdout, "Using cell \"%s\" for buffers.\n",
+				ctest->name);
+			break;
+		    }
+		}
+	    }
+	    gl = (struct Gatelist *)HashNext(Gatehash);
+	 }
+      }
+      else
+	 gl = (struct Gatelist *)HashLookup(Buffername, Gatehash);
+
       if (gl == NULL) {
          fprintf(stderr, "blifFanout:  Buffer cell %s cannot be found.\n",
 			Buffername);
@@ -628,6 +667,8 @@ int read_gate_file(char *gate_file_name)
    gatecount = 0;
    cells = read_liberty(gate_file_name, NULL);
    for (curcell = cells; curcell != NULL; curcell = curcell->next) {
+	if (curcell->name == NULL) continue;	/* "dont_use" cell */
+
 	gl = GatelistAlloc();
 	gl->gatename = strdup(curcell->name);
 	gl->suffix = find_suffix(gl->gatename);

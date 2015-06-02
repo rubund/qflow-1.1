@@ -405,7 +405,7 @@ endif
 
 echo "Running blifFanout (iterative)" |& tee -a ${synthlog}
 echo "" >> ${synthlog}
-if (-f ${techdir}/gate.cfg && -f ${bindir}/blifFanout ) then
+if (-f ${techdir}/${libertyfile} && -f ${bindir}/blifFanout ) then
    set nchanged=1000
    while ($nchanged > 0)
       mv ${rootname}.blif tmp.blif
@@ -414,9 +414,13 @@ if (-f ${techdir}/gate.cfg && -f ${bindir}/blifFanout ) then
       else
 	 set sepoption="-s ${separator}"
       endif
+      if ("x${bufcell}" == "x") then
+	 set bufoption=""
+      else
+	 set bufoption="-b ${bufcell} -i ${bufpin_in} -o ${bufpin_out}"
+      endif
       ${bindir}/blifFanout ${fanout_options} -f ${rootname}_nofanout \
-		-p ${techdir}/${libertyfile} ${sepoption} \
-		-b ${bufcell} -i ${bufpin_in} -o ${bufpin_out} \
+		-p ${techdir}/${libertyfile} ${sepoption} ${bufoption} \
 		tmp.blif ${rootname}.blif >>& ${synthlog}
       set nchanged=$status
       echo "gates resized: $nchanged" |& tee -a ${synthlog}
@@ -455,7 +459,12 @@ ${bindir}/blif2Verilog -c -p -v ${vddnet} -g ${gndnet} ${rootname}.blif \
 	> ${rootname}.rtlnopwr.v
 
 echo "Running blif2BSpice." |& tee -a ${synthlog}
-${bindir}/blif2BSpice -p ${vddnet} -g ${gndnet} -l ${techdir}/${spicefile} \
+if ("x${spicefile}" == "x") then
+    set spiceopt=""
+else
+    set spiceopt="-l ${techdir}/${spicefile}"
+endif
+${bindir}/blif2BSpice -p ${vddnet} -g ${gndnet} ${spiceopt} \
 	${rootname}.blif > ${rootname}.spc
 
 #---------------------------------------------------------------------

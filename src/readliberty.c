@@ -789,6 +789,10 @@ read_liberty(char *libfile, char *pattern)
 		if (!strcmp(token, "}")) {
 		    section = LIBBLOCK;			// End of cell def
 		}
+		else if (!strcasecmp(token, "dont_use")) {
+		    free(newcell->name);
+		    newcell->name == NULL;
+		}
 		else if (!strcasecmp(token, "pin")) {
 		    token = advancetoken(flib, 0);	// Open parens
 		    if (!strcmp(token, "("))
@@ -856,8 +860,12 @@ read_liberty(char *libfile, char *pattern)
 			newcell->function = strdup(rfunc);
 		    }
 		    token = advancetoken(flib, 0);
-		    if (strcmp(token, ";"))
-			fprintf(stderr, "Expected end-of-statement.\n");
+		    if (strcmp(token, ";")) {
+			if (!strcmp(token, "}"))
+			    section = CELLDEF;
+		        else
+			    fprintf(stderr, "Expected end-of-statement.\n");
+		    }
 		}
 		else if (!strcasecmp(token, "direction")) {
 		    token = advancetoken(flib, 0);	// Colon
