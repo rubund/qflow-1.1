@@ -4158,6 +4158,10 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
+if test "x$prefix" = xNONE ; then
+   prefix=$ac_default_prefix
+fi
+
 
 
 # Check whether --with-libdir was given.
@@ -4167,7 +4171,7 @@ if test "${with_libdir+set}" = set; then :
 
 else
 
-   QFLOW_LIB_DIR=${ac_default_prefix}/share/qflow
+   QFLOW_LIB_DIR=${prefix}/share/qflow
 
 fi
 
@@ -4180,7 +4184,7 @@ if test "${with_bindir+set}" = set; then :
 
 else
 
-   QFLOW_BIN_DIR=${ac_default_prefix}/bin
+   QFLOW_BIN_DIR=${prefix}/bin
 
 fi
 

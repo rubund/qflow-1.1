@@ -196,7 +196,7 @@ configure:4043: result: /usr/local/bin/graywolf
 configure:4116: checking for yosys
 configure:4134: found /usr/local/bin/yosys
 configure:4146: result: /usr/local/bin/yosys
-configure:4359: creating ./config.status
+configure:4363: creating ./config.status
 
 ## ---------------------- ##
 ## Running config.status. ##
@@ -312,7 +312,7 @@ RM='rm'
 SHELL='/bin/sh'
 STDLIBS=''
 TCLSH_PATH='tclsh'
-VERSION='1.0'
+VERSION='1.1'
 ac_ct_CC='gcc'
 bindir='${exec_prefix}/bin'
 build='x86_64-unknown-linux-gnu'

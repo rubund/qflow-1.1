@@ -9,7 +9,7 @@ LIBS =
 LDFLAGS = 
 INSTALL = /bin/install -c
 
-VERSION = 1.0
+VERSION = 1.1
 
 QFLOW_LIB_DIR = /usr/local/share/qflow
 QFLOW_BIN_DIR = /usr/local/bin

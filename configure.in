@@ -120,20 +120,25 @@ AC_ARG_WITH(yosys,
    AC_PATH_PROG(QFLOW_YOSYS_PATH, yosys, , )])
 AC_DEFINE_UNQUOTED(QFLOW_YOSYS_PATH, "$QFLOW_YOSYS_PATH")
 
+dnl Expand the prefix variable
+if test "x$prefix" = xNONE ; then
+   prefix=$ac_default_prefix
+fi
+
 dnl Target library location
 
 AC_ARG_WITH(libdir,
 [  --with-libdir=DIR			path to qflow runtime files], [
    QFLOW_LIB_DIR=$withval
 ], [
-   QFLOW_LIB_DIR=${ac_default_prefix}/share/qflow
+   QFLOW_LIB_DIR=${prefix}/share/qflow
 ])
 
 AC_ARG_WITH(bindir,
 [  --with-bindir=DIR			path to qflow launch script], [
    QFLOW_BIN_DIR=$withval
 ], [
-   QFLOW_BIN_DIR=${ac_default_prefix}/bin
+   QFLOW_BIN_DIR=${prefix}/bin
 ])
 
 dnl AC_SUBST(QFLOW_YOSYS_PATH)

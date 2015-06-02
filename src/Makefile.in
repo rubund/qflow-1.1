@@ -38,8 +38,8 @@ blifFanout$(EXEEXT): blifFanout.o hash.o readliberty.o
 blif2Verilog$(EXEEXT): blif2Verilog.o
 	$(CC) $(LDFLAGS) blif2Verilog.o -o $@ $(LIBS)
 
-vesta$(EXEEXT): vesta.o
-	$(CC) $(LDFLAGS) vesta.o -o $@ $(LIBS)
+vesta$(EXEEXT): vesta.o hash.o
+	$(CC) $(LDFLAGS) vesta.o hash.o -o $@ $(LIBS)
 
 install: $(TARGETS)
 	@echo "Installing verilog and BDNET file format handlers"
