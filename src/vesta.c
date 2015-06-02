@@ -96,6 +96,7 @@ int fileCurrentLine;
 #define DFFRST		0x40	// Flop reset (clear)
 #define LATCHIN		0x80	// Latch input
 #define LATCHEN		0x100	// Latch enable
+#define LATCHOUT	0x200	// Latch output
 
 // Timing type (for tables)
 
@@ -939,6 +940,7 @@ find_clock_source(connptr testlink, btptr *clocklist, short dir)
 
     if (iupstream == NULL) return;		/* Not supposed to happen? */
     if (driver->refpin->type & DFFOUT) return;	/* Reached a flop output */
+    if (driver->refpin->type & LATCHOUT) return; /* Reached a latch output */
 
     for (iinput = iupstream->in_connects; iinput; iinput = iinput->next) {
 	newdir = calc_dir(iinput->refpin, dir);
@@ -2130,8 +2132,12 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
 			newcell->function = strdup(token);
 		    }
 		    token = advancetoken(flib, 0);
-		    if (strcmp(token, ";"))
-			fprintf(stderr, "Expected end-of-statement.\n");
+		    if (strcmp(token, ";")) {
+		        if (!strcmp(token, "}"))
+			    section = CELLDEF;		// End of pin def
+			else
+			    fprintf(stderr, "Expected end-of-statement.\n");
+		    }
 		}
 		else if (!strcasecmp(token, "direction")) {
 		    token = advancetoken(flib, 0);	// Colon
@@ -2141,6 +2147,8 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
 		    }
 		    else if (!strcasecmp(token, "output")) {
 			newpin->type |= OUTPUT;
+			if (newcell->type & DFF) newpin->type |= DFFOUT;
+		        if (newcell->type & LATCH) newpin->type |= LATCHOUT;
 		    }
 		}
 		else if (!strcasecmp(token, "max_transition")) {
