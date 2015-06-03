@@ -47,9 +47,9 @@ AC_ARG_WITH(tclsh,
    else
       TCLSH_DIR=${PATH}
    fi
-   AC_CHECK_PROG(TCLSH_PATH, tclsh, tclsh, $TCLSH_DIR)
+   AC_PATH_PROG(TCLSH_PATH, tclsh, tclsh, $TCLSH_DIR)
 ], [
-   AC_CHECK_PROG(TCLSH_PATH, tclsh, tclsh, )])
+   AC_PATH_PROG(TCLSH_PATH, tclsh, tclsh, )])
 AC_DEFINE_UNQUOTED(TCLSH_PATH, "$TCLSH_PATH")
 
 dnl Path to Magic 8.0

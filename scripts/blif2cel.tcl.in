@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!TCLSH_PATH
 #
 # Usage:
 #	blif2cel.tcl <blif_filename> <lef_filename> [<cel_filename>]

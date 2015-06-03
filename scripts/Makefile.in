@@ -13,6 +13,7 @@ VERSION = @VERSION@
 
 QFLOW_LIB_DIR = @QFLOW_LIB_DIR@
 QFLOW_BIN_DIR = @QFLOW_BIN_DIR@
+TCLSH_PATH = @TCLSH_PATH@
 
 DEFAULTPARSER = @QFLOW_DEFAULT_PARSER@
 
@@ -34,20 +35,50 @@ all:	$(MAIN_SCRIPT).in qflow.sh
 	$(MAKE) launcher
 
 launcher:  $(MAIN_SCRIPT).in
-		sed -e '/QFLOW_SCRIPT_DIR/s#QFLOW_SCRIPT_DIR#$(SCRIPTINSTALL)#' \
-		$(MAIN_SCRIPT).in > $(MAIN_SCRIPT)
+	sed -e '/QFLOW_SCRIPT_DIR/s#QFLOW_SCRIPT_DIR#$(SCRIPTINSTALL)#' \
+	$(MAIN_SCRIPT).in > $(MAIN_SCRIPT)
 
 checkdirs.sh:  checkdirs.sh.in
-		sed -e '/SUBST_TECH_DIR/s#SUBST_TECH_DIR#$(TECHINSTALL)#' \
-		-e '/SUBST_SCRIPT_DIR/s#SUBST_SCRIPT_DIR#$(SCRIPTINSTALL)#' \
-		-e '/SUBST_BIN_DIR/s#SUBST_BIN_DIR#$(QFLOWEXECPATH)#' \
-		checkdirs.sh.in > checkdirs.sh
+	sed -e '/SUBST_TECH_DIR/s#SUBST_TECH_DIR#$(TECHINSTALL)#' \
+	-e '/SUBST_SCRIPT_DIR/s#SUBST_SCRIPT_DIR#$(SCRIPTINSTALL)#' \
+	-e '/SUBST_BIN_DIR/s#SUBST_BIN_DIR#$(QFLOWEXECPATH)#' \
+	checkdirs.sh.in > checkdirs.sh
 
 qflow.sh:  qflow.sh.in
-		sed -e '/QFLOW_SCRIPT_DIR/s#QFLOW_SCRIPT_DIR#$(SCRIPTINSTALL)#' \
-		-e '/QFLOW_DEFAULT_PARSER/s#QFLOW_DEFAULT_PARSER#$(DEFAULTPARSER)#' \
-		-e '/QFLOW_VERSION/s#QFLOW_VERSION#$(VERSION)#' \
-		qflow.sh.in > qflow.sh
+	sed -e '/QFLOW_SCRIPT_DIR/s#QFLOW_SCRIPT_DIR#$(SCRIPTINSTALL)#' \
+	-e '/QFLOW_DEFAULT_PARSER/s#QFLOW_DEFAULT_PARSER#$(DEFAULTPARSER)#' \
+	-e '/QFLOW_VERSION/s#QFLOW_VERSION#$(VERSION)#' \
+	qflow.sh.in > qflow.sh
+
+blif2cel.tcl: blif2cel.tcl.in
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' blif2cel.tcl.in > $@
+
+place2def.tcl: place2def.tcl.in
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' place2def.tcl.in > $@
+
+place2lef2.tcl: place2def2.tcl.in
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' place2lef2.tcl.in > $@
+
+place2net2.tcl: place2net2.tcl.in
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' place2net2.tcl.in > $@
+
+ypostproc.tcl: ypostproc.tcl.in
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' ypostproc.tcl.in > $@
+
+ybuffer.tcl: ybuffer.tcl.in
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' ybuffer.tcl.in > $@
+
+decongest.tcl: decongest.tcl.in
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' decongest.tcl.in > $@
+
+addspacers.tcl: addspacers.tcl.in
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' addspacers.tcl.in > $@
+
+getfillcell.tcl: getfillcell.tcl.in
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' getfillcell.tcl.in > $@
+
+blifanno.tcl: blifanno.tcl.in
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' blifanno.tcl.in > $@
 
 install: $(TCL_SCRIPTS) $(SHELL_SCRIPTS) $(MAIN_SCRIPT)
 	@echo "Installing qflow scripts"
@@ -66,8 +97,8 @@ clean:
 	$(RM) $(MAIN_SCRIPT)
 	$(RM) checkdirs.sh
 	$(RM) qflow.sh
+	$(RM) $(TCL_SCRIPTS)
 
 uninstall:
 	$(RM) -rf ${SCRIPTINSTALL}
 	$(RM) ${EXECINSTALL}/${MAIN_SCRIPT}
-

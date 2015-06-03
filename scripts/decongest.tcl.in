@@ -1,4 +1,4 @@
-#!/bin/tclsh
+#!TCLSH_PATH
 #
 # Usage:
 #	decongest.tcl <rootname> <leffile> <fillcell> [<scale> <offset>]
