@@ -164,7 +164,7 @@ fi
 
 AC_SUBST(HAVE_YOSYS)
 
-AC_OUTPUT(Makefile scripts/Makefile src/Makefile tech/Makefile tech/osu035/Makefile tech/osu050/Makefile)
+AC_OUTPUT(Makefile scripts/Makefile src/Makefile tech/Makefile tech/osu050/Makefile tech/osu035/Makefile tech/osu018/Makefile)
 
 echo ""
 echo "Configuration results:"

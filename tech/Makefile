@@ -11,7 +11,7 @@ INSTALL = /bin/install -c
 
 QFLOW_LIB_DIR = /usr/local/share/qflow
 
-TECH_DIRS = osu035 osu050
+TECH_DIRS = osu050 osu035 osu018
 
 TECHINSTALL = ${QFLOW_LIB_DIR}/tech
 

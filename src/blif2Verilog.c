@@ -458,23 +458,31 @@ void CleanupString(char text[LengthOfNodeName])
 	      i+=1;
 	   }
 	   CitationPnt[i]='\0';
-           CitationPnt=strchr(text,'<');
-	   if(CitationPnt != NULL) {
-              i=0;
-              while( CitationPnt[i+1] != '>' ) {
-                 CitationPnt[i]=CitationPnt[i+1];
-                 i+=1;
-              }
-              CitationPnt[i]='\0';
-	   }
 	}
 
-	// Convert angle brackets to square brackets
+	// Convert angle brackets to square brackets if they
+	// occur at the end of a name;  otherwise, convert
+	// them to underscores
 
-	Weirdpnt=strchr(text,'<');
-	if(Weirdpnt != NULL) *Weirdpnt='[';
-	Weirdpnt=strchr(text,'>');
-	if(Weirdpnt != NULL) *Weirdpnt=']';
+	while ((Weirdpnt = strchr(text,'<')) != NULL) {
+	   char *eptr;
+
+	   eptr = strchr(Weirdpnt, '>');
+
+	   if (eptr == NULL) {
+	      *Weirdpnt = '_';
+	   }
+	   else {
+	      if (*(eptr + 1) == '\0') {
+		 *Weirdpnt = '[';
+		 *eptr = ']';
+	      }
+	      else {
+		 *Weirdpnt = '_';
+		 *eptr = '_';
+	      }
+	   }
+	}
 
 	// Disallow characters '.' and ':' in node names
 	
