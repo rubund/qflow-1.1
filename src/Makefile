@@ -21,7 +21,7 @@ HAVE_ABC = @HAVE_ABC@
 HAVE_YOSYS = 1
 HAVE_ODIN_II = @HAVE_ODIN_II@
 
-OBJECTS = blif2BSpice.o blif2Verilog.o blifFanout.o vesta.o
+OBJECTS = blif2BSpice.o blif2Verilog.o blifFanout.o vesta.o hash.o readliberty.o
 SOURCES := $(patsubst %.o,%.c,$(OBJECTS))
 TARGETS := $(patsubst %.o,%$(EXEEXT),$(OBJECTS))
 
