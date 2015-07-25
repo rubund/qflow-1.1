@@ -35,7 +35,8 @@ blif2BSpice$(EXEEXT): blif2BSpice.o
 	$(CC) $(LDFLAGS) blif2BSpice.o -o $@ $(LIBS)
 
 blifFanout$(EXEEXT): blifFanout.o $(HASHLIB) $(LIBERTYLIB)
-	$(CC) $(LDFLAGS) blifFanout.o $(DEPENDS) -o $@ $(LIBS) -lm
+	$(CC) $(LDFLAGS) blifFanout.o $(HASHLIB) $(LIBERTYLIB) \
+		$(DEPENDS) -o $@ $(LIBS) -lm
 
 blif2Verilog$(EXEEXT): blif2Verilog.o
 	$(CC) $(LDFLAGS) blif2Verilog.o -o $@ $(LIBS)
