@@ -21,7 +21,9 @@ HAVE_ABC = @HAVE_ABC@
 HAVE_YOSYS = @HAVE_YOSYS@
 HAVE_ODIN_II = @HAVE_ODIN_II@
 
-OBJECTS = blif2BSpice.o blif2Verilog.o blifFanout.o vesta.o hash.o readliberty.o
+OBJECTS = blif2BSpice.o blif2Verilog.o blifFanout.o vesta.o
+HASHLIB = hash.o
+LIBERTYLIB = readliberty.o
 SOURCES := $(patsubst %.o,%.c,$(OBJECTS))
 TARGETS := $(patsubst %.o,%$(EXEEXT),$(OBJECTS))
 
@@ -32,14 +34,14 @@ all: $(TARGETS)
 blif2BSpice$(EXEEXT): blif2BSpice.o
 	$(CC) $(LDFLAGS) blif2BSpice.o -o $@ $(LIBS)
 
-blifFanout$(EXEEXT): blifFanout.o hash.o readliberty.o
-	$(CC) $(LDFLAGS) blifFanout.o hash.o readliberty.o -o $@ $(LIBS) -lm
+blifFanout$(EXEEXT): blifFanout.o $(HASHLIB) $(LIBERTYLIB)
+	$(CC) $(LDFLAGS) blifFanout.o $(DEPENDS) -o $@ $(LIBS) -lm
 
 blif2Verilog$(EXEEXT): blif2Verilog.o
 	$(CC) $(LDFLAGS) blif2Verilog.o -o $@ $(LIBS)
 
-vesta$(EXEEXT): vesta.o hash.o
-	$(CC) $(LDFLAGS) vesta.o hash.o -o $@ $(LIBS)
+vesta$(EXEEXT): vesta.o $(HASHLIB)
+	$(CC) $(LDFLAGS) vesta.o $(HASHLIB) -o $@ $(LIBS)
 
 install: $(TARGETS)
 	@echo "Installing verilog and BDNET file format handlers"
@@ -62,11 +64,11 @@ uninstall:
 	$(RM) -rf ${BININSTALL}
 
 clean:
-	$(RM) -f $(OBJECTS)
+	$(RM) -f $(OBJECTS) $(HASHLIB) $(LIBERTYLIB)
 	$(RM) -f $(TARGETS)
 
 veryclean:
-	$(RM) -f $(OBJECTS)
+	$(RM) -f $(OBJECTS) $(HASHLIB) $(LIBERTYLIB)
 	$(RM) -f $(TARGETS)
 
 .c.o:
