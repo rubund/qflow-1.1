@@ -303,6 +303,23 @@ if {$scale > 0.0} {
    set numcells [llength $instlist]
    set basefills 0
 
+   # If there are multiple entries in the fill cell list, choose
+   # a width such that the number of fill cells and number of
+   # standard cells is more or less the same, preferably with
+   # more fill cells than standard cells.  Distribute the
+   # fill cells among the standard cells.
+
+   if {($numfills < $numcells) && ([llength $fillwidths] > 1)} {
+      foreach fillinfo $fillwidths {
+	 set fillmacro [lindex $fillinfo 0]
+	 set fillvalue [lindex $fillinfo 1]
+	 set numfills [expr {int($filltotal / $fillvalue)}]
+	 set numcells [llength $instlist]
+	 set halfvalue [expr {$fillvalue / 2}]
+	 if {$numfills > $numcells} {break}
+      }
+   }
+
    # Diagnostic information
    puts stdout ""
    puts stdout "decongest.tcl:"
@@ -311,11 +328,13 @@ if {$scale > 0.0} {
    puts stdout "Width of fill = $fillvalue, total fill cells added = $numfills"
    puts stdout ""
 
-   while {$numfills > $numcells} {
-      incr basefills
-      set numfills [expr {$numfills - $numcells}]
+   if {$numfills > $numcells} {
+      while {$numfills > $numcells} {
+         incr basefills
+         set numfills [expr {$numfills - $numcells}]
+      }
+      set numfills [expr {$numcells - $numfills}]
    }
-   set numfills [expr {$numcells - $numfills}]
    for {set i 0} {$i < $numfills} {incr i} {
       lappend filllist $basefills
    }
