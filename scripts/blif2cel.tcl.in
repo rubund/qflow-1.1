@@ -112,8 +112,10 @@ proc parse_port {pinname macroname leffile ox oy} {
 	 set yp [expr {(($lly + $ury) / 2) - $oy}]
 	 set ${macroname}(${pinname},xp) $xp
 	 set ${macroname}(${pinname},yp) $yp
-      } elseif [regexp {[ \t]*POLYGON[ \t]+(.+)[ \t]+(.+)[ \t]+.*;} \
+      } elseif [regexp {[ \t]*POLYGON[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]+.*;} \
 		$line lmatch llx lly] {
+	 set llx [expr {int($llx * $units)}]
+	 set lly [expr {int($lly * $units)}]
 	 set xp [expr {$llx - $ox}]
 	 set yp [expr {$lly - $oy}]
 	 set ${macroname}(${pinname},xp) $xp
