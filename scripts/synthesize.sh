@@ -77,6 +77,11 @@ while ($yerrcnt > 1)
 # works in yosys 0.3.1 and newer, the following line works for the
 # purpose of querying the hierarchy in all versions.
 
+if ( !( -f ${rootname}.v )) then
+   echo "Error:  Verilog source file ${rootname}.v cannot be found!" \
+		|& tee -a ${synthlog}
+endif
+
 cat > ${rootname}.ys << EOF
 # Synthesis script for yosys created by qflow
 read_liberty -lib -ignore_miss_dir -setattr blackbox ${techdir}/${libertyfile}
@@ -84,7 +89,11 @@ read_verilog ${rootname}.v
 EOF
 
 foreach subname ( $uniquedeplist )
-   echo "read_verilog ${subname}.v" >> ${rootname}.ys
+    if ( !( -f ${subname}.v )) then
+	echo "Error:  Verilog source file ${subname}.v cannot be found!" \
+		|& tee -a ${synthlog}
+    endif
+    echo "read_verilog ${subname}.v" >> ${rootname}.ys
 end
 
 cat >> ${rootname}.ys << EOF
@@ -168,7 +177,7 @@ read_verilog ${rootname}.v
 EOF
 
 foreach subname ( $uniquedeplist )
-   echo "read_verilog ${subname}.v" >> ${rootname}.ys
+    echo "read_verilog ${subname}.v" >> ${rootname}.ys
 end
 
 # Will not support yosys 0.0.x syntax; flag a warning instead
