@@ -219,10 +219,32 @@ cat >> ${rootname}.ys << EOF
 dfflibmap -liberty ${techdir}/${libertyfile}
 opt
 
-# Map combinatorial cells
+EOF
+
+if ( ${?abc_script} ) then
+   if ( ${abc_script} != "" ) then
+      cat >> ${rootname}.ys << EOF
+abc -liberty ${techdir}/${libertyfile} -script ${abc_script}
+flatten
+
+EOF
+   else
+      echo "Warning: no abc script ${abc_script}, using default, no script" \
+		|& tee -a ${synthlog}
+      cat >> ${rootname}.ys << EOF
 abc -liberty ${techdir}/${libertyfile}
 flatten
+
 EOF
+   endif
+else
+   cat >> ${rootname}.ys << EOF
+# Map combinatorial cells, standard script
+abc -liberty ${techdir}/${libertyfile} -script +strash;scorr;ifraig;retime,{D};strash;dch,-f;map,-M,1,{D}
+flatten
+
+EOF
+endif
 
 # Purge buffering of internal net name aliases for a smaller,
 # non-debug output
