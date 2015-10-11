@@ -140,7 +140,7 @@ while ($#argv > 0)
 end
 
 if ($doversion == 1 || $dohelp == 1) then
-   echo "Qflow version QFLOW_VERSION"
+   echo "Qflow version QFLOW_VERSION revision QFLOW_REVISION"
    echo ""
 
    if ($doversion == 1) then

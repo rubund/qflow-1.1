@@ -10,6 +10,7 @@ LDFLAGS =
 INSTALL = /bin/install -c
 
 VERSION = 1.1
+REVISION = 12
 
 QFLOW_LIB_DIR = /usr/local/share/qflow
 QFLOW_BIN_DIR = /usr/local/bin
@@ -47,6 +48,7 @@ checkdirs.sh:  checkdirs.sh.in
 qflow.sh:  qflow.sh.in
 	sed -e '/QFLOW_SCRIPT_DIR/s#QFLOW_SCRIPT_DIR#$(SCRIPTINSTALL)#' \
 	-e '/QFLOW_DEFAULT_PARSER/s#QFLOW_DEFAULT_PARSER#$(DEFAULTPARSER)#' \
+	-e '/QFLOW_REVISION/s#QFLOW_REVISION#$(REVISION)#' \
 	-e '/QFLOW_VERSION/s#QFLOW_VERSION#$(VERSION)#' \
 	qflow.sh.in > qflow.sh
 

@@ -123,14 +123,14 @@ proc parse_macro {leffile macroname} {
       if [regexp {[ \t]*SYMMETRY[ \t]+(.+)[ \t]*;} $line lmatch symmetry] {
          set ${macroname}(symmetry) $symmetry
       } elseif [regexp {[ \t]*ORIGIN[ \t]+(.+)[ \t]+(.+)[ \t]*;} $line lmatch x y] {
-         set x [expr {int($x * $units)}]
-         set y [expr {int($y * $units)}]
+         set x [expr {int($x * $units + 0.5)}]
+         set y [expr {int($y * $units + 0.5)}]
          set ${macroname}(x) $x
          set ${macroname}(y) $y
       } elseif [regexp {[ \t]*SIZE[ \t]+(.+)[ \t]+BY[ \t]+(.+)[ \t]*;} \
                         $line lmatch w h] {
-         set w [expr {int($w * $units)}]
-         set h [expr {int($h * $units)}]
+         set w [expr {int($w * $units + 0.5)}]
+         set h [expr {int($h * $units + 0.5)}]
          set ${macroname}(w) $w
          set ${macroname}(h) $h
 
@@ -265,7 +265,7 @@ if {$scale > 0.0} {
    set filllist {}
    while {[gets $finf line] >= 0} {
       if [regexp {[ \t]*([^ \t]+)[ \t]+([^ \t]+)} $line lmatch instname congest] {
-         set numfill [expr {int(($congest - $offset) * $scale)}]
+         set numfill [expr {int(($congest - $offset) * $scale + 0.5)}]
          if {$numfill > 0} {
             lappend instlist $instname
             lappend filllist $numfill
@@ -299,7 +299,7 @@ if {$scale > 0.0} {
    }
 
    set filltotal [expr {$totalwidth * ((1.0 / $density) - 1.0)}]
-   set numfills [expr {int($filltotal / $fillvalue)}]
+   set numfills [expr {int($filltotal / $fillvalue + 0.5)}]
    set numcells [llength $instlist]
    set basefills 0
 
@@ -313,7 +313,7 @@ if {$scale > 0.0} {
       foreach fillinfo $fillwidths {
 	 set fillmacro [lindex $fillinfo 0]
 	 set fillvalue [lindex $fillinfo 1]
-	 set numfills [expr {int($filltotal / $fillvalue)}]
+	 set numfills [expr {int($filltotal / $fillvalue + 0.5)}]
 	 set numcells [llength $instlist]
 	 set halfvalue [expr {$fillvalue / 2}]
 	 if {$numfills > $numcells} {break}
@@ -335,10 +335,11 @@ if {$scale > 0.0} {
       }
       set numfills [expr {$numcells - $numfills}]
    }
+   incr basefills 1
    for {set i 0} {$i < $numfills} {incr i} {
       lappend filllist $basefills
    }
-   incr basefills 1
+   incr basefills -1
    for {} {$i < $numcells} {incr i} {
       lappend filllist $basefills
    }
