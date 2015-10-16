@@ -62,9 +62,18 @@ advancetoken(FILE *flib, char delimiter)
  	    lptr = line;
 	    while (*lptr != '\n' && *lptr != '\0') {
 		if (*lptr == '\\') {
-		    result = fgets(lptr, LIB_LINE_MAX - (lptr - line), flib);
-		    libCurrentLine++;
-		    if (result == NULL) break;
+		    // If there is anything besides whitespace between the
+		    // backslash and end-of-line, then don't treat as a
+		    // continuation character.
+		    char *eptr = lptr + 1;
+		    while (isspace(*eptr)) eptr++;
+		    if (*eptr == '\0') {
+			result = fgets(lptr, LIB_LINE_MAX - (lptr - line), flib);
+			libCurrentLine++;
+			if (result == NULL) break;
+		    }
+		    else
+			lptr++;
 		}
 		else
 		    lptr++;
