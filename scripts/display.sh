@@ -51,6 +51,30 @@ source ${projectpath}/qflow_vars.sh
 source ${techdir}/${techname}.sh
 cd ${projectpath}
 
+# Prepend techdir to magicrc unless magicrc begins with "/"
+set abspath=`echo ${magicrc} | cut -c1`
+if ( "${abspath}" == "/" ) then
+   set magicrcpath=${magicrc}
+else
+   set magicrcpath=${techdir}/${magicrc}
+endif
+
+# Prepend techdir to leffile unless leffile begins with "/"
+set abspath=`echo ${leffile} | cut -c1`
+if ( "${abspath}" == "/" ) then
+   set lefpath=${leffile}
+else
+   set lefpath=${techdir}/${leffile}
+endif
+
+# Prepend techdir to techleffile unless techleffile begins with "/"
+set abspath=`echo ${techleffile} | cut -c1`
+if ( "${abspath}" == "/" ) then
+   set techlefpath=${techleffile}
+else
+   set techlefpath=${techdir}/${techleffile}
+endif
+
 #----------------------------------------------------------
 # Copy the .magicrc file from the tech directory to the
 # layout directory, if it does not have one.  This file
@@ -58,8 +82,8 @@ cd ${projectpath}
 #----------------------------------------------------------
 
 if (! -f ${layoutdir}/.magicrc ) then
-   if ( -f ${techdir}/${magicrc} ) then
-      cp ${techdir}/${magicrc} ${layoutdir}/.magicrc
+   if ( -f ${magicrcpath} ) then
+      cp ${magicrcpath} ${layoutdir}/.magicrc
    endif
 endif
 
@@ -76,9 +100,9 @@ cd ${layoutdir}
 #---------------------------------------------------
 
 if ($techleffile == "") then
-   set lefcmd="lef read ${techdir}/${leffile}"
+   set lefcmd="lef read ${lefpath}"
 else
-   set lefcmd="lef read ${techdir}/${techleffile}\nlef read ${techdir}/${techleffile}"
+   set lefcmd="lef read ${techlefpath}\nlef read ${lefpath}"
 endif
 
 # Timestamp handling:  If the .mag file is more recent

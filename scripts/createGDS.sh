@@ -46,6 +46,22 @@ source ${projectpath}/qflow_vars.sh
 source ${techdir}/${techname}.sh
 cd ${projectpath}
 
+# Prepend techdir to gdsfile unless gdsfile begins with "/"
+set abspath=`echo ${gdsfile} | cut -c1`
+if ( "${abspath}" == "/" ) then
+   set gdspath=${gdsfile}
+else
+   set gdspath=${techdir}/${gdsfile}
+endif
+
+# Prepend techdir to techfile unless techfile begins with "/"
+set abspath=`echo ${techfile} | cut -c1`
+if ( "${abspath}" == "/" ) then
+   set techpath=${techfile}
+else
+   set techpath=${techdir}/${techfile}
+endif
+
 #----------------------------------------------------------
 # Done with initialization
 #----------------------------------------------------------
@@ -61,13 +77,13 @@ cd ${layoutdir}
 # Use magic version 8.0 to make nice labels
 #---------------------------------------------------
 
-${bindir}/magic -dnull -noconsole -T ${techfile} <<EOF
+${bindir}/magic -dnull -noconsole -T ${techpath} <<EOF
 drc off
 box 0 0 0 0
 snap int
 gds readonly true
 gds rescale false
-gds read ${gdsfile}
+gds read ${gdspath}
 def read ${rootname}
 gds write ${rootname}
 quit -noprompt

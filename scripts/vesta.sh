@@ -58,6 +58,14 @@ if ( ${errcond} == 1 ) then
    exit 1
 endif
 
+# Prepend techdir to libertyfile unless libertyfile begins with "/"
+set abspath=`echo ${libertyfile} | cut -c1`
+if ( "${abspath}" == "/" ) then
+   set libertypath=${libertyfile}
+else
+   set libertypath=${techdir}/${libertyfile}
+endif
+
 #----------------------------------------------------------
 # Done with initialization
 #----------------------------------------------------------
@@ -72,7 +80,7 @@ echo ""
 echo "Running vesta static timing analysis"
 echo ""
 ${bindir}/vesta ${vesta_options} ${rootname}.rtlnopwr.v \
-		${techdir}/${libertyfile} |& tee -a ${synthlog}
+		${libertypath} |& tee -a ${synthlog}
 echo ""
 
 #------------------------------------------------------------

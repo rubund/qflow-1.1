@@ -66,6 +66,14 @@ if ( ${errcond} == 1 ) then
    exit 1
 endif
 
+# Prepend techdir to leffile unless leffile begins with "/"
+set abspath=`echo ${leffile} | cut -c1`
+if ( "${abspath}" == "/" ) then
+   set lefpath=${leffile}
+else
+   set lefpath=${techdir}/${leffile}
+endif
+
 #----------------------------------------------------------
 # Done with initialization
 #----------------------------------------------------------
@@ -132,7 +140,7 @@ endif
 if (${scripting} == "T") then
    if ( -f ${rootname}.cinfo && ( -M ${rootname}.cinfo \
 		> -M ${rootname}.def )) then
-      ${scriptdir}/decongest.tcl ${rootname} ${techdir}/${leffile} \
+      ${scriptdir}/decongest.tcl ${rootname} ${lefpath} \
 		${fillcell} |& tee -a ${synthlog}
    endif
 endif

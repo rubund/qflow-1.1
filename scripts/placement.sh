@@ -79,6 +79,30 @@ source ${projectpath}/qflow_vars.sh
 source ${techdir}/${techname}.sh
 cd ${projectpath}
 
+# Prepend techdir to leffile unless leffile begins with "/"
+set abspath=`echo ${leffile} | cut -c1`
+if ( "${abspath}" == "/" ) then
+   set lefpath=${leffile}
+else
+   set lefpath=${techdir}/${leffile}
+endif
+
+# Prepend techdir to techleffile unless techleffile begins with "/"
+set abspath=`echo ${techleffile} | cut -c1`
+if ( "${abspath}" == "/" ) then
+   set techlefpath=${techleffile}
+else
+   set techlefpath=${techdir}/${techleffile}
+endif
+
+# Prepend techdir to spicefile unless spicefile begins with "/"
+set abspath=`echo ${spicefile} | cut -c1`
+if ( "${abspath}" == "/" ) then
+   set spicepath=${spicefile}
+else
+   set spicepath=${techdir}/${spicefile}
+endif
+
 #----------------------------------------------------------
 # Done with initialization
 #----------------------------------------------------------
@@ -172,15 +196,15 @@ if ($makedef == 1) then
 
    if ( $scripting == "T" ) then
       if ( "$techleffile" == "" ) then
-         echo "read_lef ${techdir}/$leffile" > ${rootname}.cfg
+         echo "read_lef ${lefpath}" > ${rootname}.cfg
       else
-         echo "read_lef ${techdir}/$techleffile" > ${rootname}.cfg
+         echo "read_lef ${techlefpath}" > ${rootname}.cfg
       endif
    else
       if ( "$techleffile" == "" ) then
-         echo "lef ${techdir}/$leffile" > ${rootname}.cfg
+         echo "lef ${lefpath}" > ${rootname}.cfg
       else
-         echo "lef ${techdir}/$techleffile" > ${rootname}.cfg
+         echo "lef ${techlefpath}" > ${rootname}.cfg
       endif
    endif
 
@@ -205,7 +229,7 @@ if ($makedef == 1) then
 
    echo "Running getfillcell.tcl" |& tee -a ${synthlog}
    set usefillcell = `${scriptdir}/getfillcell.tcl $rootname \
-	${techdir}/$leffile $fillcell | grep fill= | cut -d= -f2`
+	${lefpath} $fillcell | grep fill= | cut -d= -f2`
 
    if ( "${usefillcell}" == "" ) then
       set usefillcell = $fillcell
@@ -253,9 +277,9 @@ if ($makedef == 1) then
       echo "" >> ${rootname}.cfg
       echo "verbose 1" >> ${rootname}.cfg
       if ( "$techleffile" != "" ) then
-         echo "read_lef ${techdir}/${techleffile}" >> ${rootname}.cfg
+         echo "read_lef ${techlefpath}" >> ${rootname}.cfg
       endif
-      echo "read_lef ${techdir}/${leffile}" >> ${rootname}.cfg
+      echo "read_lef ${lefpath}" >> ${rootname}.cfg
       echo "layers ${route_layers}" >> ${rootname}.cfg
       if ( ${?via_pattern} ) then
          echo "" >> ${rootname}.cfg
@@ -276,9 +300,9 @@ if ($makedef == 1) then
       echo "# qrouter configuration for project ${rootname}" > ${rootname}.cfg
       echo "" >> ${rootname}.cfg
       if ( "$techleffile" != "" ) then
-         echo "lef ${techdir}/${techleffile}" >> ${rootname}.cfg
+         echo "lef ${techlefpath}" >> ${rootname}.cfg
       endif
-      echo "lef ${techdir}/${leffile}" >> ${rootname}.cfg
+      echo "lef ${lefpath}" >> ${rootname}.cfg
       echo "num_layers ${route_layers}" >> ${rootname}.cfg
       if ( ${?via_pattern} ) then
          echo "" >> ${rootname}.cfg
@@ -367,7 +391,7 @@ if ($makedef == 1) then
 
       echo "Running blif2BSpice." |& tee -a ${synthlog}
       ${bindir}/blif2BSpice -p ${vddnet} -g ${gndnet} -l \
-		${techdir}/${spicefile} ${rootname}_anno.blif \
+		${spicepath} ${rootname}_anno.blif \
 		> ${rootname}.spc
 
       #------------------------------------------------------------------
@@ -406,7 +430,7 @@ endif
 if ($makedef == 1) then
    if ( -f ${scriptdir}/addspacers.tcl ) then
       echo "Running addspacers.tcl"
-      ${scriptdir}/addspacers.tcl ${rootname} ${techdir}/$leffile \
+      ${scriptdir}/addspacers.tcl ${rootname} ${lefpath} \
 		$fillcell >>& ${synthlog}
       if ( -f ${rootname}_filled.def ) then
 	 mv ${rootname}_filled.def ${rootname}.def

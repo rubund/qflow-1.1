@@ -58,6 +58,30 @@ cd ${projectpath}
 rm -f ${synthlog} >& /dev/null
 touch ${synthlog}
 
+# Prepend techdir to libertyfile unless libertyfile begins with "/"
+set abspath=`echo ${libertyfile} | cut -c1`
+if ( "${abspath}" == "/" ) then
+   set libertypath=${libertyfile}
+else
+   set libertypath=${techdir}/${libertyfile}
+endif
+
+# Prepend techdir to spicefile unless spicefile begins with "/"
+set abspath=`echo ${spicefile} | cut -c1`
+if ( "${abspath}" == "/" ) then
+   set spicepath=${spicefile}
+else
+   set spicepath=${techdir}/${spicefile}
+endif
+
+# Prepend techdir to leffile unless leffile begins with "/"
+set abspath=`echo ${leffile} | cut -c1`
+if ( "${abspath}" == "/" ) then
+   set lefpath=${leffile}
+else
+   set lefpath=${techdir}/${leffile}
+endif
+
 #---------------------------------------------------------------------
 # Determine hierarchy by running yosys with a simple script to check
 # hierarchy.  Add files until yosys no longer reports an error.
@@ -80,30 +104,6 @@ while ($yerrcnt > 1)
 if ( !( -f ${rootname}.v )) then
    echo "Error:  Verilog source file ${rootname}.v cannot be found!" \
 		|& tee -a ${synthlog}
-endif
-
-# Prepend techdir to libertyfile unless libertyfile begins with "/"
-set abspath=`echo ${libertyfile} | cut -c1`
-if ( "${abspath}" == "/" ) then
-   set ${libertypath}=${libertyfile}
-else
-   set ${libertypath}=${techdir}/${libertyfile}
-endif
-
-# Prepend techdir to spicefile unless spicefile begins with "/"
-set abspath=`echo ${spicefile} | cut -c1`
-if ( "${abspath}" == "/" ) then
-   set ${spicepath}=${spicefile}
-else
-   set ${spicepath}=${techdir}/${spicefile}
-endif
-
-# Prepend techdir to leffile unless leffile begins with "/"
-set abspath=`echo ${leffile} | cut -c1`
-if ( "${abspath}" == "/" ) then
-   set ${lefpath}=${leffile}
-else
-   set ${lefpath}=${techdir}/${leffile}
 endif
 
 cat > ${rootname}.ys << EOF
