@@ -82,9 +82,33 @@ if ( !( -f ${rootname}.v )) then
 		|& tee -a ${synthlog}
 endif
 
+# Prepend techdir to libertyfile unless libertyfile begins with "/"
+set abspath=`echo ${libertyfile} | cut -c1`
+if ( "${abspath}" == "/" ) then
+   set ${libertypath}=${libertyfile}
+else
+   set ${libertypath}=${techdir}/${libertyfile}
+endif
+
+# Prepend techdir to spicefile unless spicefile begins with "/"
+set abspath=`echo ${spicefile} | cut -c1`
+if ( "${abspath}" == "/" ) then
+   set ${spicepath}=${spicefile}
+else
+   set ${spicepath}=${techdir}/${spicefile}
+endif
+
+# Prepend techdir to leffile unless leffile begins with "/"
+set abspath=`echo ${leffile} | cut -c1`
+if ( "${abspath}" == "/" ) then
+   set ${lefpath}=${leffile}
+else
+   set ${lefpath}=${techdir}/${leffile}
+endif
+
 cat > ${rootname}.ys << EOF
 # Synthesis script for yosys created by qflow
-read_liberty -lib -ignore_miss_dir -setattr blackbox ${techdir}/${libertyfile}
+read_liberty -lib -ignore_miss_dir -setattr blackbox ${libertypath}
 read_verilog ${rootname}.v
 EOF
 
@@ -168,7 +192,7 @@ if (( ${major} == 0 && ${minor} == 3 && ${revision} == 0 && ${subrevision} >= 51
     ( ${major} == 0 && ${minor} > 3 ) || \
     ( ${major} > 0) ) then
 cat > ${rootname}.ys << EOF
-read_liberty -lib -ignore_miss_dir -setattr blackbox ${techdir}/${libertyfile}
+read_liberty -lib -ignore_miss_dir -setattr blackbox ${libertypath}
 EOF
 endif
 
@@ -225,7 +249,7 @@ endif
 
 cat >> ${rootname}.ys << EOF
 # Map register flops
-dfflibmap -liberty ${techdir}/${libertyfile}
+dfflibmap -liberty ${libertypath}
 opt
 
 EOF
@@ -233,7 +257,7 @@ EOF
 if ( ${?abc_script} ) then
    if ( ${abc_script} != "" ) then
       cat >> ${rootname}.ys << EOF
-abc -liberty ${techdir}/${libertyfile} -script ${abc_script}
+abc -liberty ${libertypath} -script ${abc_script}
 flatten
 
 EOF
@@ -241,7 +265,7 @@ EOF
       echo "Warning: no abc script ${abc_script}, using default, no script" \
 		|& tee -a ${synthlog}
       cat >> ${rootname}.ys << EOF
-abc -liberty ${techdir}/${libertyfile}
+abc -liberty ${libertypath}
 flatten
 
 EOF
@@ -249,7 +273,7 @@ EOF
 else
    cat >> ${rootname}.ys << EOF
 # Map combinatorial cells, standard script
-abc -liberty ${techdir}/${libertyfile} -script +strash;scorr;ifraig;retime,{D};strash;dch,-f;map,-M,1,{D}
+abc -liberty ${libertypath} -script +strash;scorr;ifraig;retime,{D};strash;dch,-f;map,-M,1,{D}
 flatten
 
 EOF
@@ -436,7 +460,7 @@ endif
 
 echo "Running blifFanout (iterative)" |& tee -a ${synthlog}
 echo "" >> ${synthlog}
-if (-f ${techdir}/${libertyfile} && -f ${bindir}/blifFanout ) then
+if (-f ${libertypath} && -f ${bindir}/blifFanout ) then
    set nchanged=1000
    while ($nchanged > 0)
       mv ${rootname}.blif tmp.blif
@@ -451,7 +475,7 @@ if (-f ${techdir}/${libertyfile} && -f ${bindir}/blifFanout ) then
 	 set bufoption="-b ${bufcell} -i ${bufpin_in} -o ${bufpin_out}"
       endif
       ${bindir}/blifFanout ${fanout_options} -f ${rootname}_nofanout \
-		-p ${techdir}/${libertyfile} ${sepoption} ${bufoption} \
+		-p ${libertypath} ${sepoption} ${bufoption} \
 		tmp.blif ${rootname}.blif >>& ${synthlog}
       set nchanged=$status
       echo "gates resized: $nchanged" |& tee -a ${synthlog}
@@ -493,7 +517,7 @@ echo "Running blif2BSpice." |& tee -a ${synthlog}
 if ("x${spicefile}" == "x") then
     set spiceopt=""
 else
-    set spiceopt="-l ${techdir}/${spicefile}"
+    set spiceopt="-l ${spicepath}"
 endif
 ${bindir}/blif2BSpice -p ${vddnet} -g ${gndnet} ${spiceopt} \
 	${rootname}.blif > ${rootname}.spc
@@ -531,8 +555,7 @@ cd ${projectpath}
 echo "Running blif2cel.tcl" |& tee -a ${synthlog}
 
 ${scriptdir}/blif2cel.tcl ${synthdir}/${rootname}.blif \
-	${techdir}/${leffile} \
-	${layoutdir}/${rootname}.cel >>& ${synthlog}
+	${lefpath} ${layoutdir}/${rootname}.cel >>& ${synthlog}
 
 #---------------------------------------------------------------------
 # Spot check:  Did blif2cel produce file ${rootname}.cel?
@@ -541,6 +564,8 @@ ${scriptdir}/blif2cel.tcl ${synthdir}/${rootname}.blif \
 if ( !( -f ${layoutdir}/${rootname}.cel || ( -M ${layoutdir}/${rootname}.cel \
 	< -M ${rootname}.blif ))) then
    echo "blif2cel failure:  No file ${rootname}.cel." |& tee -a ${synthlog}
+   echo "blif2cel was called with arguments: ${synthdir}/${rootname}.blif "
+   echo "      ${lefpath} ${layoutdir}/${rootname}.cel"
    echo "Premature exit." |& tee -a ${synthlog}
    echo "Synthesis flow stopped due to error condition." >> ${synthlog}
    exit 1
@@ -556,7 +581,7 @@ cd ${layoutdir}
 
 if ( ${?initial_density} ) then
    echo "Running decongest to set initial density of ${initial_density}"
-   ${scriptdir}/decongest.tcl ${rootname} ${techdir}/${leffile} \
+   ${scriptdir}/decongest.tcl ${rootname} ${lefpath} \
 		${fillcell} ${initial_density} |& tee -a ${synthlog}
    cp ${rootname}.cel ${rootname}.cel.bak
    mv ${rootname}.acel ${rootname}.cel
