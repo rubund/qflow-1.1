@@ -365,6 +365,9 @@ while {[gets $fcel line] >= 0} {
 	 if {$fillnum > 1} {
 	    puts $fanno "cell $instnum ${fillmacro}.${fillvalue}X${fillnum}.${instname}"
 	    set adjust [expr {$fillnum * $halfvalue}]
+	 } elseif {$fillnum == 0} {
+	    puts $fanno "cell $instnum ${instname}"
+	    set adjust 0
 	 } else {
 	    puts $fanno "cell $instnum ${fillmacro}.${fillvalue}.${instname}"
 	    set adjust $halfvalue
