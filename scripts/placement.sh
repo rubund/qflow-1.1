@@ -115,7 +115,46 @@ if ( ${errcond} == 1 ) then
    exit 1
 endif
 
+#-------------------------------------------------------------------------
+# Create the .cel file for GrayWolf
+#-------------------------------------------------------------------------
+
+cd ${projectpath}
+
+echo "Running blif2cel.tcl" |& tee -a ${synthlog}
+
+${scriptdir}/blif2cel.tcl ${synthdir}/${rootname}.blif \
+	${lefpath} ${layoutdir}/${rootname}.cel >>& ${synthlog}
+
+#---------------------------------------------------------------------
+# Spot check:  Did blif2cel produce file ${rootname}.cel?
+#---------------------------------------------------------------------
+
+if ( !( -f ${layoutdir}/${rootname}.cel || ( -M ${layoutdir}/${rootname}.cel \
+	< -M ${rootname}.blif ))) then
+   echo "blif2cel failure:  No file ${rootname}.cel." |& tee -a ${synthlog}
+   echo "blif2cel was called with arguments: ${synthdir}/${rootname}.blif "
+   echo "      ${lefpath} ${layoutdir}/${rootname}.cel"
+   echo "Premature exit." |& tee -a ${synthlog}
+   echo "Synthesis flow stopped due to error condition." >> ${synthlog}
+   exit 1
+endif
+
+#-------------------------------------------------------------------------
+# If placement option "initial_density" is set, run the decongest
+# script.  This will annotate the .cel file with fill cells to pad
+# out the area to the specified density.
+#-------------------------------------------------------------------------
+
 cd ${layoutdir}
+
+if ( ${?initial_density} ) then
+   echo "Running decongest to set initial density of ${initial_density}"
+   ${scriptdir}/decongest.tcl ${rootname} ${lefpath} \
+		${fillcell} ${initial_density} |& tee -a ${synthlog}
+   cp ${rootname}.cel ${rootname}.cel.bak
+   mv ${rootname}.acel ${rootname}.cel
+endif
 
 # Check if a .acel file exists.  This file is produced by qrouter and
 # its existance indicates that qrouter is passing back congestion

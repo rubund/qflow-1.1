@@ -544,18 +544,11 @@ if ( !( -f ${rootname}.spc || \
         ( -M ${rootname}.spc < -M ${rootname}.blif ))) then
    echo "blif2BSpice failure:  No file ${rootname}.spc created." \
                 |& tee -a ${synthlog}
+   echo "Premature exit." |& tee -a ${synthlog}
+   echo "Synthesis flow stopped due to error condition." >> ${synthlog}
+   exit 1
 endif
 
-#-------------------------------------------------------------------------
-# Create the .cel file for GrayWolf
-#-------------------------------------------------------------------------
-
-cd ${projectpath}
-
-echo "Running blif2cel.tcl" |& tee -a ${synthlog}
-
-${scriptdir}/blif2cel.tcl ${synthdir}/${rootname}.blif \
-	${lefpath} ${layoutdir}/${rootname}.cel >>& ${synthlog}
 
 #---------------------------------------------------------------------
 # Spot check:  Did blif2cel produce file ${rootname}.cel?
@@ -571,31 +564,8 @@ if ( !( -f ${layoutdir}/${rootname}.cel || ( -M ${layoutdir}/${rootname}.cel \
    exit 1
 endif
 
-#-------------------------------------------------------------------------
-# If placement option "initial_density" is set, run the decongest
-# script.  This will annotate the .cel file with fill cells to pad
-# out the area to the specified density.
-#-------------------------------------------------------------------------
-
-cd ${layoutdir}
-
-if ( ${?initial_density} ) then
-   echo "Running decongest to set initial density of ${initial_density}"
-   ${scriptdir}/decongest.tcl ${rootname} ${lefpath} \
-		${fillcell} ${initial_density} |& tee -a ${synthlog}
-   cp ${rootname}.cel ${rootname}.cel.bak
-   mv ${rootname}.acel ${rootname}.cel
-endif
+#---------------------------------------------------------------------
 
 cd ${projectpath}
-
-#-------------------------------------------------------------------------
-# Notice about editing should be replaced with automatic handling of
-# user directions about what to put in the .par file, like number of
-# rows or cell aspect ratio, etc., etc.
-#-------------------------------------------------------------------------
-# echo "Edit ${layoutdir}/${rootname}.par, then run placement and route" \
-#		|& tee -a ${synthlog}
-
 set endtime = `date`
 echo "Synthesis script ended on $endtime" >> $synthlog
