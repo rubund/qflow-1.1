@@ -104,6 +104,7 @@ if [catch {open $infoname r} finf] {
       set metal${i}(orient) horizontal
       set metal${i}(offset) $offsetx
       set metal${i}(width) $widthx
+      set metal${i}(skip) 1
    }
    for {set i 2} {$i <= $numlayers} {incr i 2} {
       set metal${i}(name) metal${i}
@@ -111,6 +112,7 @@ if [catch {open $infoname r} finf] {
       set metal${i}(orient) vertical
       set metal${i}(offset) $offsety
       set metal${i}(width) $widthy
+      set metal${i}(skip) 1
    }
 
 } else {
@@ -129,13 +131,18 @@ if [catch {open $infoname r} finf] {
          # value to the info file.  Also the newer version records the track width,
          # although this is not used.
 
- 	 if {[regexp {^[ \t]*([^ ]+)[ \t]+([^ ]+)[ \t]+([^ ]+)[ \t]+([^ ]+)[ \t]+([^ ]+)} \
-			$line lmatch layer pitch offset width orient] <= 0} {
+ 	 if {[regexp {^[ \t]*([^ ]+)[ \t]+([^ ]+)[ \t]+([^ ]+)[ \t]+([^ ]+)[ \t]+([^ ]+)(.*)} \
+			$line lmatch layer pitch offset width orient rest] <= 0} {
             regexp {^[ \t]*([^ ]+)[ \t]+([^ ]+)[ \t]+([^ ]+)} $line lmatch \
 			layer pitch orient 
 	    set offset [expr 0.5 * $pitch]
 	    set width $pitch
+	    set skip 1
          }
+
+	 if {![regexp {[ \t]*([^ ]+)} $rest lmatch skip]} {
+	    set skip 1
+	 }
 
          incr i
          set metal${i}(name) $layer
@@ -143,6 +150,7 @@ if [catch {open $infoname r} finf] {
          set metal${i}(orient) $orient
          set metal${i}(offset) $offset
          set metal${i}(width) $width
+         set metal${i}(skip) $skip
       }
    }
    close $finf
@@ -454,17 +462,23 @@ set lastrow -1
 
 if {$metal2(orient) == "vertical"} {
    set vlayer $metal2(name)
+   set vskip $metal2(skip)
    if {$numlayers < 3} {
       set hlayer $metal1(name)
+      set hskip $metal1(skip)
    } else {
       set hlayer $metal3(name)
+      set hskip $metal3(skip)
    }
 } else {
    set hlayer $metal2(name)
+   set hskip $metal2(skip)
    if {$numlayers < 3} {
       set vlayer $metal1(name)
+      set vskip  $metal1(skip)
    } else {
       set vlayer $metal3(name)
+      set vskip  $metal3(skip)
    }
 }
 
@@ -491,8 +505,12 @@ while {[gets $fpl1 line] >= 0} {
       set labname [string range $instance 6 end]
       if {$row == -1 || $row == -2} {
 	 set labtype $hlayer
+	 set pinpitchx [expr $hskip * $pitchx]
+	 set pinpitchy $pitchy
       } else {
 	 set labtype $vlayer
+	 set pinpitchy [expr $vskip * $pitchy]
+	 set pinpitchx $pitchx
       }
 
       # Only deal with pin center position
@@ -510,17 +528,17 @@ while {[gets $fpl1 line] >= 0} {
 
       set pincx [expr $pincx - $halfpitchx]
       set pincy [expr $pincy - $halfpitchy]
-      set xgrid [expr 1 + floor($pincx / $pitchx)]
-      set ygrid [expr 1 + floor($pincy / $pitchy)]
-      set llx [expr $xgrid * $pitchx]
-      set lly [expr $ygrid * $pitchy]
+      set xgrid [expr 1 + floor($pincx / $pinpitchx)]
+      set ygrid [expr 1 + floor($pincy / $pinpitchy)]
+      set llx [expr $xgrid * $pinpitchx]
+      set lly [expr $ygrid * $pinpitchy]
       while {![catch {eval [subst {set posused(${llx},${lly})}]}]} {
          puts -nonewline stdout "Caught GrayWolf being bad:  "
          puts stdout "Pin $labname overlaps pin $posused(${llx},${lly})"
          if {$row == -1 || $row == -2} {
-            set llx [expr $llx + $pitchx]
+            set lly [expr $lly + $pinpitchy]
          } else {
-            set lly [expr $lly + $pitchy]
+            set llx [expr $llx + $pinpitchx]
          }
       }
       set posused(${llx},${lly}) $labname

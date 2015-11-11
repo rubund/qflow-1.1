@@ -197,6 +197,7 @@ EOF
 endif
 
 cat > ${rootname}.ys << EOF
+read_liberty -lib -ignore_miss_dir -setattr blackbox ${libertypath}
 read_verilog ${rootname}.v
 EOF
 
