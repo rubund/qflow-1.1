@@ -280,9 +280,13 @@ flatten
 EOF
 endif
 
-# Purge buffering of internal net name aliases for a smaller,
-# non-debug output
-if ( ${?yosys_nodebug} ) then
+# Purge buffering of internal net name aliases.  Option "debug"
+# retains all internal names by buffering them, resulting in a
+# larger layout (especially for layouts derived from hierarchical
+# source), but one in which all signal names from the source can
+# be probed.
+
+if ( ! ${?yosys_debug} ) then
    cat >> ${rootname}.ys << EOF
 clean -purge
 EOF
