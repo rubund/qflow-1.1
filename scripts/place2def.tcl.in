@@ -462,23 +462,23 @@ set lastrow -1
 
 if {$metal2(orient) == "vertical"} {
    set vlayer $metal2(name)
-   set vskip $metal2(skip)
+   set hskip $metal2(skip)
    if {$numlayers < 3} {
       set hlayer $metal1(name)
-      set hskip $metal1(skip)
+      set vskip $metal1(skip)
    } else {
       set hlayer $metal3(name)
-      set hskip $metal3(skip)
+      set vskip $metal3(skip)
    }
 } else {
    set hlayer $metal2(name)
-   set hskip $metal2(skip)
+   set vskip $metal2(skip)
    if {$numlayers < 3} {
       set vlayer $metal1(name)
-      set vskip  $metal1(skip)
+      set hskip  $metal1(skip)
    } else {
       set vlayer $metal3(name)
-      set vskip  $metal3(skip)
+      set hskip  $metal3(skip)
    }
 }
 
@@ -505,12 +505,12 @@ while {[gets $fpl1 line] >= 0} {
       set labname [string range $instance 6 end]
       if {$row == -1 || $row == -2} {
 	 set labtype $hlayer
-	 set pinpitchx [expr $hskip * $pitchx]
-	 set pinpitchy $pitchy
+	 set pinpitchx $pitchx
+	 set pinpitchy [expr $vskip * $pitchy]
       } else {
 	 set labtype $vlayer
-	 set pinpitchy [expr $vskip * $pitchy]
-	 set pinpitchx $pitchx
+	 set pinpitchx [expr $hskip * $pitchx]
+	 set pinpitchy $pitchy
       }
 
       # Only deal with pin center position
