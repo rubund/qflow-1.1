@@ -197,8 +197,17 @@ endif
 # 1) Run GrayWolf
 #-----------------------------------------------
 
+if ( !( ${?graywolf_options} )) then
+   if ( !( ${?DISPLAY} )) then
+      set graywolf_options = "-n"
+   else
+      set graywolf_options = ""
+   endif
+endif
+
 echo "Running GrayWolf placement" |& tee -a ${synthlog}
-${bindir}/graywolf $rootname >>& ${synthlog}
+   ${bindir}/graywolf ${graywolf_options} $rootname >>& ${synthlog}
+endif
 
 #---------------------------------------------------------------------
 # Spot check:  Did GrayWolf produce file ${rootname}.pin?

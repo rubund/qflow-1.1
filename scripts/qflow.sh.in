@@ -289,6 +289,7 @@ if ( ! -f ${userfile} ) then
    echo "# Placement command options:" >> ${userfile}
    echo "# -------------------------------------------" >> ${userfile}
    echo "# set initial_density = " >> ${userfile}
+   echo "# set graywolf_options = " >> ${userfile}
    echo "" >> ${userfile}
    echo "# Router command options:" >> ${userfile}
    echo "# -------------------------------------------" >> ${userfile}
