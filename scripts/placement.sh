@@ -304,7 +304,7 @@ if ($makedef == 1) then
       exit 1
    endif
 
-   # Copy the .def file to a backup called "unroute"
+   # Copy the .def file to a backup called "unroute" (temporary)
    cp ${rootname}.def ${rootname}_unroute.def
 
    # If the user didn't specify a number of layers for routing as part of
@@ -485,6 +485,8 @@ if ($makedef == 1) then
 		$fillcell >>& ${synthlog}
       if ( -f ${rootname}_filled.def ) then
 	 mv ${rootname}_filled.def ${rootname}.def
+	 # Copy the .def file to a backup called "unroute" (final)
+	 cp ${rootname}.def ${rootname}_unroute.def
       endif
    endif
 endif
