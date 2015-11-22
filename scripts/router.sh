@@ -94,8 +94,8 @@ set scripting=`echo $version | cut -d. -f4`
 # to the primary .def file to be used by the router.  This
 # overwrites any previously generated route solution.
 
-if ( -f ${project}_unroute.def ) then
-   cp ${project}_unroute.def ${project}.def
+if ( -f ${rootname}_unroute.def ) then
+   cp ${rootname}_unroute.def ${rootname}.def
 endif
 
 if (${scripting} == "T") then
