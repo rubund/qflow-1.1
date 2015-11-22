@@ -304,6 +304,9 @@ if ($makedef == 1) then
       exit 1
    endif
 
+   # Copy the .def file to a backup called "unroute"
+   cp ${rootname}.def ${rootname}_unroute.def
+
    # If the user didn't specify a number of layers for routing as part of
    # the project variables, then the info file created by qrouter will have
    # as many lines as there are route layers defined in the technology LEF

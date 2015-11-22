@@ -90,6 +90,14 @@ set minor=`echo $version | cut -d. -f2`
 set subv=`echo $version | cut -d. -f3`
 set scripting=`echo $version | cut -d. -f4`
 
+# If there is a file called (project)_unroute.def, copy it
+# to the primary .def file to be used by the router.  This
+# overwrites any previously generated route solution.
+
+if ( -f ${project}_unroute.def ) then
+   cp ${project}_unroute.def ${project}.def
+endif
+
 if (${scripting} == "T") then
 
 #------------------------------------------------------------------
@@ -145,7 +153,7 @@ if (${scripting} == "T") then
    endif
 endif
 
-mv ${rootname}.def ${rootname}_unroute.def
+rm ${rootname}.def
 mv ${rootname}_route.def ${rootname}.def
 
 #------------------------------------------------------------
