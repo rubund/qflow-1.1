@@ -153,8 +153,10 @@ if (${scripting} == "T") then
    endif
 endif
 
-rm ${rootname}.def
-mv ${rootname}_route.def ${rootname}.def
+if ( -f ${rootname}_route.def ) then
+   rm -f ${rootname}.def
+   mv ${rootname}_route.def ${rootname}.def
+endif
 
 #------------------------------------------------------------
 # Done!

@@ -258,7 +258,7 @@ EOF
 if ( ${?abc_script} ) then
    if ( ${abc_script} != "" ) then
       cat >> ${rootname}.ys << EOF
-abc -liberty ${libertypath} -script ${abc_script}
+abc -exe ${bindir}/yosys-abc -liberty ${libertypath} -script ${abc_script}
 flatten
 
 EOF
@@ -266,7 +266,7 @@ EOF
       echo "Warning: no abc script ${abc_script}, using default, no script" \
 		|& tee -a ${synthlog}
       cat >> ${rootname}.ys << EOF
-abc -liberty ${libertypath}
+abc -exe ${bindir}/yosys-abc -liberty ${libertypath}
 flatten
 
 EOF
@@ -274,7 +274,7 @@ EOF
 else
    cat >> ${rootname}.ys << EOF
 # Map combinatorial cells, standard script
-abc -liberty ${libertypath} -script +strash;scorr;ifraig;retime,{D};strash;dch,-f;map,-M,1,{D}
+abc -exe ${bindir}/yosys-abc -liberty ${libertypath} -script +strash;scorr;ifraig;retime,{D};strash;dch,-f;map,-M,1,{D}
 flatten
 
 EOF
