@@ -144,13 +144,17 @@ if [catch {open $infoname r} finf] {
 	    set skip 1
 	 }
 
-         incr i
-         set metal${i}(name) $layer
-         set metal${i}(pitch) $pitch
-         set metal${i}(orient) $orient
-         set metal${i}(offset) $offset
-         set metal${i}(width) $width
-         set metal${i}(skip) $skip
+	 if {($pitch > 0) && ($width > 0)} {
+            incr i
+            set metal${i}(name) $layer
+            set metal${i}(pitch) $pitch
+            set metal${i}(orient) $orient
+            set metal${i}(offset) $offset
+            set metal${i}(width) $width
+            set metal${i}(skip) $skip
+	 } else {
+	    puts stderr "Warning: metal route layer defined with zero width or pitch" 
+	 }
       }
    }
    close $finf
