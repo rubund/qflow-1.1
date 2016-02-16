@@ -201,6 +201,36 @@ char *find_suffix(char *gatename)
 
 /*
  *---------------------------------------------------------------------------
+ * Check if a liberty file function describes a buffer.  Since this is the
+ * function of the output pin, it needs only be the input pin (e.g.,
+ * func(Q) = "A").  However, some liberty files repeat the output pin (e.g.,
+ * func(Q) = "Q = A").  Check for both styles.
+ *---------------------------------------------------------------------------
+ */
+
+int is_buffer_func(char *func_text, char *pin_in, char *pin_out) {
+   char *eqptr, esav, *tptr;
+
+   if (!strcmp(func_text, pin_in)) return 1;
+
+   else if ((eqptr = strchr(func_text, '=')) != NULL) {
+      tptr = eqptr + 1;
+      while (isspace(*tptr) && (*tptr != '\0')) tptr++;
+      while ((eqptr > func_text) && isspace(*(eqptr - 1))) eqptr--;
+      esav = *eqptr;
+      *eqptr = '\0';
+      if (!strcmp(func_text, pin_out) && (*tptr != '\0') &&
+		!strcmp(tptr, pin_in)) {
+         *eqptr = esav;
+	 return 1;
+      }
+      *eqptr = esav;
+   }
+   return 0;
+}
+
+/*
+ *---------------------------------------------------------------------------
  *---------------------------------------------------------------------------
  */
 
@@ -357,17 +387,21 @@ int main (int argc, char *argv[])
 	    if (ctest->pins && ctest->pins->next && !ctest->pins->next->next) {
 		if (ctest->pins->type == PIN_INPUT &&
 				ctest->pins->next->type == PIN_OUTPUT) {
-		    if (!strcmp(ctest->function, ctest->pins->name)) {
+		    if (is_buffer_func(ctest->function, ctest->pins->name,
+				ctest->pins->next->name)) {
 			fprintf(stdout, "Using cell \"%s\" for buffers.\n",
 				ctest->name);
+			Buffername = strdup(ctest->name);
 			break;
 		    }
 		}
 		else if (ctest->pins->type == PIN_OUTPUT &&
 				ctest->pins->next->type == PIN_INPUT) {
-		    if (!strcmp(ctest->function, ctest->pins->next->name)) {
+		    if (is_buffer_func(ctest->function, ctest->pins->next->name,
+				ctest->pins->name)) {
 			fprintf(stdout, "Using cell \"%s\" for buffers.\n",
 				ctest->name);
+			Buffername = strdup(ctest->name);
 			break;
 		    }
 		}
@@ -379,7 +413,10 @@ int main (int argc, char *argv[])
 	 gl = (struct Gatelist *)HashLookup(Buffername, Gatehash);
 
       if (gl == NULL) {
-         fprintf(stderr, "blifFanout:  Buffer cell %s cannot be found.\n",
+	 if (Buffername == NULL)
+            fprintf(stderr, "blifFanout:  No suitable buffer cell in library.\n");
+	 else
+            fprintf(stderr, "blifFanout:  Buffer cell %s cannot be found.\n",
 			Buffername);
          return -1;
       }
@@ -388,7 +425,7 @@ int main (int argc, char *argv[])
 	    if (buf_in_pin == NULL)
 	       buf_in_pin = strdup(curpin->name);
 	 }
-	 else if (curpin->type == PIN_INPUT) {
+	 else if (curpin->type == PIN_OUTPUT) {
 	    if (buf_out_pin == NULL)
 	       buf_out_pin = strdup(curpin->name);
 	 }
@@ -688,6 +725,10 @@ int read_gate_file(char *gate_file_name)
 	/* for any gate in the circuit after making gate strength	*/
 	/* substitutions (this does not include internal, constant	*/
 	/* delays in each gate).					*/
+
+	// (Diagnostic, for debug)
+	// fprintf(stderr, "Parsing cell \"%s\", \"%s\", function \"%s\"\n",
+	//	gl->gatename, gl->gatecell->name, gl->gatecell->function);
 
 	gl->strength = MaxLatency / gl->delay;
  	HashPtrInstall(gl->gatename, gl, Gatehash);
@@ -1210,7 +1251,7 @@ void write_output(FILE *infptr, FILE *outfptr)
 			bbest->gatename, buf_in_pin, s, buf_out_pin,
 			nl->nodename);
 	       }
-	       if (gl != glbest) {
+	       if ((gl != NULL) && (gl != glbest)) {
 		  s = strstr(gateline, gl->gatename);
 	          if (s) {
 		     int glen = strlen(gl->gatename);

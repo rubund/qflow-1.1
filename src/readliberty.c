@@ -529,6 +529,7 @@ read_liberty(char *libfile, char *pattern)
 		    newtable->times = NULL;
 		    newtable->caps = NULL;
 		    newtable->next = tables;
+		    newtable->invert = 0;
 		    tables = newtable;
 
 		    token = advancetoken(flib, 0);
@@ -800,7 +801,7 @@ read_liberty(char *libfile, char *pattern)
 		}
 		else if (!strcasecmp(token, "dont_use")) {
 		    free(newcell->name);
-		    newcell->name == NULL;
+		    newcell->name = NULL;
 		}
 		else if (!strcasecmp(token, "pin")) {
 		    token = advancetoken(flib, 0);	// Open parens
