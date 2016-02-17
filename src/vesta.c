@@ -1426,6 +1426,8 @@ int find_clock_to_term_paths(connlistptr clockedlist, ddataptr *masterlist, netp
 		// Find the sources of the clock at the path end
 		destdir = (testinst->refcell->type & CLK_SENSE_MASK) ? FALLING : RISING;
 		testconn = find_register_clock(testinst);
+		// If testconn is NULL, this is not a register (latch, maybe?)
+		if (testconn == NULL) continue;
 		find_clock_source(testconn, &clock2list, destdir);
 		selecteddest = find_clock_transition(clock2list, testconn, destdir, ~minmax);
 

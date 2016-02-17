@@ -95,11 +95,11 @@ double MaxOverload = 0.0;
 
 int    MaxFanout  = 16;		// Maximum fanout per node allowed without
 				// additional buffering.
-double MaxLatency = 100.0;	// Maximum variable latency (ps) for which we
+double MaxLatency = 1000.0;	// Maximum variable latency (ps) for which we
 				// are solving.  Represents the largest delay
 				// allowed for any gate caused by total load
 				// capacitance.  This is empirically derived.
-double MaxOutputCap = 18.0;	// Maximum capacitance for an output node (fF).
+double MaxOutputCap = 30.0;	// Maximum capacitance for an output node (fF).
 				// Outputs should be able to drive this much
 				// capacitance within MaxLatency time (ps).
 double WireCap = 10.0;		// Base capacitance for an output node, estimate
@@ -163,7 +163,7 @@ void showgatelist(void);
 void helpmessage(void);
 void registernode(char *nodename, int type, struct Gatelist *gl, char *pinname);
 void shownodes(void);
-void write_output(FILE *infptr, FILE *outfptr);
+void write_output(int doLoadBalance, FILE *infptr, FILE *outfptr);
 struct Gatelist *best_size(struct Gatelist *gl, double amount, char *overload);
 void count_gatetype(struct Gatelist *gl, int num_in, int num_out);
 
@@ -241,6 +241,8 @@ int main (int argc, char *argv[])
    int inputcount;
    int gateinputs;
    int gatecount;
+   int doLoadBalance = 1;
+   int doFanout = 1;
    char *pinname;
    char *test;
    char *s, *t;
@@ -263,7 +265,7 @@ int main (int argc, char *argv[])
    InitializeHashTable(Drivehash);
    InitializeHashTable(Gatehash);
 
-   while ((i = getopt(argc, argv, "gnhvl:c:b:i:o:p:s:f:F:")) != EOF) {
+   while ((i = getopt(argc, argv, "fLgnhvl:c:b:i:o:p:s:I:F:")) != EOF) {
       switch (i) {
 	 case 'b':
 	    Buffername = strdup(optarg);
@@ -277,7 +279,13 @@ int main (int argc, char *argv[])
          case 'p':
 	    Gatepath = strdup(optarg);
 	    break;
-	 case 'f':
+	 case 'f':	// fanout only
+	    doLoadBalance = 0;
+	    break;
+	 case 'L':	// load balance only
+	    doFanout = 0;
+	    break;
+	 case 'I':
 	    Ignorepath = strdup(optarg);
 	    break;
 	 case 'F':
@@ -564,18 +572,20 @@ int main (int argc, char *argv[])
    fflush(stdout);
 
    fprintf(stderr, "Top internal fanout is %d (load %g) from node %s,\n"
-		"driven by %s with strength %g\n",
+		"driven by %s with strength %g (fF driven at latency %g)\n",
 	 	Topfanout, Topload, nlmax->nodename,
 		nlmax->outputgate->gatename,
-		nlmax->outputgatestrength);
+		nlmax->outputgatestrength,
+		MaxLatency);
 
-   fprintf(stderr, "Top fanout load-to-strength ratio is %g\n", Topratio);
+   fprintf(stderr, "Top fanout load-to-strength ratio is %g (latency = %g ps)\n",
+		Topratio, MaxLatency * Topratio);
 
    fprintf(stderr, "Top input node fanout is %d (load %g) from node %s.\n",
 	 	Inputfanout, Inputload, nlimax->nodename);
 
    Buffer_count = 0;
-   if ((Topfanout > MaxFanout) || (Inputfanout > MaxFanout)) {
+   if (doFanout && ((Topfanout > MaxFanout) || (Inputfanout > MaxFanout))) {
 
       /* Insert buffer trees */
       nl = (struct Nodelist *)HashFirst(Nodehash);
@@ -617,7 +627,7 @@ int main (int argc, char *argv[])
          nl = (struct Nodelist *)HashNext(Nodehash);
       }
    }
-   write_output(infptr, outfptr);
+   write_output(doLoadBalance, infptr, outfptr);
 
    fprintf(stderr, "%d gates exceed specified minimum load.\n", stren_err_counter);
    fprintf(stderr, "%d buffers were added.\n", Buffer_count);
@@ -950,7 +960,7 @@ void shownodes(void)
 
    nl = (struct Nodelist *)HashFirst(Nodehash);
    while (nl != NULL) {
-      printf("\n\nnode: %s with %d fanout and %g cap",
+      printf("\n\nnode: %s with %d fanout and %g fF cap",
 		nl->nodename, nl->num_inputs, nl->total_load);
       printf("\ndriven by %s, with %g strength.\n",
 		nl->outputgate->gatename, nl->outputgatestrength);
@@ -963,7 +973,7 @@ void shownodes(void)
  *---------------------------------------------------------------------------
  */
 
-void write_output(FILE *infptr, FILE *outfptr)
+void write_output(int doLoadBalance, FILE *infptr, FILE *outfptr)
 {
    char *s, *t;
    char line[MAXLINE];
@@ -1150,7 +1160,7 @@ void write_output(FILE *infptr, FILE *outfptr)
 	       if (VerboseFlag) printf("\nOutput node %s", t);
 
 	       nl = (struct Nodelist *)HashLookup(t, Nodehash);
-	       if (nl != NULL) {
+	       if (doLoadBalance && (nl != NULL)) {
 		  if ((nl->ignore == FALSE) && (nl->ratio > 1.0)) {
 		     if (VerboseFlag)
 			printf("\nGate should be %g times stronger", nl->ratio);
@@ -1169,10 +1179,12 @@ void write_output(FILE *infptr, FILE *outfptr)
 		     glbest = best_size(gl, nl->total_load + MaxOutputCap
 					+ WireCap, NULL);
 		     if (glbest && (glbest != gl)) {
-			needscorrecting = TRUE;
-			if (VerboseFlag)
-			   printf("\nOutput Gate changed from %s to %s\n",
+		        if (doLoadBalance) {
+			   needscorrecting = TRUE;
+			   if (VerboseFlag)
+			      printf("\nOutput Gate changed from %s to %s\n",
 					gl->gatename, glbest->gatename);
+		        }
 		     }
 		  }
 		  // Don't attempt to correct gates for which we cannot find a suffix
@@ -1399,6 +1411,8 @@ void helpmessage(void)
    printf("Typically, it will be iterated until convergence (return value 0).\n\n");
     
    printf("valid switches are:\n");
+   printf("\t-f\t\tRun gate fanout buffering only (no load balancing)\n");
+   printf("\t-L\t\tRun gate load balance optimization only (no fanout buffering)\n");
    printf("\t-g\t\tDebug mode: parse and print the gate.cfg table\n");
    printf("\t-n\t\tDebug mode: parse and print the node list\n");
    printf("\t-v\t\tDebug mode: verbose output\n");
@@ -1407,11 +1421,13 @@ void helpmessage(void)
    printf("\t-F value\tSet the maximum fanout per node (default %g)\n",
 		MaxFanout);
    printf("\t-b buffername\tSet the name of a buffer gate\n");
+   printf("\t-i pin_name\tSet the name of the buffer gate input pin (used with -b)\n");
+   printf("\t-o pin_name\tSet the name of the buffer gate output pin (used with -b)\n");
    printf("\t-s separator\tGate names have \"separator\" before drive strength\n");
-   printf("\t-o value\tSet the maximum output capacitance (fF).  (default %g)\n",
+   printf("\t-c value\tSet the maximum output capacitance (fF).  (default %g)\n",
 		MaxOutputCap);
    printf("\t-p filepath\tSpecify an alternate path and filename for gate.cfg\n");
-   printf("\t-f filepath\tSpecify a path and filename for list of nets to ignore\n");
+   printf("\t-I filepath\tSpecify a path and filename for list of nets to ignore\n");
    printf("\t-h\t\tprint this help message\n\n");
 
    printf("This will not work at all for tristate gates.\n");

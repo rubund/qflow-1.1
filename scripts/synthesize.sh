@@ -434,59 +434,69 @@ cat ${final_blif} | sed \
 cd ${synthdir}
 
 #---------------------------------------------------------------------
+# If "nofanout" is set, then don't run blifFanout.
+#---------------------------------------------------------------------
+
+if ($?nofanout) then
+   set nchanged=0
+else
+
+#---------------------------------------------------------------------
 # Make a copy of the original blif file, as this will be overwritten
 # by the fanout handling process
 #---------------------------------------------------------------------
 
-cp ${rootname}.blif ${rootname}_bak.blif
+   cp ${rootname}.blif ${rootname}_bak.blif
 
 #---------------------------------------------------------------------
 # Check all gates for fanout load, and adjust gate strengths as
 # necessary.  Iterate this step until all gates satisfy drive
 # requirements.
 #
-# Use option "-o value" to force a value for the (maximum expected)
-# output load, in fF.  Currently, there is no way to do this from the
-# command line (default is 18fF). . .
+# Use option "-c value" in fanout_options to force a value for the
+# (maximum expected) output load, in fF (default is 30fF)
+# Use option "-l value" in fanout_options to force a value for the
+# maximum latency, in ps (default is 1000ps)
 #---------------------------------------------------------------------
 
-rm -f ${rootname}_nofanout
-touch ${rootname}_nofanout
-if ($?gndnet) then
-   echo $gndnet >> ${rootname}_nofanout
-endif
-if ($?vddnet) then
-   echo $vddnet >> ${rootname}_nofanout
-endif
+   rm -f ${rootname}_nofanout
+   touch ${rootname}_nofanout
+   if ($?gndnet) then
+      echo $gndnet >> ${rootname}_nofanout
+   endif
+   if ($?vddnet) then
+      echo $vddnet >> ${rootname}_nofanout
+   endif
 
-if (! $?fanout_options) then
-   set fanout_options="-l 75 -c 25"
-endif
+   if (! $?fanout_options) then
+      set fanout_options=""
+   endif
 
-echo "Running blifFanout (iterative)" |& tee -a ${synthlog}
-echo "" >> ${synthlog}
-if (-f ${libertypath} && -f ${bindir}/blifFanout ) then
-   set nchanged=1000
-   while ($nchanged > 0)
-      mv ${rootname}.blif tmp.blif
-      if ("x${separator}" == "x") then
-	 set sepoption=""
-      else
-	 set sepoption="-s ${separator}"
-      endif
-      if ("x${bufcell}" == "x") then
-	 set bufoption=""
-      else
-	 set bufoption="-b ${bufcell} -i ${bufpin_in} -o ${bufpin_out}"
-      endif
-      ${bindir}/blifFanout ${fanout_options} -f ${rootname}_nofanout \
+   echo "Running blifFanout (iterative)" |& tee -a ${synthlog}
+   echo "" >> ${synthlog}
+   if (-f ${libertypath} && -f ${bindir}/blifFanout ) then
+      set nchanged=1000
+      while ($nchanged > 0)
+         mv ${rootname}.blif tmp.blif
+         if ("x${separator}" == "x") then
+	    set sepoption=""
+         else
+	    set sepoption="-s ${separator}"
+         endif
+         if ("x${bufcell}" == "x") then
+	    set bufoption=""
+         else
+	    set bufoption="-b ${bufcell} -i ${bufpin_in} -o ${bufpin_out}"
+         endif
+         ${bindir}/blifFanout ${fanout_options} -I ${rootname}_nofanout \
 		-p ${libertypath} ${sepoption} ${bufoption} \
 		tmp.blif ${rootname}.blif >>& ${synthlog}
-      set nchanged=$status
-      echo "gates resized: $nchanged" |& tee -a ${synthlog}
-   end
-else
-   set nchanged=0
+         set nchanged=$status
+         echo "gates resized: $nchanged" |& tee -a ${synthlog}
+      end
+   else
+      set nchanged=0
+   endif
 endif
 
 #---------------------------------------------------------------------

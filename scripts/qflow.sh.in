@@ -284,6 +284,7 @@ if ( ! -f ${userfile} ) then
    echo "# set yosys_debug = " >> ${userfile}
    echo "# set abc_script = " >> ${userfile}
    echo "# set nobuffers = " >> ${userfile}
+   echo "# set nofanout = " >> ${userfile}
    echo "# set fanout_options = " >> ${userfile}
    echo "" >> ${userfile}
    echo "# Placement command options:" >> ${userfile}
