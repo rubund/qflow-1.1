@@ -225,7 +225,6 @@ set fillwidths [lsort -decreasing -index 1 $fillwidths]
 set fillinfo [lindex $fillwidths 0]
 set fillmacro [lindex $fillinfo 0]
 set fillvalue [lindex $fillinfo 1]
-set halfvalue [expr {$fillvalue / 2}]
 
 #------------------------------------------------------------------------
 # Now read the contents of the cinfo file so that we have a list of the
@@ -315,7 +314,6 @@ if {$scale > 0.0} {
 	 set fillvalue [lindex $fillinfo 1]
 	 set numfills [expr {int($filltotal / $fillvalue + 0.5)}]
 	 set numcells [llength $instlist]
-	 set halfvalue [expr {$fillvalue / 2}]
 	 if {$numfills > $numcells} {break}
       }
    }
@@ -364,19 +362,20 @@ while {[gets $fcel line] >= 0} {
 	 set fillnum [lindex $filllist $instidx]
 	 if {$fillnum > 1} {
 	    puts $fanno "cell $instnum ${fillmacro}.${fillvalue}X${fillnum}.${instname}"
-	    set adjust [expr {$fillnum * $halfvalue}]
+	    set adjust [expr {$fillnum * $fillvalue}]
 	 } elseif {$fillnum == 0} {
 	    puts $fanno "cell $instnum ${instname}"
 	    set adjust 0
 	 } else {
 	    puts $fanno "cell $instnum ${fillmacro}.${fillvalue}.${instname}"
-	    set adjust $halfvalue
+	    set adjust $fillvalue
 	 }
          gets $fcel line
          if [regexp {[ \t]*left[ \t]+([^ \t]+)[ \t]+right[ \t]+([^ \t]+)[ \t]+(.*)} $line \
 			lmatch left right rest] {
-	    set fleft [expr {$left - $adjust}]
-	    set fright [expr {$right + $adjust}]
+	    set totalwidth [expr {-$left + $right + $adjust}]
+	    set fleft [expr {-($totalwidth / 2)}]
+	    set fright [expr {$fleft + $totalwidth}]
 	    puts $fanno "left $fleft right $fright $rest"
          } else {
             puts $fanno $line	;# failed to parse, so ignore it
