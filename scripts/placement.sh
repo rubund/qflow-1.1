@@ -103,6 +103,9 @@ else
    set spicepath=${techdir}/${spicefile}
 endif
 
+# logfile should exist, but just in case. . .
+touch ${synthlog}
+
 #----------------------------------------------------------
 # Done with initialization
 #----------------------------------------------------------

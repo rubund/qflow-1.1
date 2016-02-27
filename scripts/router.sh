@@ -58,6 +58,9 @@ if (! ${?qrouter_options} ) then
    set qrouter_options = ${options}
 endif
 
+# logfile should exist, but just in case. . .
+touch ${synthlog}
+
 # Check if last line of log file says "error condition"
 set errcond = `tail -1 ${synthlog} | grep "error condition" | wc -l`
 if ( ${errcond} == 1 ) then
