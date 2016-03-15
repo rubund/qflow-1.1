@@ -166,6 +166,7 @@ set minor = `echo $versionstring | cut -d. -f2`
 
 # Sigh. . .  versioning doesn't follow any fixed standard
 set minortest = `echo $minor | cut -d+ -f2`
+set minor = `echo $minor | cut -d+ -f1`
 if ( ${minortest} == "" ) then
 
    set revisionstring = `echo $versionstring | cut -d. -f3`
@@ -176,7 +177,6 @@ if ( ${minortest} == "" ) then
 
 else
    set revision = 0
-   set minor = `echo $minor | cut -d+ -f1`
    set subrevision = ${minortest}
 
 endif
