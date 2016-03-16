@@ -128,6 +128,10 @@ while ($#argv > 0)
 	 set dodisplay=1
 	 shift
 	 breaksw
+      case buffer:
+	 echo "Note:  option buffer is deprecated."
+	 shift
+	 breaksw
       default:
 	 if ($vsource != "") then
 	    break
