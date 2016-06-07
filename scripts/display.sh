@@ -99,10 +99,12 @@ cd ${layoutdir}
 # and other parameters.
 #---------------------------------------------------
 
+set lefcmd="lef read ${lefpath}"
+
 if ($techleffile == "") then
-   set lefcmd="lef read ${lefpath}"
+   set techlefcmd="lef read ${techlefpath}"
 else
-   set lefcmd="lef read ${techlefpath}\nlef read ${lefpath}"
+   set techlefcmd=""
 endif
 
 # Timestamp handling:  If the .mag file is more recent
@@ -130,6 +132,7 @@ drc off
 box 0 0 0 0
 snap int
 ${lefcmd}
+${techlefcmd}
 def read ${rootname}
 select top cell
 select area labels
