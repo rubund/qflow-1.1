@@ -101,7 +101,7 @@ cd ${layoutdir}
 
 set lefcmd="lef read ${lefpath}"
 
-if ($techleffile == "") then
+if ($techleffile != "") then
    set techlefcmd="lef read ${techlefpath}"
 else
    set techlefcmd=""
