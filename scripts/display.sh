@@ -122,6 +122,8 @@ if ( -f ${rootname}.def && -f ${rootname}.mag) then
    endif
 endif
 
+set dispfile="${layoutdir}/load_${rootname}.tcl"
+
 # The following script reads in the DEF file and modifies labels so
 # that they are rotated outward from the cell, since DEF files don't
 # indicate label geometry.
@@ -161,6 +163,18 @@ save ${sourcename}
 quit -noprompt
 EOF
 
+# Create a script file for loading and displaying the
+# layout.
+
+if ( ! -f ${dispfile} ) then
+cat > ${dispfile} << EOF
+lef read ${lefpath}
+load ${sourcename}
+select top cell
+expand
+EOF
+endif
+
 endif
 
 # Run magic and query what graphics device types are
@@ -176,13 +190,32 @@ set magicx11=`cat .magic_displays | grep X11 | wc -l`
 
 rm -f .magic_displays
 
+# Get the version of magic
+
+${bindir}/magic -noconsole --version <<EOF >& .magic_version
+exit
+EOF
+
+set magic_major=`cat .magic_version | cut -d. -f1`
+set magic_minor=`cat .magic_version | cut -d. -f2`
+set magic_rev=`cat .magic_version | cut -d. -f3`
+
+rm -f .magic_version
+
+# For magic versions less than 8.1.102, only the .mag file can
+# be loaded from the command line.  Otherwise, run the script.
+
+if ( ${magic_major} < 8 || ( ${magic_major} == 8 && ${magic_minor} < 1 ) || ( ${magic_major} == 8 && ${magic_minor} == 1 && ${magic_rev} < 102 ) ) then
+   set dispfile = ${sourcename}
+endif
+
 # Run magic again, this time interactively.  The script
 # exits when the user exits magic.
 
 if ( ${magicogl} >= 1 ) then
-   ${bindir}/magic -d OGL ${rootname}
+   ${bindir}/magic -d OGL ${dispfile}
 else if ( ${magicx11} >= 1) then
-   ${bindir}/magic -d X11 ${rootname}
+   ${bindir}/magic -d X11 ${dispfile}
 else
    echo "Magic does not support OpenGL or X11 graphics on this host."
 endif
