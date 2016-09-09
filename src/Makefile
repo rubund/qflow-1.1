@@ -3,7 +3,7 @@
 #
 
 # Main compiler arguments
-CFLAGS = -g
+CFLAGS = -g -O2
 DEFS = -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DSTDC_HEADERS=1 -DHAVE_SETENV=1 -DHAVE_PUTENV=1 -DTCLSH_PATH=\"/bin/tclsh\" -DQFLOW_MAGIC_PATH=\"/usr/local/bin/magic\" -DQFLOW_QROUTER_PATH=\"/usr/local/bin/qrouter\" -DQFLOW_GRAYWOLF_PATH=\"/usr/local/bin/graywolf\" -DQFLOW_YOSYS_PATH=\"/usr/local/bin/yosys\"
 LIBS = 
 LDFLAGS = 
@@ -21,7 +21,7 @@ HAVE_ABC = @HAVE_ABC@
 HAVE_YOSYS = 1
 HAVE_ODIN_II = @HAVE_ODIN_II@
 
-OBJECTS = blif2BSpice.o blif2Verilog.o blifFanout.o vesta.o
+OBJECTS = blif2BSpice.o blif2Verilog.o blifFanout.o vesta.o spice2delay.o
 HASHLIB = hash.o
 LIBERTYLIB = readliberty.o
 SOURCES := $(patsubst %.o,%.c,$(OBJECTS))
@@ -43,6 +43,9 @@ blif2Verilog$(EXEEXT): blif2Verilog.o
 
 vesta$(EXEEXT): vesta.o $(HASHLIB)
 	$(CC) $(LDFLAGS) vesta.o $(HASHLIB) -o $@ $(LIBS)
+
+spice2delay$(EXEEXT): spice2delay.o $(HASHLIB) $(LIBERTYLIB)
+	$(CC) $(LDFLAGS) spice2delay.o $(HASHLIB) $(LIBERTYLIB) -o $@ $(LIBS)
 
 install: $(TARGETS)
 	@echo "Installing verilog and BDNET file format handlers"

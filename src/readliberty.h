@@ -80,5 +80,8 @@ extern int get_pintype(Cell *curcell, char *pinname);
 extern int get_pincap(Cell *curcell, char *pinname, double *retcap);
 extern int get_values(Cell *curcell, double *retdelay, double *retcap);
 extern Cell *read_liberty(char *libfile, char *pattern);
+extern Cell *get_cell_by_name(Cell *cell, char *name);
+extern Pin *get_pin_by_name(Cell *curcell, char *pinname);
+extern void delete_cell_list(Cell *cell);
 
 /*--------------------------------------------------------------*/

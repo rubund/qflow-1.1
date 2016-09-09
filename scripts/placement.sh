@@ -196,6 +196,19 @@ else
    echo "continuing without pin placement hints" |& tee -a ${synthlog}
 endif
 
+# Add fill cells for the power bus stripes
+
+echo "Running powerbus to add spacers for power bus stripes" |& tee -a ${synthlog}
+${scriptdir}/powerbus.tcl ${rootname} ${lefpath} ${fillcell} |& tee -a ${synthlog}
+
+# powerbus.tcl creates a .acel file if successful.  If not, then
+# leave the .cel file in place
+
+if ( -f ${rootname}.acel && ( -M ${rootname}.acel > -M ${rootname}.cel )) then
+   cp ${rootname}.cel ${rootname}.cel.bak
+   mv ${rootname}.acel ${rootname}.cel
+endif
+
 #-----------------------------------------------
 # 1) Run GrayWolf
 #-----------------------------------------------

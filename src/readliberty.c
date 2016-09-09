@@ -1233,3 +1233,75 @@ get_pintype(Cell *curcell, char *pinname)
 }
 
 /*--------------------------------------------------------------------*/
+
+Cell *
+get_cell_by_name(Cell *cell, char *name)
+{
+    Cell *currcell, *newcell;
+
+    for (currcell = cell; currcell; currcell = currcell->next) {
+        if (!strcasecmp(currcell->name, name)) {
+            return currcell;
+        }
+    }
+    fprintf(stderr, "Did not find standard cell \"%s\" in list of cells\n", name);
+    return NULL;
+}
+
+Pin *
+get_pin_by_name(Cell *curcell, char *pinname)
+{
+    Pin *curpin;
+
+    for (curpin = curcell->pins; curpin; curpin = curpin->next) {
+        if (!strcmp(curpin->name, pinname)) {
+            printf("found pin %s\n", pinname);
+            return curpin;
+        }
+    }
+    printf("did not find pin %s\n", pinname);
+    return NULL;
+}
+
+void delete_Cell(Cell *cell) {
+    free(cell->name);
+    free(cell->function);
+    free(cell->times);
+    free(cell->caps);
+    free(cell->values);
+
+    Pin *curpin = cell->pins;
+    Pin *tmppin;
+
+    while (curpin != NULL) {
+        tmppin = curpin->next;
+        free(curpin->name);
+        free(curpin);
+        curpin = tmppin;
+    }
+
+    LUTable *curlut = cell->reftable;
+    LUTable *tmplut;
+
+    while (curlut != NULL) {
+        tmplut = curlut->next;
+    /*free(curlut->name);*/
+        /*free(curlut);*/
+        curlut = tmplut;
+    }
+    free(cell);
+}
+
+void
+delete_cell_list(Cell *cell)
+{
+    Cell *currcell = cell;
+    Cell *tmpcell;
+
+    while (currcell != NULL) {
+        tmpcell = currcell->next;
+        delete_Cell(currcell);
+        currcell = tmpcell;
+    }
+
+}

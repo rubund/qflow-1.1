@@ -260,7 +260,7 @@ struct hashlist *HashIntPtrInstall(char *name, int value, void *ptr,
 /* destroy a hash table, freeing associated memory 			*/
 /*----------------------------------------------------------------------*/
 
-void *HashKill(struct hashlist **hashtab)
+void HashKill(struct hashlist **hashtab)
 {
   struct hashlist *np, *p;
   int i;

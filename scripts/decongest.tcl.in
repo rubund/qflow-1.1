@@ -45,6 +45,7 @@
 # Written by Tim Edwards, November 23, 2013
 #------------------------------------------------------------
 # LEF dimensions are microns unless otherwise stated.
+#------------------------------------------------------------
 
 if {$argc != 3 && $argc != 4 && $argc != 5} {
    puts stderr "Bad argument list"
@@ -221,7 +222,7 @@ set fillwidths {}
 foreach macro $fillcells {
    lappend fillwidths [list $macro [subst \$${macro}(w)]]
 }
-set fillwidths [lsort -decreasing -index 1 $fillwidths]
+set fillwidths [lsort -decreasing -index 1 -real $fillwidths]
 set fillinfo [lindex $fillwidths 0]
 set fillmacro [lindex $fillinfo 0]
 set fillvalue [lindex $fillinfo 1]
@@ -356,7 +357,10 @@ if {$scale > 0.0} {
 #------------------------------------------------------------------------
 
 while {[gets $fcel line] >= 0} {
-   if [regexp {[ \t]*cell[ \t]*([0-9]+)[ \t]+([^ \t]+)} $line lmatch instnum instname] {
+   if [regexp {[ \t]*pad[\t]*[0-9]+} $line lmatch] {
+      puts $fanno $line	  ;# append the pad line and continue
+   } elseif [regexp {[ \t]*cell[ \t]*([0-9]+)[ \t]+([^ \t]+)} \
+		$line lmatch instnum instname] {
       set instidx [lsearch $instlist $instname]
       if {$instidx >= 0} {
 	 set fillnum [lindex $filllist $instidx]
@@ -371,8 +375,8 @@ while {[gets $fcel line] >= 0} {
 	    set adjust $fillvalue
 	 }
          gets $fcel line
-         if [regexp {[ \t]*left[ \t]+([^ \t]+)[ \t]+right[ \t]+([^ \t]+)[ \t]+(.*)} $line \
-			lmatch left right rest] {
+         if [regexp {[ \t]*left[ \t]+([^ \t]+)[ \t]+right[ \t]+([^ \t]+)[ \t]+(.*)} \
+			$line lmatch left right rest] {
 	    set totalwidth [expr {-$left + $right + $adjust}]
 	    set fleft [expr {-($totalwidth / 2)}]
 	    set fright [expr {$fleft + $totalwidth}]
