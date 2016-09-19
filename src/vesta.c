@@ -3300,9 +3300,10 @@ main(int objc, char *argv[])
     /* To do:  Add wire models or computed wire delays  */
     /*--------------------------------------------------*/
 
-    delayRead(fdly, Nethash);
-
-    if (fdly != NULL) fclose(fdly);
+    if (fdly != NULL) {
+        delayRead(fdly, Nethash);
+        fclose(fdly);
+    }
 
     /* Hash table no longer needed */
     HashKill(Nethash);
