@@ -1416,16 +1416,16 @@ void helpmessage(void)
    printf("\t-g\t\tDebug mode: parse and print the gate.cfg table\n");
    printf("\t-n\t\tDebug mode: parse and print the node list\n");
    printf("\t-v\t\tDebug mode: verbose output\n");
-   printf("\t-l latency\tSet the maximum variable latency (ps).  (default %g)\n",
-		MaxLatency);
-   printf("\t-F value\tSet the maximum fanout per node (default %g)\n",
+   printf("\t-l latency\tSet the maximum variable latency (ps).  "
+		"(value %g, default 1000.0)\n", MaxLatency);
+   printf("\t-F value\tSet the maximum fanout per node (value %d, default 16)\n",
 		MaxFanout);
    printf("\t-b buffername\tSet the name of a buffer gate\n");
    printf("\t-i pin_name\tSet the name of the buffer gate input pin (used with -b)\n");
    printf("\t-o pin_name\tSet the name of the buffer gate output pin (used with -b)\n");
    printf("\t-s separator\tGate names have \"separator\" before drive strength\n");
-   printf("\t-c value\tSet the maximum output capacitance (fF).  (default %g)\n",
-		MaxOutputCap);
+   printf("\t-c value\tSet the maximum output capacitance (fF).  "
+		"(value %g, default 30.0)\n", MaxOutputCap);
    printf("\t-p filepath\tSpecify an alternate path and filename for gate.cfg\n");
    printf("\t-I filepath\tSpecify a path and filename for list of nets to ignore\n");
    printf("\t-h\t\tprint this help message\n\n");
