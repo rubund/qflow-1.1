@@ -241,7 +241,7 @@ if ( -f $varfile ) then
    endif
 endif
 
-echo "#\!/bin/tcsh" > ${varfile}
+echo "#\!/bin/tcsh -f" > ${varfile}
 echo "#-------------------------------------------" >> ${varfile}
 echo "# qflow variables for project ${project}" >> ${varfile}
 echo "#-------------------------------------------" >> ${varfile}
@@ -262,7 +262,7 @@ echo "endif" >> ${varfile}
 echo "#-------------------------------------------" >> ${varfile}
 echo "" >> ${varfile}
 
-echo "#\!/bin/tcsh" > ${execfile}
+echo "#\!/bin/tcsh -f" > ${execfile}
 echo "#-------------------------------------------" >> ${execfile}
 echo "# qflow exec script for project ${project}" >> ${execfile}
 echo "#-------------------------------------------" >> ${execfile}
@@ -276,7 +276,7 @@ echo "" >> ${execfile}
 #-----------------------------------------------------
 
 if ( ! -f ${userfile} ) then
-   echo "#\!/bin/tcsh" > ${userfile}
+   echo "#\!/bin/tcsh -f" > ${userfile}
    echo "#------------------------------------------------------------" >> ${userfile}
    echo "# project variables for project ${project}" >> ${userfile}
    echo "#------------------------------------------------------------" >> ${userfile}
