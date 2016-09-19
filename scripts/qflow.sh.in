@@ -256,9 +256,6 @@ echo "set techname=${techname}" >> ${varfile}
 echo "set scriptdir=${scriptdir}" >> ${varfile}
 echo "set bindir=${bindir}" >> ${varfile}
 echo "set synthlog=${projectpath}/synth.log" >> ${varfile}
-echo "if (-f ${projectpath}/project_vars.sh) then" >> ${varfile}
-echo "    source ${projectpath}/project_vars.sh" >> ${varfile}
-echo "endif" >> ${varfile}
 echo "#-------------------------------------------" >> ${varfile}
 echo "" >> ${varfile}
 

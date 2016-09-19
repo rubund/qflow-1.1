@@ -49,6 +49,9 @@ endif
 
 source ${projectpath}/qflow_vars.sh
 cd ${projectpath}
+if (-f project_vars.sh) then
+   source project_vars.sh
+endif
 
 #----------------------------------------------------------
 # Cleanup verilog parsing files.  Leave the original source!

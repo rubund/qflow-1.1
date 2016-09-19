@@ -53,6 +53,9 @@ endif
 source ${projectpath}/qflow_vars.sh
 source ${techdir}/${techname}.sh
 cd ${projectpath}
+if (-f project_vars.sh) then
+   source project_vars.sh
+endif
 
 # Reset the logfile
 rm -f ${synthlog} >& /dev/null

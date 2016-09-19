@@ -50,6 +50,9 @@ endif
 source ${projectpath}/qflow_vars.sh
 source ${techdir}/${techname}.sh
 cd ${projectpath}
+if (-f project_vars.sh) then
+   source project_vars.sh
+endif
 
 # Prepend techdir to magicrc unless magicrc begins with "/"
 set abspath=`echo ${magicrc} | cut -c1`

@@ -53,6 +53,9 @@ endif
 source ${projectpath}/qflow_vars.sh
 source ${techdir}/${techname}.sh
 cd ${projectpath}
+if (-f project_vars.sh) then
+   source project_vars.sh
+endif
 
 if (! ${?qrouter_options} ) then
    set qrouter_options = ${options}

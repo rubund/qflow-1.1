@@ -45,6 +45,9 @@ endif
 source ${projectpath}/qflow_vars.sh
 source ${techdir}/${techname}.sh
 cd ${projectpath}
+if (-f project_vars.sh) then
+   source project_vars.sh
+endif
 
 if (! ${?vesta_options} ) then
    set vesta_options = ${options}
