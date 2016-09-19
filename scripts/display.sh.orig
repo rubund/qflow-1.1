@@ -180,32 +180,18 @@ endif
 
 endif
 
-# don't die ungracefully if no X display:
-if ( ! $?DISPLAY ) then
-  echo "No DISPLAY var, not running graphical magic."
-  exit
-endif
-
 # Run magic and query what graphics device types are
 # available.  Use OpenGL if available, fall back on
 # X11, or else exit with a message
 
-# support option to hardwire X11, don't want OGL thru x2go, etc.: too slow or corrupts the desktop session somehow.
-# Even JUST "magic -noconsole -d" to QUERY the displays, may corrupt an x2go xfce desktop session somehow.
-
-set magicogl=0
-set magicx11=0
-
-if ( ! $?magic_display ) then
-  ${bindir}/magic -noconsole -d <<EOF >& .magic_displays
+${bindir}/magic -noconsole -d <<EOF >& .magic_displays
 exit
 EOF
 
-  set magicogl=`cat .magic_displays | grep OGL | wc -l`
-  set magicx11=`cat .magic_displays | grep X11 | wc -l`
+set magicogl=`cat .magic_displays | grep OGL | wc -l`
+set magicx11=`cat .magic_displays | grep X11 | wc -l`
 
-  rm -f .magic_displays
-endif
+rm -f .magic_displays
 
 # Get the version of magic
 
@@ -229,9 +215,7 @@ endif
 # Run magic again, this time interactively.  The script
 # exits when the user exits magic.
 
-if ( $?magic_display ) then
-   ${bindir}/magic -d ${magic_display} ${dispfile}
-else if ( ${magicogl} >= 1 ) then
+if ( ${magicogl} >= 1 ) then
    ${bindir}/magic -d OGL ${dispfile}
 else if ( ${magicx11} >= 1) then
    ${bindir}/magic -d X11 ${dispfile}
