@@ -129,8 +129,8 @@ cd ${projectpath}
 
 echo "Running blif2cel.tcl" |& tee -a ${synthlog}
 
-${scriptdir}/blif2cel.tcl ${synthdir}/${rootname}.blif \
-	${lefpath} ${layoutdir}/${rootname}.cel >>& ${synthlog}
+${scriptdir}/blif2cel.tcl --blif ${synthdir}/${rootname}.blif \
+	--lef ${lefpath} --cel ${layoutdir}/${rootname}.cel >>& ${synthlog}
 
 #---------------------------------------------------------------------
 # Spot check:  Did blif2cel produce file ${rootname}.cel?
@@ -200,9 +200,10 @@ else
 endif
 
 # Add fill cells for the power bus stripes
+# (this is work in progress, commented out for now)
 
-echo "Running powerbus to add spacers for power bus stripes" |& tee -a ${synthlog}
-${scriptdir}/powerbus.tcl ${rootname} ${lefpath} ${fillcell} |& tee -a ${synthlog}
+# echo "Running powerbus to add spacers for power bus stripes" |& tee -a ${synthlog}
+# ${scriptdir}/powerbus.tcl ${rootname} ${lefpath} ${fillcell} |& tee -a ${synthlog}
 
 # powerbus.tcl creates a .acel file if successful.  If not, then
 # leave the .cel file in place
@@ -350,7 +351,7 @@ if ($makedef == 1) then
          echo "read_lef ${techlefpath}" >> ${rootname}.cfg
       endif
       echo "read_lef ${lefpath}" >> ${rootname}.cfg
-      echo "layers ${route_layers}" >> ${rootname}.cfg
+      echo "catch layers ${route_layers}" >> ${rootname}.cfg
       if ( ${?via_pattern} ) then
          echo "" >> ${rootname}.cfg
          echo "via pattern ${via_pattern}" >> ${rootname}.cfg

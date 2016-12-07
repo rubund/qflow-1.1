@@ -571,16 +571,16 @@ endif
 #---------------------------------------------------------------------
 # Spot check:  Did blif2cel produce file ${rootname}.cel?
 #---------------------------------------------------------------------
-
-if ( !( -f ${layoutdir}/${rootname}.cel || ( -M ${layoutdir}/${rootname}.cel \
-	< -M ${rootname}.blif ))) then
-   echo "blif2cel failure:  No file ${rootname}.cel." |& tee -a ${synthlog}
-   echo "blif2cel was called with arguments: ${synthdir}/${rootname}.blif "
-   echo "      ${lefpath} ${layoutdir}/${rootname}.cel"
-   echo "Premature exit." |& tee -a ${synthlog}
-   echo "Synthesis flow stopped due to error condition." >> ${synthlog}
-   exit 1
-endif
+# 
+# if ( !( -f ${layoutdir}/${rootname}.cel || ( -M ${layoutdir}/${rootname}.cel \
+# 	< -M ${rootname}.blif ))) then
+#    echo "blif2cel failure:  No file ${rootname}.cel." |& tee -a ${synthlog}
+#    echo "blif2cel was called with arguments: ${synthdir}/${rootname}.blif "
+#    echo "      ${lefpath} ${layoutdir}/${rootname}.cel"
+#    echo "Premature exit." |& tee -a ${synthlog}
+#    echo "Synthesis flow stopped due to error condition." >> ${synthlog}
+#    exit 1
+# endif
 
 #---------------------------------------------------------------------
 
