@@ -301,7 +301,7 @@ if ( ! -f ${userfile} ) then
    echo ""
    echo "" >> ${userfile}
    echo "# Minimum operating period of the clock (in ps)" >> ${userfile}
-   echo "# set vesta_options = --period 1E5" >> ${userfile}
+   echo '# set vesta_options = "--period 1E5"' >> ${userfile}
    echo "" >> ${userfile}
    echo "#------------------------------------------------------------" >> ${userfile}
    echo "" >> ${userfile}
