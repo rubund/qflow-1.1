@@ -148,12 +148,15 @@ advancetoken(FILE *flib, char delimiter)
     while (isspace(*lineptr)) lineptr++;
     linepos = lineptr;
 
-    // Final:  Remove trailing whitespace
+    // Final:  Remove any quotes, and trailing whitespace
+    tptr = token;
+    if (*tptr == '\"') token++;
     tptr = token + strlen(token) - 1;
     while (isspace(*tptr)) {
 	*tptr = '\0';
 	tptr--;
     }
+    if (*tptr == '\"') *tptr = '\0';
     return token;
 }
 
