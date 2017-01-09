@@ -150,7 +150,7 @@ advancetoken(FILE *flib, char delimiter)
 
     // Final:  Remove any quotes, and trailing whitespace
     tptr = token;
-    if (*tptr == '\"') token++;
+    if (*tptr == '\"') memmove(token, token + 1, strlen(token + 1) + 1);
     tptr = token + strlen(token) - 1;
     while (isspace(*tptr)) {
 	*tptr = '\0';
