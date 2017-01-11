@@ -571,18 +571,20 @@ int main (int argc, char *argv[])
    if (VerboseFlag) printf("\n");
    fflush(stdout);
 
-   fprintf(stderr, "Top internal fanout is %d (load %g) from node %s,\n"
+   if (nlmax) {
+      fprintf(stderr, "Top internal fanout is %d (load %g) from node %s,\n"
 		"driven by %s with strength %g (fF driven at latency %g)\n",
 	 	Topfanout, Topload, nlmax->nodename,
 		nlmax->outputgate->gatename,
 		nlmax->outputgatestrength,
 		MaxLatency);
 
-   fprintf(stderr, "Top fanout load-to-strength ratio is %g (latency = %g ps)\n",
+      fprintf(stderr, "Top fanout load-to-strength ratio is %g (latency = %g ps)\n",
 		Topratio, MaxLatency * Topratio);
 
-   fprintf(stderr, "Top input node fanout is %d (load %g) from node %s.\n",
+      fprintf(stderr, "Top input node fanout is %d (load %g) from node %s.\n",
 	 	Inputfanout, Inputload, nlimax->nodename);
+   }
 
    Buffer_count = 0;
    if (doFanout && ((Topfanout > MaxFanout) || (Inputfanout > MaxFanout))) {

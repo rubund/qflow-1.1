@@ -156,8 +156,8 @@ advancetoken(FILE *flib, char delimiter)
     }
     // Final:  Remove any surrounding quotes
     if ((*token == '\"') && (*tptr == '\"') && (token != tptr)) {
-	memmove(token, token + 1, strlen(token + 1) + 1);
 	*tptr = '\0';
+	memmove(token, token + 1, strlen(token));
     }
     return token;
 }
