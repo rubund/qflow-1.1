@@ -34,7 +34,7 @@ advancetoken(FILE *flib, char delimiter)
     char *lineptr = linepos;
     char *lptr, *tptr;
     char *result;
-    int commentblock, concat, nest;
+    int commentblock, concat, nest, quoted;
 
     commentblock = 0;
     concat = 0;
@@ -148,15 +148,17 @@ advancetoken(FILE *flib, char delimiter)
     while (isspace(*lineptr)) lineptr++;
     linepos = lineptr;
 
-    // Final:  Remove any quotes, and trailing whitespace
-    tptr = token;
-    if (*tptr == '\"') memmove(token, token + 1, strlen(token + 1) + 1);
+    // Remove any trailing whitespace
     tptr = token + strlen(token) - 1;
     while (isspace(*tptr)) {
 	*tptr = '\0';
 	tptr--;
     }
-    if (*tptr == '\"') *tptr = '\0';
+    // Final:  Remove any surrounding quotes
+    if ((*token == '\"') && (*tptr == '\"') && (token != tptr)) {
+	memmove(token, token + 1, strlen(token + 1) + 1);
+	*tptr = '\0';
+    }
     return token;
 }
 
