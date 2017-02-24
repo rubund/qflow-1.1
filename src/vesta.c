@@ -3239,6 +3239,8 @@ main(int objc, char *argv[])
             exit (1);
         }
     }
+    else
+	fdly = NULL;
 
     fflush(stdout);
     fprintf(stdout, "Verilog netlist read:  Processed %d lines.\n", fileCurrentLine);
