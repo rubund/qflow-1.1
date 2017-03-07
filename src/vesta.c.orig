@@ -17,7 +17,6 @@
 /*              -l <value>      Output load, in fF              */
 /*              -v <level>      set verbose mode                */
 /*              -V              report version number           */
-/*		-L 		Long format (print paths)	*/
 /*              -e              exhaustive search               */
 /*                                                              */
 /*      Currently the only output this tool generates is a      */
@@ -29,9 +28,6 @@
 /*      delay path, and the 20 paths with the smallest positive */
 /*      slack are output, following a statement indicated the   */
 /*      computed minimum clock period.                          */
-/*--------------------------------------------------------------*/
-/*	(c) 2013-2017 Tim Edwards, Open Circuit Design		*/
-/*	Released under GPL as part of the qflow package		*/
 /*--------------------------------------------------------------*/
 
 /*--------------------------------------------------------------*/
@@ -3052,96 +3048,6 @@ delayRead(FILE *fdly, struct hashlist **Nethash)
 }
 
 /*--------------------------------------------------------------*/
-/* Print a path component                                       */
-/* (code contributed by Karl-Filip Faxen)			*/
-/*--------------------------------------------------------------*/
-
-void
-print_path_component(int netFWidth, int instFWidth, int pinFWidth, int recvFWidth, 
-                     btptr backtrace)
-{
-    // Return immediately if we have niether a driver or a receiver instance
-    if( backtrace->receiver->refnet->driver == NULL && backtrace->receiver->refinst == NULL ) return;
-
-    fprintf(stdout, " %8.1f ps", backtrace->delay);
-    if( backtrace->receiver->refnet != NULL ) {
-        netptr net = backtrace->receiver->refnet;
-        fprintf(stdout, "  %*s: ", netFWidth, net->name);
-        if( net->driver != NULL ) {   // If the driver exists, it has a refinst
-            fprintf(stdout, "%*s/%*s",
-                    instFWidth, net->driver->refinst->name,
-                    -pinFWidth, net->driver->refpin->name);
-        }
-        else {
-            fprintf(stdout, "%*s", instFWidth+pinFWidth+1, "");
-        }
-    }
-    fprintf(stdout, " -> ");
-    if( backtrace->receiver->refinst != NULL ) {
-        fprintf(stdout, "%*s/%s",
-                recvFWidth, backtrace->receiver->refinst->name,
-                              backtrace->receiver->refpin->name);
-    }
-    fprintf(stdout, "\n");
-}
-
-/*--------------------------------------------------------------*/
-/* Print a path                                                 */
-/* (code contributed by Karl-Filip Faxen)			*/
-/*--------------------------------------------------------------*/
-
-void
-print_path(btptr backtrace)
-{
-    int netFWidth = 0;
-    int instFWidth = 0;
-    int pinFWidth = 0;
-    int recvFWidth = 0;
-    btptr curr = backtrace, prev = NULL;
-
-    // The back trace is last entry first, so we do one pointer reversal to
-    // get it in first entry first order, then we reverse it back again.
-
-    while( curr != NULL ) {
-        // Find max length of net name, inst name and pin name
-        netptr net = curr->receiver->refnet;
-        if( net != NULL ) {
-            int namelen = strlen(net->name);
-            if(namelen > netFWidth) netFWidth = namelen;
-            if( net->driver != NULL ) { // If driver exists, it has an instance
-                int instlen = strlen( net->driver->refinst->name );
-                if( instlen > instFWidth ) instFWidth = instlen;
-                int pinlen = strlen( net->driver->refpin->name );
-                if( pinlen > pinFWidth ) pinFWidth = pinlen;
-            }
-        }
-        // Find max length of receiving inst name
-        if( curr->receiver->refinst != NULL ) {
-            int instlen = strlen(curr->receiver->refinst->name);
-            if( instlen > recvFWidth ) recvFWidth = instlen;
-        }
-        // Do the first pointer reversal
-        btptr tmp = curr->next;
-        curr->next = prev;
-        prev = curr;
-        curr = tmp;
-    }
-
-    curr = prev;
-    prev = NULL;
-
-    while( curr != NULL ) {
-        print_path_component( netFWidth, instFWidth, pinFWidth, recvFWidth, curr );
-        // Do the second pointer reversal
-        btptr tmp = curr->next;
-        curr->next = prev;
-        prev = curr;
-        curr = tmp;
-    }
-    fprintf(stdout, "\n");
-}
-
-/*--------------------------------------------------------------*/
 /* Main program                                                 */
 /*--------------------------------------------------------------*/
 
@@ -3156,7 +3062,6 @@ main(int objc, char *argv[])
     double inTrans = 0.0;
     char *delayfile = NULL;
     int ival, firstarg = 1;
-    int longFormat = 0;    // Is the long format option present
 
     // Liberty database
 
@@ -3201,10 +3106,6 @@ main(int objc, char *argv[])
           inTrans = strtod(argv[firstarg + 1], NULL);
           firstarg += 2;
        }
-       else if (!strcmp(argv[firstarg], "-L") || !strcmp(argv[firstarg], "--long")) {
-          longFormat = 1;
-          firstarg++;
-       }
        else if (!strcmp(argv[firstarg], "-v") || !strcmp(argv[firstarg], "--verbose")) {
           sscanf(argv[firstarg + 1], "%d", &ival);
           verbose = (unsigned char)ival;
@@ -3230,7 +3131,6 @@ main(int objc, char *argv[])
         fprintf(stderr, "--delay <delay_file>   or      -d <delay_file>\n");
         fprintf(stderr, "--period <period>      or      -p <period>\n");
         fprintf(stderr, "--load <load>          or      -l <load>\n");
-        fprintf(stderr, "--long                 or      -L\n");
         fprintf(stderr, "--verbose <level>      or      -v <level>\n");
         fprintf(stderr, "--exhaustive           or      -e\n");
         fprintf(stderr, "--version              or      -V\n");
@@ -3238,10 +3138,10 @@ main(int objc, char *argv[])
     }
     else {
         fflush(stdout);
-        fprintf(stdout, "----------------------------------------------\n");
+        fprintf(stdout, "-----------------------------------------\n");
         fprintf(stdout, "Vesta static timing analysis tool\n");
-        fprintf(stdout, "(c) 2013-2017 Tim Edwards, Open Circuit Design\n");
-        fprintf(stdout, "----------------------------------------------\n\n");
+        fprintf(stdout, "(c) 2013 Tim Edwards, Open Circuit Design\n");
+        fprintf(stdout, "-----------------------------------------\n\n");
         fflush(stdout);
     }
 
@@ -3466,7 +3366,6 @@ main(int objc, char *argv[])
             if (slack < 0.0) badtiming = 1;
         }
         fprintf(stdout, "\n");
-        if( longFormat ) print_path(testddata->backtrace);
     }
 
     if (period > 0.0) {
@@ -3549,7 +3448,6 @@ main(int objc, char *argv[])
                         testddata->backtrace->receiver->refnet->name,
                         testddata->delay);
         }
-        if( longFormat ) print_path(testddata->backtrace);
 
         if (testddata->delay < 0.0) badtiming = 1;
     }
@@ -3628,7 +3526,6 @@ main(int objc, char *argv[])
                         testddata->backtrace->receiver->refnet->name,
                         testddata->delay);
         }
-        if( longFormat ) print_path(testddata->backtrace);
     }
 
     fprintf(stdout, "-----------------------------------------\n\n");
@@ -3701,7 +3598,6 @@ main(int objc, char *argv[])
                         testddata->backtrace->receiver->refnet->name,
                         testddata->delay);
         }
-        if( longFormat ) print_path(testddata->backtrace);
     }
 
     fprintf(stdout, "-----------------------------------------\n\n");
