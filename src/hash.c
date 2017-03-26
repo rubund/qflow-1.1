@@ -19,7 +19,11 @@ the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
 
 #include <stdio.h>
 #include <string.h>	/* For strdup() */
+#ifdef __APPLE__
+#include <stdlib.h>
+#else
 #include <malloc.h>
+#endif
 #include "hash.h"
 
 unsigned long (*hashfunc)(char *) = NULL;

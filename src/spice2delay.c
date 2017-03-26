@@ -435,7 +435,7 @@ void calculate_elmore_delay (
     //  to find other endpoints
     if (curr_node->type == SNK) {
 
-        printf("Found SNK node %s with delay to it of %d\n", curr_node->name, elmdly);
+        printf("Found SNK node %s with delay to it of %lf\n", curr_node->name, elmdly);
         snkptr curr_snk = calloc(1, sizeof(snk));
 
         curr_snk->snknode = curr_node;

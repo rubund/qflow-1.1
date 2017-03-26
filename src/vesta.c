@@ -62,6 +62,11 @@
 
 #define LIB_LINE_MAX  65535
 
+#ifdef __APPLE__
+// Linux defines a comparison function prototype, the Mac doesn't. . .
+typedef int (*__compar_fn_t)(const void *, const void *);
+#endif
+
 int fileCurrentLine;
 
 // Analysis types --- note that maximum flop-to-flop delay
@@ -740,7 +745,7 @@ short calc_dir(pinptr testpin, short dir)
         case RISING:
             if (testpin->sense == SENSE_POSITIVE)
                 outdir = RISING;        /* rising input, rising output */
-            else if (testpin->sense = SENSE_NEGATIVE)
+            else if (testpin->sense == SENSE_NEGATIVE)
                 outdir = FALLING;       /* rising input, falling output */
             else
                 outdir = EITHER;        /* output can be rising or falling */
@@ -748,7 +753,7 @@ short calc_dir(pinptr testpin, short dir)
         case FALLING:
             if (testpin->sense == SENSE_POSITIVE)
                 outdir = FALLING;       /* falling input, falling output */
-            else if (testpin->sense = SENSE_NEGATIVE)
+            else if (testpin->sense == SENSE_NEGATIVE)
                 outdir = RISING;        /* falling input, rising output */
             else
                 outdir = EITHER;                /* output can be rising or falling */
@@ -2620,7 +2625,7 @@ verilogRead(FILE *fsrc, cell *cells, net **netlist, instance **instlist,
                         }
                     }
                     else {
-                        vtarget = vend + (vstart < vend) ? 1 : -1;
+                        vtarget = vend + ((vstart < vend) ? 1 : -1);
                         while (vstart != vtarget) {
                             newnet = create_net(netlist);
                             newnet->name = (char *)malloc(strlen(token) + 6);

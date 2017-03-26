@@ -23,6 +23,7 @@ extern int CountHashTableEntries(struct hashlist *p);
 extern int CountHashTableBinsUsed(struct hashlist *p);
 extern void HashDelete(char *name, struct hashlist **hashtab);
 extern void HashIntDelete(char *name, int value, struct hashlist **hashtab);
+extern void HashKill(struct hashlist **hashtab);
 
 /* these functions return a pointer to a hash list element */
 extern struct hashlist *HashInstall(char *name, struct hashlist **hashtab);

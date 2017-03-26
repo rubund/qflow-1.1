@@ -167,7 +167,7 @@ endif
 # information to GrayWolf for a final placement pass using fill to
 # break up congested areas.
 
-if ( -f ${rootname}.acel && ( -M ${rootname}.acel > -M ${rootname}.cel )) then
+if ( -f ${rootname}.acel && ( -M ${rootname}.acel >= -M ${rootname}.cel )) then
    cp ${rootname}.cel ${rootname}.cel.bak
    mv ${rootname}.acel ${rootname}.cel
    set final = 1
@@ -208,7 +208,7 @@ endif
 # powerbus.tcl creates a .acel file if successful.  If not, then
 # leave the .cel file in place
 
-if ( -f ${rootname}.acel && ( -M ${rootname}.acel > -M ${rootname}.cel )) then
+if ( -f ${rootname}.acel && ( -M ${rootname}.acel >= -M ${rootname}.cel )) then
    cp ${rootname}.cel ${rootname}.cel.bak
    mv ${rootname}.acel ${rootname}.cel
 endif

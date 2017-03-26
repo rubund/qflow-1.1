@@ -536,7 +536,7 @@ float getnumber(char *strpntbegin)
            number *= 1e-6;
            break;          
         case 'm':
-           if(magn2='e') number *= 1e6;
+           if (magn2 == 'e') number *= 1e6;
            else number *= 1e-3;
            break;          
         case 'k':
@@ -567,7 +567,7 @@ int loc_getline( char s[], int lim, FILE *fp)
 	i=0;
 	while(--lim > 0 && (c=getc(fp)) != EOF && c != '\n')
 		s[i++] = c;
-	if (c == '\n');
+	if (c == '\n')
 		s[i++] = c;
 	s[i] = '\0';
 	if ( c == EOF ) i=0; 
