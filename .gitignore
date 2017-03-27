@@ -1,9 +1,9 @@
-Makefile
-scripts/Makefile
-src/Makefile
-tech/Makefile
-config.status
-config.cache
+# Makefile
+# scripts/Makefile
+# src/Makefile
+# tech/Makefile
+# config.status
+# config.cache
 src/*.o
 src/*.so
 *~
