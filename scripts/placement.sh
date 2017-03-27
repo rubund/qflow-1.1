@@ -351,7 +351,7 @@ if ($makedef == 1) then
          echo "read_lef ${techlefpath}" >> ${rootname}.cfg
       endif
       echo "read_lef ${lefpath}" >> ${rootname}.cfg
-      echo "catch layers ${route_layers}" >> ${rootname}.cfg
+      echo "catch {layers ${route_layers}}" >> ${rootname}.cfg
       if ( ${?via_pattern} ) then
          echo "" >> ${rootname}.cfg
          echo "via pattern ${via_pattern}" >> ${rootname}.cfg
