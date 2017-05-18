@@ -323,6 +323,7 @@ cat >> ${rootname}.ys << EOF
 # Cleanup
 opt
 clean
+rename -enumerate
 write_blif ${blif_opts} ${rootname}_mapped.blif
 EOF
 
