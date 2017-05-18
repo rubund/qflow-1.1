@@ -461,7 +461,7 @@ if ($makedef == 1) then
 		${rootname}_anno.blif > ${rootname}.rtlnopwr.v
 
       echo "Running blif2BSpice." |& tee -a ${synthlog}
-      ${bindir}/blif2BSpice -p ${vddnet} -g ${gndnet} -l \
+      ${bindir}/blif2BSpice -i -p ${vddnet} -g ${gndnet} -l \
 		${spicepath} ${rootname}_anno.blif \
 		> ${rootname}.spc
 

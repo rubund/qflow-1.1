@@ -32,7 +32,8 @@
 extern	int	optind, getopt();
 extern	char	*optarg;
 
-void ReadNetlistAndConvert(FILE *, FILE *, FILE *, char *, char *, char *);
+void ReadNetlistAndConvert(FILE *, FILE *, char *, FILE *,
+		char *, char *, char *, int);
 void CleanupString(char text[]);
 float getnumber(char *strpntbegin);
 int loc_getline(char s[], int lim, FILE *fp);
@@ -68,6 +69,7 @@ int main (int argc, char *argv[])
     FILE *NET2 = NULL;
     FILE *outfile;
     int i;
+    int doinclude = 0;
 
     char *Net1name = NULL;
     char *Net2name = NULL;
@@ -79,7 +81,7 @@ int main (int argc, char *argv[])
     // Use implicit power if power and ground nodes are global in SPICE
     // Otherwise, use "-p".
 
-    while ((i = getopt( argc, argv, "hHl:p:g:s:" )) != EOF) {
+    while ((i = getopt( argc, argv, "hHil:p:g:s:" )) != EOF) {
 	switch (i) {
 	   case 'p':
 	       vddnet = strdup(optarg);
@@ -92,6 +94,9 @@ int main (int argc, char *argv[])
 	       break;
 	   case 'l':
 	       Net2name = strdup(optarg);
+	       break;
+	   case 'i':
+	       doinclude = 1;
 	       break;
 	   case 'h':
 	   case 'H':
@@ -128,7 +133,8 @@ int main (int argc, char *argv[])
     }
 
     outfile = stdout;
-    ReadNetlistAndConvert(NET1, NET2, outfile, vddnet, gndnet, subnet);
+    ReadNetlistAndConvert(NET1, NET2, Net2name, outfile,
+		vddnet, gndnet, subnet, doinclude);
     return 0;
 }
 
@@ -140,8 +146,9 @@ int main (int argc, char *argv[])
    SIDE EFFECTS: 
 \*--------------------------------------------------------------*/
 
-void ReadNetlistAndConvert(FILE *netfile, FILE *libfile, FILE *outfile, 
-		char *vddnet, char *gndnet, char *subnet)
+void ReadNetlistAndConvert(FILE *netfile, FILE *libfile, char *libname,
+		FILE *outfile, char *vddnet, char *gndnet, char *subnet,
+		int doinclude)
 {
 	int i, NumberOfInputs, NumberOfOutputs;
 
@@ -274,13 +281,21 @@ void ReadNetlistAndConvert(FILE *netfile, FILE *libfile, FILE *outfile,
 			"%s by blif2BSpice\n", MainSubcktName);
 		 fprintf(outfile, "");
 
-		 if (subcktlib != NULL) {
-		    /* Write out the subcircuit library file verbatim */
-		    rewind(libfile);
-		    while (loc_getline(line, sizeof(line), libfile) > 0)
-		       fputs(line, outfile);
-		    fclose(libfile);
-		    fprintf(outfile, "");
+		 /* If doinclude == 1 then dump the contents of the	*/
+		 /* libraray.  If 0, then just write a .include line.	*/
+
+		 if (doinclude == 0) {
+		    if (subcktlib != NULL) {
+		       /* Write out the subcircuit library file verbatim */
+		       rewind(libfile);
+		       while (loc_getline(line, sizeof(line), libfile) > 0)
+		          fputs(line, outfile);
+		       fclose(libfile);
+		       fprintf(outfile, "");
+		    }
+		 }
+		 else {
+		     fprintf(outfile, ".include %s\n", libname);
 		 }
 
 	         fprintf(outfile, ".subckt %s ", MainSubcktName);
@@ -297,10 +312,10 @@ void ReadNetlistAndConvert(FILE *netfile, FILE *libfile, FILE *outfile,
 		 if ((subnet != NULL) && strcasecmp(subnet, gndnet))
 		    fprintf(outfile, "%s ", subnet);
 	      }
-	      else if (strstr(line, ".ends") != NULL) {
-                 fprintf(outfile, ".ends %s\n ", MainSubcktName);
-              }
 	   }
+	   else if (strstr(line, ".end") != NULL) {
+              fprintf(outfile, ".ends %s\n ", MainSubcktName);
+           }
 	   if (strstr(line, ".inputs") != NULL) {
 	      NumberOfInputs = 0;
 	      lptr = line;

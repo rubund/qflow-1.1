@@ -537,7 +537,7 @@ if ("x${spicefile}" == "x") then
 else
     set spiceopt="-l ${spicepath}"
 endif
-${bindir}/blif2BSpice -p ${vddnet} -g ${gndnet} ${spiceopt} \
+${bindir}/blif2BSpice -i -p ${vddnet} -g ${gndnet} ${spiceopt} \
 	${rootname}.blif > ${rootname}.spc
 
 #---------------------------------------------------------------------
