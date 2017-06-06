@@ -132,7 +132,7 @@ def write_models(cellsused, celldefs, ofile):
                     psubs = imprex.sub('\g<1>&\g<2>', psubs)
 
                     try:
-                        tval = eval(psubs + '&1')
+                        tval = eval('(' + psubs + ')&1')
                     except (SyntaxError, NameError):
                         tabstr = ''
                         print("Could not evaluate function " + cellrec['function'][k])
@@ -562,9 +562,11 @@ def write_lib(fileout, celldefs, debug):
 def parse_pin(function):
     # Handle n' as way of expressing ~n or !n
     primerex = re.compile('([^ \t]+)[ \t]*\'')
-    parenrex = re.compile('\([ \t]*([^ \t\)]+)[ \t]*\)')
+    outparenrex = re.compile('^[ \t]*\([ \t]*(.+)[ \t]*\)[ \t]*$')
+    parenrex = re.compile('\([ \t]*([^ \t\)|&~^]+)[ \t]*\)')
     pstring = function.strip('"').strip()
     pstring = pstring.replace('*', '&').replace('+', '|').replace('!', '~')
+    pstring = outparenrex.sub('\g<1>', pstring)
     pstring = parenrex.sub('\g<1>', pstring)
     pstring = primerex.sub('~\g<1>', pstring)
     return pstring
