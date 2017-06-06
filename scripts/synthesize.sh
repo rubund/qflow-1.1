@@ -532,17 +532,8 @@ ${bindir}/blif2Verilog -c -v ${vddnet} -g ${gndnet} ${rootname}.blif \
 ${bindir}/blif2Verilog -c -p -v ${vddnet} -g ${gndnet} ${rootname}.blif \
 	> ${rootname}.rtlnopwr.v
 
-echo "Running blif2BSpice." |& tee -a ${synthlog}
-if ("x${spicefile}" == "x") then
-    set spiceopt=""
-else
-    set spiceopt="-l ${spicepath}"
-endif
-${bindir}/blif2BSpice -i -p ${vddnet} -g ${gndnet} ${spiceopt} \
-	${rootname}.blif > ${rootname}.spc
-
 #---------------------------------------------------------------------
-# Spot check:  Did blif2Verilog or blif2BSpice exit with an error?
+# Spot check:  Did blif2Verilog exit with an error?
 # Note that these files are not critical to the main synthesis flow,
 # so if they are missing, we flag a warning but do not exit.
 #---------------------------------------------------------------------
@@ -559,29 +550,44 @@ if ( !( -f ${rootname}.rtlnopwr.v || \
                 |& tee -a ${synthlog}
 endif
 
+#---------------------------------------------------------------------
+
+echo "Running blif2BSpice." |& tee -a ${synthlog}
+if ("x${spicefile}" == "x") then
+    set spiceopt=""
+else
+    set spiceopt="-l ${spicepath}"
+endif
+${bindir}/blif2BSpice -i -p ${vddnet} -g ${gndnet} ${spiceopt} \
+	${rootname}.blif > ${rootname}.spc
+
+#---------------------------------------------------------------------
+# Spot check:  Did blif2BSpice exit with an error?
+# Note that these files are not critical to the main synthesis flow,
+# so if they are missing, we flag a warning but do not exit.
+#---------------------------------------------------------------------
+
 if ( !( -f ${rootname}.spc || \
         ( -M ${rootname}.spc < -M ${rootname}.blif ))) then
    echo "blif2BSpice failure:  No file ${rootname}.spc created." \
                 |& tee -a ${synthlog}
-   echo "Premature exit." |& tee -a ${synthlog}
-   echo "Synthesis flow stopped due to error condition." >> ${synthlog}
-   exit 1
+else
+
+   echo "Running spi2xspice.py" |& tee -a ${synthlog}
+   if ("x${spicefile}" == "x") then
+       set spiceopt=""
+   else
+       set spiceopt="-l ${spicepath}"
+   endif
+   ${scriptdir}/spi2xspice.py ${libertypath} ${rootname}.spc \
+		${rootname}.xspice
 endif
 
-
-#---------------------------------------------------------------------
-# Spot check:  Did blif2cel produce file ${rootname}.cel?
-#---------------------------------------------------------------------
-# 
-# if ( !( -f ${layoutdir}/${rootname}.cel || ( -M ${layoutdir}/${rootname}.cel \
-# 	< -M ${rootname}.blif ))) then
-#    echo "blif2cel failure:  No file ${rootname}.cel." |& tee -a ${synthlog}
-#    echo "blif2cel was called with arguments: ${synthdir}/${rootname}.blif "
-#    echo "      ${lefpath} ${layoutdir}/${rootname}.cel"
-#    echo "Premature exit." |& tee -a ${synthlog}
-#    echo "Synthesis flow stopped due to error condition." >> ${synthlog}
-#    exit 1
-# endif
+if ( !( -f ${rootname}.xspice || \
+	( -M ${rootname}.xspice < -M ${rootname}.spc ))) then
+   echo "spi2xspice.py failure:  No file ${rootname}.xspice created." \
+		|& tee -a ${synthlog}
+endif
 
 #---------------------------------------------------------------------
 
