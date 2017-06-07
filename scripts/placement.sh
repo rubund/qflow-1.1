@@ -324,8 +324,35 @@ if ($makedef == 1) then
       exit 1
    endif
 
-   # Copy the .def file to a backup called "unroute" (temporary)
-   cp ${rootname}.def ${rootname}_unroute.def
+   #---------------------------------------------------------------------
+   # Add spacer cells to create a straight border on the right side
+   #---------------------------------------------------------------------
+
+   if ( -f ${scriptdir}/addspacers.tcl ) then
+
+      if ( !( ${?addspacers_options} )) then
+         set addspacers_options = ""
+      endif
+
+      echo "Running addspacers.tcl ${addspacers_options} ${rootname} ${lefpath} ${fillcell}" |& tee -a ${synthlog}
+
+      ${scriptdir}/addspacers.tcl ${addspacers_options} \
+		${rootname} ${lefpath} ${fillcell} >>& ${synthlog}
+      if ( -f ${rootname}_filled.def ) then
+	 mv ${rootname}_filled.def ${rootname}.def
+	 # Copy the .def file to a backup called "unroute"
+	 cp ${rootname}.def ${rootname}_unroute.def
+      endif
+
+      if ( -f ${rootname}.obsx ) then
+         # If addspacers annotated the .obs (obstruction) file, then
+         # overwrite the original.
+	 mv ${rootname}.obsx ${rootname}.obs
+      endif
+   else
+      # Copy the .def file to a backup called "unroute"
+      cp ${rootname}.def ${rootname}_unroute.def
+   endif
 
    # If the user didn't specify a number of layers for routing as part of
    # the project variables, then the info file created by qrouter will have
@@ -386,6 +413,7 @@ if ($makedef == 1) then
    endif
 
    # Add obstruction fence around design, created by place2def.tcl
+   # and modified by addspacers.tcl
 
    if ( -f ${rootname}.obs ) then
       cat ${rootname}.obs >> ${rootname}.cfg
@@ -491,24 +519,6 @@ if ($makedef == 1) then
       cd ${layoutdir}
 
     endif
-endif
-
-#---------------------------------------------------
-# 3) Add spacer cells to create a straight border on
-#    the right side
-#---------------------------------------------------
-
-if ($makedef == 1) then
-   if ( -f ${scriptdir}/addspacers.tcl ) then
-      echo "Running addspacers.tcl"
-      ${scriptdir}/addspacers.tcl ${rootname} ${lefpath} \
-		$fillcell >>& ${synthlog}
-      if ( -f ${rootname}_filled.def ) then
-	 mv ${rootname}_filled.def ${rootname}.def
-	 # Copy the .def file to a backup called "unroute" (final)
-	 cp ${rootname}.def ${rootname}_unroute.def
-      endif
-   endif
 endif
 
 #---------------------------------------------------

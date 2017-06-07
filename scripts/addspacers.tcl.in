@@ -13,11 +13,21 @@
 # Modify the COMPONENTS section to add the spacer cells, and write out
 #	the annotated DEF file.
 #
+# Updated 6/7/2017 to add option to split layout at intervals and
+# insert a stripe of minimum size for the addition of a power bus.
+# This is an ad hoc solution that does not consider how the overall
+# timing is affected by stretching routes that have to cross this
+# stripe.  NOTE:  Initial implementation adds space but does make use
+# of the "pattern" argument and does not add specialnets to route the
+# power buses.
 #---------------------------------------------------------------------------
+
 namespace path {::tcl::mathop ::tcl::mathfunc}
 
 if {$argc < 3} {
-   puts stdout "Usage:  addspacers <project_name> <lef_file> <fill_cell>"
+   puts stdout "Usage:  addspacers [<options>] <project_name> <lef_file> <fill_cell>"
+   puts stdout "Options:"
+   puts stdout "  -stripe <width> <pitch> <pattern>"
    exit 0
 }
 
@@ -26,26 +36,49 @@ puts stdout "Running addspacers.tcl"
 # NOTE:  There is no scaling.  GrayWolf values are in centimicrons,
 # as are DEF values (UNITS DISTANCE MICRONS 100)
 
-set topname [file rootname [lindex $argv 0]]
-set lefname [lindex $argv 1]
-set fillcell [lindex $argv 2]
+set argidx 0
+set stripewidth 0	;# no power bus striping by default
+
+set arg0 [lindex $argv $argidx]
+if {$arg0 == "-stripe"} {
+   incr argidx
+   set stripewidth [lindex $argv $argidx]
+   set stripewidthreq $stripewidth
+   incr argidx
+   set stripepitch [lindex $argv $argidx]
+   incr argidx
+   set stripepattern [lindex $argv $argidx]
+   incr argidx
+}
+
+set topname [file rootname [lindex $argv $argidx]]
+incr argidx
+set lefname [lindex $argv $argidx]
+incr argidx
+set fillcell [lindex $argv $argidx]
 
 set defname ${topname}.def
 set defoutname ${topname}_filled.def
 
-set units 100		;# write centimicron units into the DEF file
+set units 100.0		;# write centimicron units into the DEF file
+
+# Input arguments are assumed to be in microns.  Convert them to the
+# DEF file units.
+
+set stripewidth [* $units $stripewidth]
+set stripepitch [* $units $stripepitch]
 
 #-----------------------------------------------------------------
 # Open all files for reading and writing
 #-----------------------------------------------------------------
 
 if [catch {open $lefname r} flef] {
-   puts stderr "Error: can't open file $lefname for input"
+   puts stderr "Error: can't open LEF file $lefname for input"
    return
 }
 
 if [catch {open $defname r} fdef] {
-   puts stderr "Error: can't open file $defname for input"
+   puts stderr "Error: can't open DEF file $defname for input"
    return
 }
 
@@ -280,13 +313,16 @@ dict for {row rowvals} $rows {
    dict set rows $row $rowvals
 }
    
-# Find longest row
+# Find number of rows and longest row
+set numrows 0
 set rowmax 0
 dict for {row rowvals} $rows {
+   incr numrows
    set xmax [lindex $rowvals 0]
    if {$xmax > $rowmax} {set rowmax $xmax}
 }
-puts stdout "Longest row is width $rowmax"
+puts stdout "Number of rows is $numrows"
+puts stdout "Longest row has width $rowmax"
 
 # Now, for each row, find the difference between the row end and row max,
 # and create a list of how many of each fill macro it takes to fill the
@@ -309,6 +345,61 @@ dict for {row rowvals} $rows {
 }
 set numcomps [+ $number $numfills]
 
+# Analyze design for power striping
+
+if {($stripewidth > 0) && ($rowmax > $stripepitch)} {
+
+   # What sizes of fill make up the stripe width, to the nearest unit cell?
+   set stripefills {}
+
+   set xtot 0
+   while {1} {
+      set fidx 0
+      set fmax 0
+      set i 0
+      foreach fillset $fillwidths {
+         set fw [lindex $fillset 1]
+	 set ftest [+ $fw $xtot]
+         if {($ftest <= $stripewidth) && ($ftest > $fmax)} {
+	    set fmax $fw
+	    set fidx $i
+	 }
+	 incr i
+      }
+      if {$fmax == 0} {
+	 break
+      }
+      lappend stripefills [lindex [lindex $fillwidths $fidx] 0]
+      set xtot [+ $xtot $fmax]
+      # puts stdout "Added to stripe filler [lindex [lindex $fillwidths $fidx] 0]"
+      # puts stdout "Total stripe width now $xtot]
+   }     
+   # Reduce final stripe width to xtot so that it is equal to the
+   # best compatible fill size and is a multiple of the unit cell
+   # size.
+   set stripewidth $xtot
+
+   # Analyze design for the number of power bus stripes to add
+   # How many stripes need to be added?  Allow +/-50% (max) to
+   # accomodate layout widths that are not a multiple of the
+   # stripe pitch.
+
+   set numstripes [expr int(($rowmax * 1.5) / $stripepitch)]
+   set stripepitch [expr ($rowmax + (($numstripes - 1) * $stripewidth)) / $numstripes]
+   incr numstripes -1
+   if {$numstripes == 0} {
+      set stripewidth 0
+      puts stdout "addspacers:  No room for stripes, none added."
+   } else {
+      # Number of components increases by number of fill cells per stripe *
+      # number of stripes * number of rows.
+      set numfills [* [llength $stripefills] $numstripes $numrows]
+      set numcomps [+ $numcomps $numfills]
+      puts stdout "addspacers:  Inserting $numstripes stripes of width [/ $stripewidth $units] um ($stripewidthreq um requested)"
+   }
+
+}
+
 # Diagnostic
 puts stdout "Analysis of DEF file:"
 puts stdout "Number of components = $number"
@@ -328,21 +419,101 @@ if [catch {open $defoutname w} fanno] {
 #-----------------------------------------------------------------
 
 while {[gets $fdef line] >= 0} {
-   if [regexp {[ \t]*COMPONENTS[ \t]+([^ \t]+)[ \t]*;} $line lmatch number] {
+   if [regexp {[ \t]*DIEAREA[ \t]*\([ \t]*([^ \t]+)[ \t]+([^ \t]+)[ \t]*\)[ \t]*\([ \t]*([^ \t]+)[ \t]+([^ \t]+)[ \t]*\)[ \t]*;} $line lmatch \
+	xlow ylow xhigh yhigh] {
+
+      # Add stripe width to die area total
+      set xhigh [+ $xhigh [* $stripewidth $numstripes]]
+      puts $fanno "DIEAREA ( $xlow $ylow ) ( $xhigh $yhigh ) ;"
+
+   } elseif [regexp {[ \t]*TRACKS[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]+DO[ \t]+([^ \t]+)[ \t]+STEP[ \t]+([^ \t]+)[ \t]+LAYER[ \t]+([^ \t]+)[ \t]*;} $line lmatch \
+	orient low num step layer] {
+
+      if {($stripewidth > 0) && ($orient == "X")} {
+         # Add number of tracks to cover the added area of the stripes
+         set ntracks [expr int(($stripewidth * $numstripes) / $step)]
+         set num [+ $num $ntracks]
+         puts $fanno "TRACKS X $low DO $num STEP $step LAYER $layer ;"
+      } else {
+         puts $fanno $line
+      }
+
+   } elseif [regexp {[ \t]*PINS[ \t]+([^ \t]+)[ \t]*;} $line lmatch number] {
+      puts $fanno $line
+
+      # Add space to pins to match the addition of stripes
+
+      if {$stripewidth > 0} {
+         while {[gets $fdef line] >= 0} {
+            if [regexp {[ \t]*END[ \t]+(.+)[ \t]*$} $line lmatch sectiontest] {
+	       puts $fanno $line
+               break
+            } elseif [regexp {[ \t]*\+[ \t]+PLACED[ \t]+\([ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]+\)[ \t]+([^ \t]+)[ \t]+;} $line lmatch \
+			px py orient] {
+
+               # Check if instance px exceeds xbreak and adjust accordingly
+	       if {$px > $stripepitch} {
+	          set ns [expr int($px / $stripepitch)]
+		  set nw [* $ns $stripewidth]
+		  set xpos [+ $px $nw]
+                  puts $fanno "  + PLACED ( $xpos $py ) $orient ;"
+	       } else {
+                  puts $fanno $line
+	       }
+	    } else {
+	       puts $fanno $line
+	    }
+	 }
+      } else {
+	 puts $fanno $line
+      }
+
+   } elseif [regexp {[ \t]*COMPONENTS[ \t]+([^ \t]+)[ \t]*;} $line lmatch number] {
       puts $fanno "COMPONENTS $numcomps ;"
       set r 0
+      set s 0
+      set xadd 0
+      if {$stripewidth > 0} {
+         set xbreak $stripepitch
+      } else {
+         set xbreak $rowmax
+      }
       while {[gets $fdef line] >= 0} {
-	 puts $fanno $line
          if [regexp {[ \t]*END[ \t]+(.+)[ \t]*$} $line lmatch sectiontest] {
+	    puts $fanno $line
             break
          } elseif [regexp {[ \t]*-[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]+\+[ \t]+PLACED[ \t]+\([ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]+\)[ \t]+([^ \t]+)[ \t]+;} $line lmatch \
 		instance macro px py orient] {
+
+            # Check if instance px exceeds xbreak and adjust accordingly
+	    if {$px >= $xbreak} {
+	       set i 0
+               foreach fmacro $stripefills {
+		  set fw [subst \$${fmacro}(w)]
+		  set xpos [+ $px $xadd]
+		  puts $fanno "- ${fmacro}_${r}_${s}_${i} ${fmacro} + PLACED ( $xpos $py ) $orient ;"
+		  set xadd [+ $xadd $fw]
+		  incr i
+	       }
+	       set xbreak [+ $xbreak $stripepitch]
+	       incr s
+	    }
+            set px [+ $px $xadd] 
+	    puts $fanno "- $instance $macro + PLACED ( $px $py ) $orient ;"
+
 	    # Check if there is a match to the last instance in the row
 	    set rowvals [dict get $rows $py]
 	    set rowinst [lindex $rowvals 1]
 	    if {[string equal $instance $rowinst]} {
 	       incr r
 	       set xpos [lindex $rowvals 0]
+	       if {$stripewidth > 0} {
+                  # puts stdout "stripewidth = $stripewidth"
+                  # puts stdout "numstripes = $numstripes"
+		  # puts stdout "xpos in = $xpos"
+		  set xpos [+ $xpos [* $stripewidth $numstripes]]
+		  # puts stdout "xpos out = $xpos"
+	       }
 	       set fills [lindex $rowvals 4]
 	       # Get orientation of row (N or S);
 	       # remove "F" if last cell was flipped
@@ -356,6 +527,11 @@ while {[gets $fdef line] >= 0} {
 		     set xpos [+ $xpos $fw]
 		  }
 	       }
+               # Reset xbreak and xadd
+	       if {$xadd > 0} {
+		  set xadd 0
+		  set xbreak $stripepitch
+	       }
 	    }
  	 }
       }
@@ -366,5 +542,48 @@ while {[gets $fdef line] >= 0} {
 
 close $fanno
 close $fdef
+
+#-----------------------------------------------------------------
+# If there is a ${topname}.obs file, read it in and adjust the
+# X values to account for the spacers.
+#-----------------------------------------------------------------
+
+if {$stripewidth > 0} {
+
+   # Cast values back into microns, which are the units used by the .obs file
+   set stripewidth [/ $stripewidth $units]
+   set stripepitch [/ $stripepitch $units]
+
+   if [catch {open ${topname}.obs r} infobs] {
+      # No .obs file, no action needed.
+      puts stdout "No file ${topname}.obs, so no adjustment required."
+      return
+   }
+   if [catch {open ${topname}.obsx w} outfobs] {
+      puts stout "Error:  Cannot open file ${topname}.obsx for writing!"
+      return
+   }
+   while {[gets $infobs line] >= 0} {
+      if [regexp {[ \t]*obstruction[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]*$} $line \
+		lmatch xlow ylow xhigh yhigh layer] {
+         if {$xlow > $stripepitch} {
+	    set ns [expr int($xlow / $stripepitch)]
+	    set nw [* $ns $stripewidth]
+	    set xlow [+ $xlow $nw]
+	 } 
+         if {$xhigh > $stripepitch} {
+	    set ns [expr int($xlow / $stripepitch)]
+	    set nw [* $ns $stripewidth]
+	    set xhigh [+ $xhigh $nw]
+	 }
+         puts $outfobs "obstruction $xlow $ylow $xhigh $yhigh $layer"
+      } else {
+	 puts $outfobs $outline
+      }
+   }
+
+   close $outfobs
+   close $infobs
+}
 
 puts stdout "Done with addspacers.tcl"
