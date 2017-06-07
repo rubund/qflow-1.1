@@ -38,6 +38,7 @@ puts stdout "Running addspacers.tcl"
 
 set argidx 0
 set stripewidth 0	;# no power bus striping by default
+set stripepitch 0
 
 set arg0 [lindex $argv $argidx]
 if {$arg0 == "-stripe"} {
