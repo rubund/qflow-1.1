@@ -70,6 +70,11 @@ set units 100.0		;# write centimicron units into the DEF file
 set stripewidth [* $units $stripewidth]
 set stripepitch [* $units $stripepitch]
 
+set diexlow 0
+set diexhigh 0
+set dieylow 0
+set dieyhigh 0
+
 #-----------------------------------------------------------------
 # Open all files for reading and writing
 #-----------------------------------------------------------------
@@ -82,6 +87,74 @@ if [catch {open $lefname r} flef] {
 if [catch {open $defname r} fdef] {
    puts stderr "Error: can't open DEF file $defname for input"
    return
+}
+
+#----------------------------------------------------------------
+# Parse port information for a macro pin from the LEF MACRO block
+# Here, used only for power and ground pins.
+# Assume that the power and ground ports define one rectangle that
+# reaches from end to end of the cell, and record that rectangle.
+#----------------------------------------------------------------
+
+proc parse_port {pinname macroname leffile ox oy} {
+    global $macroname units
+
+    set x2 [+ $ox [set ${macroname}(w)]]
+
+    while {[gets $leffile line] >= 0} {
+        if [regexp {[ \t]*LAYER[ \t]+(.+)[\t ]*;} $line lmatch layername] {
+            if {![regexp {.*(\d).*} $layername lmatch layernum]} {set layernum 0}
+            set ${macroname}(${pinname},layer) $layernum
+        } elseif [regexp {[ \t]*RECT[ \t]+(.+)[ \t]+(.+)[ \t]+(.+)[ \t]+(.+)[ \t]*;} \
+                        $line lmatch llx lly urx ury] {
+	    set llx [* $llx $units]
+	    set lly [* $lly $units]
+	    set urx [* $urx $units]
+	    set ury [* $ury $units]
+	    if {$llx < $ox} {set llx $ox}
+	    if {$urx > $x2} {set urx $x2}
+	    if {($llx == $ox) && ($urx == $x2)} {
+		set ${macroname}(${pinname},llx) $llx
+		set ${macroname}(${pinname},lly) $lly
+		set ${macroname}(${pinname},urx) $urx
+		set ${macroname}(${pinname},ury) $ury
+	    }
+	    # To do:  If bus is made of more than one rectangle, merge
+	    # leftmost and rightmost rectangles into one entry.
+
+	# NOTE: To do: parse POLYGON records, if this ever comes up in practice.
+
+        } elseif [regexp {[ \t]*END[ \t]*$} $line lmatch] { break }
+    }
+}
+
+#----------------------------------------------------------------
+# Parse pin information from the LEF MACRO block
+#----------------------------------------------------------------
+
+proc parse_pin {pinname macroname leffile ox oy} {
+    global $macroname
+
+    set portuse ""
+    while {[gets $leffile line] >= 0} {
+        if [regexp {[ \t]*PORT} $line lmatch] {
+	    if {($portuse == "POWER") || ($portuse == "GROUND") || ($portuse == "")} {
+	        parse_port $pinname $macroname $leffile $ox $oy
+	    }
+        } elseif [regexp {[ \t]*DIRECTION[ \t]+([^ \t]+)[ \t]*;} $line lmatch porttype] {
+            set ${macroname}(${pinname},type) $porttype
+        } elseif [regexp {[ \t]*DIRECTION[ \t]+([^:]+);} $line lmatch porttype] {
+            set ${macroname}(${pinname},type) $porttype
+        } elseif [regexp {[ \t]*USE[ \t]+([^ \t]+)[ \t]*;} $line lmatch portuse] {
+            set ${macroname}(${pinname},use) $portuse
+        } elseif [regexp {[ \t]*END[ \t]+([^ \t]+)[ \t]*$} $line lmatch pintest] {
+            if {"$pintest" == "$pinname"} {
+                break
+            } else {
+                puts stdout "Unexpected END statement $line while parsing pin $pinname"
+            }
+        }
+    }
 }
 
 #----------------------------------------------------------------
@@ -124,8 +197,9 @@ proc parse_macro {leffile macroname} {
          set ${macroname}(h) $h
 
       } elseif [regexp {[ \t]*PIN[ \t]+(.+)[ \t]*$} $line lmatch pinname] {
-	 # The fill cell is not expected to have any usable pins
-	 skip_section $leffile $pinname
+	 # Get power and ground information, the values in the fill cell
+	 # will be used to generate power and ground stripes
+	 parse_pin $pinname $macroname $leffile $x $y
       } elseif [regexp {[ \t]*END[ \t]+(.+)[ \t]*$} $line lmatch macrotest] {
          if {"$macrotest" == "$macroname"} {
             break
@@ -235,6 +309,155 @@ proc parse_components {deffile rows} {
 }
 
 #-----------------------------------------------------------------
+# Get the power pin name from a macro
+#-----------------------------------------------------------------
+
+proc get_power {macroname} {
+    global $macroname
+    foreach name [array names $macroname] {
+	if {[set ${macroname}($name)] == "POWER"} {
+            set cidx [- [string first "," $name] 1]
+ 	    return [string range $name 0 $cidx]
+        }
+    }
+    return ""
+}
+
+#-----------------------------------------------------------------
+# Get the ground pin name from a macro
+#-----------------------------------------------------------------
+
+proc get_ground {macroname} {
+    global $macroname
+    foreach name [array names $macroname] {
+	if {[set ${macroname}($name)] == "GROUND"} {
+            set cidx [- [string first "," $name] 1]
+ 	    return [string range $name 0 $cidx]
+        }
+    }
+    return ""
+}
+
+#-----------------------------------------------------------------
+# Write entries for SPECIALNETS corresponding to the power and
+# ground stripes
+#-----------------------------------------------------------------
+
+proc write_special {stripeinfo stripefills stripewidth stripepattern
+		rows dieylow dieyhigh fanno} {
+    # Take 1st fill cell and find name of power and ground buses
+    set fillmacro [lindex $stripefills 0]
+    global $fillmacro
+
+    set powername [get_power $fillmacro]
+
+    set pllx [set ${fillmacro}(${powername},llx)]
+    set plly [set ${fillmacro}(${powername},lly)]
+    set purx [set ${fillmacro}(${powername},urx)]
+    set pury [set ${fillmacro}(${powername},ury)]
+    set h [set ${fillmacro}(h)]
+    set w [- $pury $plly]
+    set y [/ [+ $plly $pury] 2.0]
+
+    puts $fanno "- ${powername}"
+    set j 0
+    set first true
+    foreach stripe $stripeinfo {
+	set smean [lindex $stripe 0]
+	set slow  [lindex $stripe 1]
+	set shigh [lindex $stripe 2]
+
+	if {[- $shigh $slow] > 0} {
+	   set smean [/ [+ $shigh $slow] 2.0]
+	}
+
+	set pattern [string index $stripepattern $j]
+	if {$pattern == "P"} {
+	    set drows [dict keys $rows]
+	    foreach rowy $drows {
+		set orient [lindex [dict get $rows $rowy] 3]
+		if {$orient == "S" || $orient == "FS"} {
+		    set ay [- $h $y]
+		} else {
+		    set ay $y
+		}
+		for {set i 1} {$i < 4} {incr i} {
+		    set ry [+ $rowy $ay]
+		    if $first {
+		       puts -nonewline $fanno "+ ROUTED "
+		       set first false
+		    } else {
+		       puts -nonewline $fanno "  NEW "
+		    }
+		    set ip [+ 1 $i]
+		    puts $fanno "metal${i} $w ( $slow $ry ) ( $shigh * ) M${ip}_M${i}"
+		}
+		set i 4
+		puts $fanno "  NEW metal${i} $w ( $slow $ry ) ( $shigh * )"
+	    }
+	    # At the end, put metal4 stripe from top to bottom
+	    set w $stripewidth
+	    puts $fanno "  NEW metal${i} $w ( $smean $dieylow ) ( * $dieyhigh )"
+	}
+	incr j
+    }
+    puts $fanno " ;"
+
+    set groundname [get_ground $fillmacro]
+
+    set gllx [set ${fillmacro}(${groundname},llx)]
+    set glly [set ${fillmacro}(${groundname},lly)]
+    set gurx [set ${fillmacro}(${groundname},urx)]
+    set gury [set ${fillmacro}(${groundname},ury)]
+    set w [- $gury $glly]
+    set y [/ [+ $glly $gury] 2.0]
+
+    puts $fanno "- ${groundname}"
+    set j 0
+    set first true
+    foreach stripe $stripeinfo {
+	set smean [lindex $stripe 0]
+	set slow  [lindex $stripe 1]
+	set shigh [lindex $stripe 2]
+
+	if {[- $shigh $slow] > 0} {
+	   set smean [/ [+ $shigh $slow] 2.0]
+	}
+
+	set pattern [string index $stripepattern $j]
+	if {$pattern == "G"} {
+	    set drows [dict keys $rows]
+	    foreach rowy $drows {
+		set orient [lindex [dict get $rows $rowy] 3]
+		if {$orient == "S" || $orient == "FS"} {
+		    set ay [- $h $y]
+		} else {
+		    set ay $y
+		}
+		for {set i 1} {$i < 4} {incr i} {
+		    set ry [+ $rowy $ay]
+		    if $first {
+		       puts -nonewline $fanno "+ ROUTED "
+		       set first false
+		    } else {
+		       puts -nonewline $fanno "  NEW "
+		    }
+		    set ip [+ 1 $i]
+		    puts $fanno "metal${i} $w ( $slow $ry ) ( $shigh * ) M${ip}_M${i}"
+		}
+		set i 4
+		puts $fanno "  NEW metal${i} $w ( $slow $ry ) ( $shigh * )"
+	    }
+	    # At the end, put metal4 stripe from top to bottom
+	    set w $stripewidth
+	    puts $fanno "  NEW metal${i} $w ( $smean $dieylow ) ( * $dieyhigh )"
+	}
+	incr j
+    }
+    puts $fanno " ;"
+}
+
+#-----------------------------------------------------------------
 # Read the DEF file once to get the number of rows and the length
 # of each row
 #-----------------------------------------------------------------
@@ -300,7 +523,7 @@ close $fdef
 
 set fillwidths {}
 foreach macro $fillcells {
-   lappend fillwidths [list $macro [subst \$${macro}(w)]]
+   lappend fillwidths [list $macro [set ${macro}(w)]]
 }
 set fillwidths [lsort -decreasing -index 1 $fillwidths]
 
@@ -310,7 +533,7 @@ set fillwidths [lsort -decreasing -index 1 $fillwidths]
 dict for {row rowvals} $rows {
    set xmax [lindex $rowvals 0]
    set macro [lindex $rowvals 2]
-   set xmax [+ $xmax [subst \$${macro}(w)]]
+   set xmax [+ $xmax [set ${macro}(w)]]
    set rowvals [lreplace $rowvals 0 0 $xmax]
    dict set rows $row $rowvals
 }
@@ -384,7 +607,8 @@ if {($stripewidth > 0) && ($rowmax > $stripepitch)} {
    # Analyze design for the number of power bus stripes to add
    # How many stripes need to be added?  Allow +/-50% (max) to
    # accomodate layout widths that are not a multiple of the
-   # stripe pitch.
+   # stripe pitch.  "numstripes" does not include power stripes
+   # outside of the track area on right and left sides.
 
    set numstripes [expr int(($rowmax * 1.5) / $stripepitch)]
    set stripepitch [expr ($rowmax + (($numstripes - 1) * $stripewidth)) / $numstripes]
@@ -400,6 +624,12 @@ if {($stripewidth > 0) && ($rowmax > $stripepitch)} {
       puts stdout "addspacers:  Inserting $numstripes stripes of width [/ $stripewidth $units] um ($stripewidthreq um requested)"
    }
 
+   # Duplicate "stripepattern" to (at least) the length of (numstripes + 2)
+   set pattern ""
+   while {[string length $pattern] < [+ $numstripes 2]} {
+      append pattern $stripepattern
+   }
+   set stripepattern $pattern
 }
 
 # Diagnostic
@@ -420,13 +650,21 @@ if [catch {open $defoutname w} fanno] {
 # of each row
 #-----------------------------------------------------------------
 
+# Each stripe has a record of center point and width of free space from
+# cell top to bottom (list over rows)
+set stripeinfo {}
+# Each row has a record of X position of the stripe fill (list over stripes).
+set rowstripeinfo {}
+
+if {$stripewidth > 0} {set needspecial 1}
+
 while {[gets $fdef line] >= 0} {
    if [regexp {[ \t]*DIEAREA[ \t]*\([ \t]*([^ \t]+)[ \t]+([^ \t]+)[ \t]*\)[ \t]*\([ \t]*([^ \t]+)[ \t]+([^ \t]+)[ \t]*\)[ \t]*;} $line lmatch \
-	xlow ylow xhigh yhigh] {
+	diexlow dieylow diexhigh dieyhigh] {
 
       # Add stripe width to die area total
-      set xhigh [+ $xhigh [* $stripewidth $numstripes]]
-      puts $fanno "DIEAREA ( $xlow $ylow ) ( $xhigh $yhigh ) ;"
+      set diexhigh [+ $diexhigh [* $stripewidth $numstripes]]
+      puts $fanno "DIEAREA ( $diexlow $dieylow ) ( $diexhigh $dieyhigh ) ;"
 
    } elseif [regexp {[ \t]*TRACKS[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]+DO[ \t]+([^ \t]+)[ \t]+STEP[ \t]+([^ \t]+)[ \t]+LAYER[ \t]+([^ \t]+)[ \t]*;} $line lmatch \
 	orient low num step layer] {
@@ -483,15 +721,42 @@ while {[gets $fdef line] >= 0} {
       while {[gets $fdef line] >= 0} {
          if [regexp {[ \t]*END[ \t]+(.+)[ \t]*$} $line lmatch sectiontest] {
 	    puts $fanno $line
+
+	    if {$stripewidth > 0} {
+	       # Finish computing values of internal stripes
+	       # replace total with mean, and copy the bounds values
+	       set newinfo {}
+	       foreach stripe ${stripeinfo} {
+		  set smean [lindex $stripe 0]
+		  set slow [lindex $stripe 1]
+		  set shigh [lindex $stripe 2]
+		  set smean [/ $smean $numstripes]
+		  lappend newinfo [list $smean $slow $shigh]
+	       }
+	       set stripeinfo $newinfo
+	    }
+
             break
          } elseif [regexp {[ \t]*-[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]+\+[ \t]+PLACED[ \t]+\([ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]+\)[ \t]+([^ \t]+)[ \t]+;} $line lmatch \
 		instance macro px py orient] {
 
-            # Check if instance px exceeds xbreak and adjust accordingly
-	    if {$px >= $xbreak} {
+	    # Quick check if the right side of instance exceeds xbreak and
+	    # if placing the stripe before the instance will put the stripe
+	    # closer to the ideal position.
+
+	    set pw [set ${macro}(w)]
+	    set right [+ $px $pw]
+
+            # Check if instance position px exceeds xbreak and adjust accordingly
+	    if {($px >= $xbreak) || ([- $xbreak $px] < [- [+ $px $pw] $xbreak])} {
+
+	       # Add to row stripe info
+	       lappend rowstripeinfo [+ $px $xadd]
+
+	       # Add fill in the stripe area
 	       set i 0
                foreach fmacro $stripefills {
-		  set fw [subst \$${fmacro}(w)]
+		  set fw [set ${fmacro}(w)]
 		  set xpos [+ $px $xadd]
 		  puts $fanno "- ${fmacro}_${r}_${s}_${i} ${fmacro} + PLACED ( $xpos $py ) $orient ;"
 		  set xadd [+ $xadd $fw]
@@ -522,20 +787,57 @@ while {[gets $fdef line] >= 0} {
 	       set orient [string index [lindex $rowvals 3] end]
 	       foreach fpair $fills {
 		  set fmacro [lindex $fpair 0]
-		  set fw [subst \$${fmacro}(w)]
+		  set fw [set ${fmacro}(w)]
 		  set fn [lindex $fpair 1]
 		  for {set i 1} {$i <= $fn} {incr i} {
 		     puts $fanno "- ${fmacro}_${r}_${i} ${fmacro} + PLACED ( $xpos $py ) $orient ;"
 		     set xpos [+ $xpos $fw]
 		  }
 	       }
-               # Reset xbreak and xadd
+               # Add rowstripeinfo values to stripinfo
+               # Reset xbreak, xadd, and rowstripeinfo
 	       if {$xadd > 0} {
 		  set xadd 0
 		  set xbreak $stripepitch
+		  set i 0
+		  set newstripeinfo {}
+		  if {[llength $stripeinfo] == 0} {
+		     foreach sx $rowstripeinfo {
+			set slow $sx
+			set shigh [+ $sx $stripewidth]
+			set smean [+ $sx [/ $stripewidth 2.0]]
+			lappend newstripeinfo [list $smean $slow $shigh]
+		     }
+		  } else {
+		     foreach sx $rowstripeinfo {
+			set sinfo [lindex $stripeinfo $i]
+			set slow  [max [lindex $sinfo 1] $sx]
+			set shigh [min [lindex $sinfo 2] [+ $sx $stripewidth]]
+			set smean [+ [lindex $sinfo 0] [+ $sx [/ $stripewidth 2.0]]]
+			lappend newstripeinfo [list $smean $slow $shigh]
+			incr i
+		     }
+		  }
+		  set stripeinfo $newstripeinfo
+		  set rowstripeinfo {}
 	       }
 	    }
  	 }
+      }
+   } elseif [regexp {[ \t]*END[ \t]+DESIGN} $line lmatch] {
+      if {$needspecial == 1} {
+         puts $fanno "SPECIALNETS 2 ;"
+	 write_special $stripeinfo $stripefills $stripewidth $stripepattern \
+		$rows $dieylow $dieyhigh $fanno
+         puts $fanno "END SPECIALNETS"
+      }
+      puts $fanno $line
+   } elseif [regexp {[ \t]*SPECIALNETS[ \t]+([^ \t]+)} $line lmatch netnums] {
+      if {$needspecial == 1} {
+         puts $fanno "SPECIALNETS [+ 2 $netnums] ;"
+	 write_special $stripeinfo $stripefills $stripewidth $stripepattern \
+		$rows $dieylow $dieyhigh $fanno
+         set needspecial 0
       }
    } else {
       puts $fanno $line
@@ -582,6 +884,26 @@ if {$stripewidth > 0} {
       } else {
 	 puts $outfobs $outline
       }
+   }
+
+   # For each stripe, add an obstruction for the power route and contacts
+   # to power and ground (note:  need to replace hard-coded "metal4")
+
+   set dieylow [/ $dieylow $units]
+   set dieyhigh [/ $dieyhigh $units]
+
+   foreach stripe $stripeinfo {
+      set smean [/ [lindex $stripe 0] $units]
+      set slow  [/ [lindex $stripe 1] $units]
+      set shigh [/ [lindex $stripe 2] $units]
+
+      if {[- $shigh $slow] > 0} {
+	 set smean [/ [+ $shigh $slow] 2.0]
+      }
+      set slow [- $smean [/ $stripewidth 2]]
+      set shigh [+ $smean [/ $stripewidth 2]]
+
+      puts $outfobs "obstruction $slow $dieylow $shigh $dieyhigh metal4"
    }
 
    close $outfobs
