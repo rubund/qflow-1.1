@@ -292,7 +292,7 @@ if ( ! -f ${userfile} ) then
    echo "# -------------------------------------------" >> ${userfile}
    echo "# set initial_density = " >> ${userfile}
    echo "# set graywolf_options = " >> ${userfile}
-   echo '# set addspacers_options = "-stripe 10 300 0"' >> ${userfile}
+   echo '# set addspacers_options = "-stripe 5 200 PG -nostretch"' >> ${userfile}
    echo "" >> ${userfile}
    echo "# Router command options:" >> ${userfile}
    echo "# -------------------------------------------" >> ${userfile}
