@@ -104,23 +104,30 @@ while ($yerrcnt > 1)
 # works in yosys 0.3.1 and newer, the following line works for the
 # purpose of querying the hierarchy in all versions.
 
-if ( !( -f ${rootname}.v )) then
-   echo "Error:  Verilog source file ${rootname}.v cannot be found!" \
+set vext = "v"
+set svopt = ""
+
+if ( !( -f ${rootname}.${vext} )) then
+   set vext = "sv"
+   set svopt = "-sv"
+   if ( !( -f ${rootname}.${vext} )) then
+      echo "Error:  Verilog source file ${rootname}.v (or .sv) cannot be found!" \
 		|& tee -a ${synthlog}
+   endif
 endif
 
 cat > ${rootname}.ys << EOF
 # Synthesis script for yosys created by qflow
 read_liberty -lib -ignore_miss_dir -setattr blackbox ${libertypath}
-read_verilog ${rootname}.v
+read_verilog ${svopt} ${rootname}.${vext}
 EOF
 
 foreach subname ( $uniquedeplist )
-    if ( !( -f ${subname}.v )) then
-	echo "Error:  Verilog source file ${subname}.v cannot be found!" \
-		|& tee -a ${synthlog}
+    if ( !( -f ${subname}.${vext} )) then
+	echo "Error:  Verilog source file ${subname}.${vext} cannot be found!" \
+			|& tee -a ${synthlog}
     endif
-    echo "read_verilog ${subname}.v" >> ${rootname}.ys
+    echo "read_verilog ${svopt} ${subname}.${vext}" >> ${rootname}.ys
 end
 
 cat >> ${rootname}.ys << EOF
@@ -201,11 +208,11 @@ endif
 
 cat > ${rootname}.ys << EOF
 read_liberty -lib -ignore_miss_dir -setattr blackbox ${libertypath}
-read_verilog ${rootname}.v
+read_verilog ${svopt} ${rootname}.${vext}
 EOF
 
 foreach subname ( $uniquedeplist )
-    echo "read_verilog ${subname}.v" >> ${rootname}.ys
+    echo "read_verilog ${svopt} ${subname}.${vext}" >> ${rootname}.ys
 end
 
 # Will not support yosys 0.0.x syntax; flag a warning instead

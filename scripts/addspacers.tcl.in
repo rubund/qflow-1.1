@@ -534,7 +534,7 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
     # LEF syntax is too stupid to define which layer is which, so
     # we rely on common convention of numbering the metal layers.
     set tnum 0
-    set tname ""
+    set topmet 0
     foreach layer $layers {
 	if {[dict get $layer type] != "ROUTING"} {continue}
 	if {[dict get $layer direction] == "VERTICAL"} {
@@ -542,6 +542,10 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 	    if {$lnum > $tnum} {
 		set tnum $lnum
 	    }
+	}
+	set lnum [dict get $layer number]
+	if {$lnum > $topmet} {
+	    set topmet $lnum
 	}
     }
     if {$tnum < 3} {
@@ -551,7 +555,7 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
  
     # Create list of route layers in order.
     set layerlist {}
-    for {set i 1} {$i <= $tnum} {incr i} {
+    for {set i 1} {$i <= $topmet} {incr i} {
 	foreach layer $layers {
 	    if {[dict get $layer type] == "ROUTING"} {
 		set lnum [dict get $layer number]
@@ -571,7 +575,7 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
     set nvias {}
     set blayer ""
     set tlayer ""
-    for {set i 1} {$i <= $tnum} {incr i} {
+    for {set i 1} {$i <= $topmet} {incr i} {
 	foreach layer $layers {
 	    if {[dict get $layer type] != "ROUTING"} {continue}
 	    set lnum [dict get $layer number]
@@ -621,9 +625,9 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 	lappend nvias [expr ($stripewidth / $bestwidth) - 1]
 
     }
-    # tnum will be used to index basevias and layerlist, which are
+    # topmet will be used to index basevias and layerlist, which are
     # 0 to tnum - 1, not 1 to tnum.
-    incr tnum -1
+    if {$tnum >= 3} {set topmet [- $tnum 1]}
 
     set powername [get_power $fillmacro]
 
@@ -632,7 +636,6 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
     set purx [set ${fillmacro}(${powername},urx)]
     set pury [set ${fillmacro}(${powername},ury)]
     set h [set ${fillmacro}(h)]
-    set w [- $pury $plly]
     set y [/ [+ $plly $pury] 2.0]
 
     puts $fanno "- ${powername}"
@@ -663,7 +666,7 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 		} else {
 		    set ay $y
 		}
-		for {set i 0} {$i < $tnum} {incr i} {
+		for {set i 0} {$i < $topmet} {incr i} {
 		    set ry [+ $rowy $ay]
 		    set layer [lindex $layerlist $i]
 		    set via [lindex $basevias $i]
@@ -676,17 +679,19 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 		    } else {
 		        puts -nonewline $fanno "  NEW "
 		    }
-		    puts $fanno "$layer $w ( $shigh $ry ) ( $x1 * )"
+		    puts $fanno "$layer $vw ( $shigh $ry ) ( $x1 * )"
 		    for {set j 0} {$j < $nv} {incr j} {
 			set x2 [+ $x1 $vw]
-		        puts $fanno "  NEW $layer $w ( $x1 $ry ) ( $x2 * ) $via"
+		        puts $fanno "  NEW $layer $vw ( $x1 $ry ) ( $x2 * ) $via"
 			set x1 $x2
 		    }
 		}
 	    }
-	    # At the end, put metal4 stripe from top to bottom
-	    set layer [lindex $layerlist $tnum]
-	    puts $fanno "  NEW $layer $stripewidth ( $smean $dieylow ) ( * $dieyhigh )"
+	    # At the end, put top vertical metal stripe from top to bottom
+	    if {$tnum >= 3} {
+		set layer [lindex $layerlist [- $tnum 1]]
+		puts $fanno "  NEW $layer $stripewidth ( $smean $dieylow ) ( * $dieyhigh )"
+	    }
 	}
 	incr j
     }
@@ -729,7 +734,7 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 		} else {
 		    set ay $y
 		}
-		for {set i 0} {$i < $tnum} {incr i} {
+		for {set i 0} {$i < $topmet} {incr i} {
 		    set ry [+ $rowy $ay]
 		    set layer [lindex $layerlist $i]
 		    set via [lindex $basevias $i]
@@ -742,17 +747,19 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 		    } else {
 			puts -nonewline $fanno "  NEW "
 		    }
-		    puts $fanno "$layer $w ( $shigh $ry ) ( $x1 * )"
+		    puts $fanno "$layer $vw ( $shigh $ry ) ( $x1 * )"
 		    for {set j 0} {$j < $nv} {incr j} {
 			set x2 [+ $x1 $vw]
-			puts $fanno "  NEW $layer $w ( $x1 $ry ) ( $x2 * ) $via"
+			puts $fanno "  NEW $layer $vw ( $x1 $ry ) ( $x2 * ) $via"
 			set x1 $x2
 		    }
 		}
 	    }
-	    # At the end, put metal4 stripe from top to bottom
-	    set layer [lindex $layerlist $tnum]
-	    puts $fanno "  NEW $layer $stripewidth ( $smean $dieylow ) ( * $dieyhigh )"
+	    # At the end, put top vertical metal stripe from top to bottom
+	    if {$tnum >= 3} {
+		set layer [lindex $layerlist [- $tnum 1]]
+		puts $fanno "  NEW $layer $stripewidth ( $smean $dieylow ) ( * $dieyhigh )"
+	    }
 	}
 	incr j
     }
