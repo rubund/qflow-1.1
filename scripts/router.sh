@@ -118,7 +118,7 @@ if (${scripting} == "T") then
    ${bindir}/qrouter -noc -s ${rootname}.cfg ${qrouter_options} \
 		|& tee -a ${synthlog} | \
 		grep - -e fail -e Progress -e remaining.\*00\$ \
-		-e remaining:\ \[1-9\]0\\\?\$
+		-e remaining:\ \[1-9\]0\\\?\$ -e \\\*\\\*\\\*
 else
 
 #------------------------------------------------------------------
@@ -131,7 +131,7 @@ else
    ${bindir}/qrouter -c ${rootname}.cfg -p ${vddnet} -g ${gndnet} \
 		${qrouter_options} ${rootname} |& tee -a ${synthlog} | \
 		grep - -e fail -e Progress -e remaining.\*00\$ \
-		-e remaining:\ \[1-9\]0\\\?\$
+		-e remaining:\ \[1-9\]0\\\?\$ -e \\\*\\\*\\\*
 endif
 
 #---------------------------------------------------------------------

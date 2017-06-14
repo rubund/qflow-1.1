@@ -435,14 +435,10 @@ if ($makedef == 1) then
       cat ${rootname}.cfg2 >> ${rootname}.cfg
    else
       if (${scripting} == "T") then
-	 if (${final} == 0) then
-	    echo "qrouter::congestion_route ${rootname}.cinfo" >> ${rootname}.cfg
-	 else
-	    echo "qrouter::standard_route" >> ${rootname}.cfg
-	    # Standard route falls back to the interpreter on failure,
-	    # so make sure that qrouter actually exits.
-	    echo "quit" >> ${rootname}.cfg
-	 endif
+	 echo "qrouter::standard_route" >> ${rootname}.cfg
+	 # Standard route falls back to the interpreter on failure,
+	 # so make sure that qrouter actually exits.
+	 echo "quit" >> ${rootname}.cfg
       endif
    endif
 

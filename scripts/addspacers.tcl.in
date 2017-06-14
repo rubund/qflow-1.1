@@ -20,10 +20,6 @@
 # stripe.  Use of "-nostretch" will place the stripes over the existing
 # layout without making extra space with fill.  This is generally
 # preferred unless it makes the cell unroutable.
-#
-# Initial implementation hard-codes the power stripe to metal4 and
-# hard-codes the vias, which do not stretch across the entire stripe.
-# This will be corrected shortly.
 #---------------------------------------------------------------------------
 
 namespace path {::tcl::mathop ::tcl::mathfunc}
@@ -1052,9 +1048,61 @@ while {[gets $fdef line] >= 0} {
 	}
 
     } elseif [regexp {[ \t]*PINS[ \t]+([^ \t]+)[ \t]*;} $line lmatch number] {
-	puts $fanno $line
 
 	# Add space to pins to match the addition of stripes
+	set extrapins false
+	if {$dostripes} {
+
+	    # Note:  This duplicates code in write_special.  Needs to be
+	    # consolidated into one routine.
+
+	    set tnum 0
+	    foreach layer $layers {
+		if {[dict get $layer type] != "ROUTING"} {continue}
+		if {[dict get $layer direction] == "VERTICAL"} {
+		    set lnum [dict get $layer number]
+		    if {$lnum > $tnum} {
+			set tnum $lnum
+			set toplayer [dict get $layer name]
+		    }
+		}
+	    }
+	    if {$tnum >= 3} {set extrapins true}
+	}
+	if {$extrapins} {
+
+	    puts $fanno "PINS [+ $number 2] ;"
+	    set i 0
+	    set donepower false
+	    set doneground false
+	    set fillmacro [lindex $stripefills 0]
+	    foreach stripe ${stripeinfo} {
+		set stripetype [string index $stripepattern $i]
+		set slow [lindex $stripe 1]
+		set shigh [lindex $stripe 2]
+		set cs [/ [- $shigh $slow] 2]
+		set hcs [/ $cs 2]
+		set cx [/ [+ $slow $shigh] 2]
+		set cy [+ $dieylow $hcs]
+		if {!$donepower && ($stripetype == "P")} {
+		    set powername [get_power $fillmacro]
+		    puts $fanno "- $powername + NET $powername"
+		    puts $fanno "  + LAYER $toplayer ( -$cs -$hcs ) ( $cs $hcs )"
+		    puts $fanno "  + PLACED ( $cx $cy ) N ;"
+		    set donepower true
+		} elseif {!$doneground && ($stripetype == "G")} {
+		    set groundname [get_ground $fillmacro]
+		    puts $fanno "- $groundname + NET $groundname"
+		    puts $fanno "  + LAYER $toplayer ( -$cs -$hcs ) ( $cs $hcs )"
+		    puts $fanno "  + PLACED ( $cx $cy ) N ;"
+		    set doneground true
+		}
+		incr i
+		if {$donepower && $doneground} {break}
+	    }
+	} else {
+	    puts $fanno $line
+	}
 
 	if {$dostripes && $dostretch} {
 	    while {[gets $fdef line] >= 0} {
