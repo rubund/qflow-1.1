@@ -1077,24 +1077,30 @@ while {[gets $fdef line] >= 0} {
 	    set doneground false
 	    set fillmacro [lindex $stripefills 0]
 	    foreach stripe ${stripeinfo} {
+
 		set stripetype [string index $stripepattern $i]
 		set slow [lindex $stripe 1]
 		set shigh [lindex $stripe 2]
-		set cs [/ [- $shigh $slow] 2]
-		set hcs [/ $cs 2]
-		set cx [/ [+ $slow $shigh] 2]
-		set cy [+ $dieylow $hcs]
+		set smean [/ [+ $shigh $slow] 2.0]
+		set nw [expr int($smean / $fmin)]
+		set smean [* $nw $fmin]
+		set hw [/ $stripewidth 2.0]
+		set qw [/ $hw 2.0]
+		set slow [- $smean $hw]
+		set shigh [+ $smean $hw]
+		set cy [+ $dieylow $qw]
+
 		if {!$donepower && ($stripetype == "P")} {
 		    set powername [get_power $fillmacro]
 		    puts $fanno "- $powername + NET $powername"
-		    puts $fanno "  + LAYER $toplayer ( -$cs -$hcs ) ( $cs $hcs )"
-		    puts $fanno "  + PLACED ( $cx $cy ) N ;"
+		    puts $fanno "  + LAYER $toplayer ( -$hw -$qw ) ( $hw $qw )"
+		    puts $fanno "  + PLACED ( $smean $cy ) N ;"
 		    set donepower true
 		} elseif {!$doneground && ($stripetype == "G")} {
 		    set groundname [get_ground $fillmacro]
 		    puts $fanno "- $groundname + NET $groundname"
-		    puts $fanno "  + LAYER $toplayer ( -$cs -$hcs ) ( $cs $hcs )"
-		    puts $fanno "  + PLACED ( $cx $cy ) N ;"
+		    puts $fanno "  + LAYER $toplayer ( -$hw -$qw ) ( $hw $qw )"
+		    puts $fanno "  + PLACED ( $smean $cy ) N ;"
 		    set doneground true
 		}
 		incr i
