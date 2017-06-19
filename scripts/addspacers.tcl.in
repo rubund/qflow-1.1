@@ -676,7 +676,7 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 		        puts -nonewline $fanno "  NEW "
 		    }
 		    puts $fanno "$layer $vw ( $shigh $ry ) ( $x1 * )"
-		    for {set j 0} {$j < $nv} {incr j} {
+		    for {set k 0} {$k < $nv} {incr k} {
 			set x2 [+ $x1 $vw]
 		        puts $fanno "  NEW $layer $vw ( $x1 $ry ) ( $x2 * ) $via"
 			set x1 $x2
@@ -744,7 +744,7 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 			puts -nonewline $fanno "  NEW "
 		    }
 		    puts $fanno "$layer $vw ( $shigh $ry ) ( $x1 * )"
-		    for {set j 0} {$j < $nv} {incr j} {
+		    for {set k 0} {$k < $nv} {incr k} {
 			set x2 [+ $x1 $vw]
 			puts $fanno "  NEW $layer $vw ( $x1 $ry ) ( $x2 * ) $via"
 			set x1 $x2
@@ -1079,9 +1079,12 @@ while {[gets $fdef line] >= 0} {
 	    foreach stripe ${stripeinfo} {
 
 		set stripetype [string index $stripepattern $i]
+		set smean [lindex $stripe 0]
 		set slow [lindex $stripe 1]
 		set shigh [lindex $stripe 2]
-		set smean [/ [+ $shigh $slow] 2.0]
+		if {[- $shigh $slow] > 0} {
+		    set smean [/ [+ $shigh $slow] 2.0]
+		}
 		set nw [expr int($smean / $fmin)]
 		set smean [* $nw $fmin]
 		set hw [/ $stripewidth 2.0]
