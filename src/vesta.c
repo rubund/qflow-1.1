@@ -3220,7 +3220,7 @@ main(int objc, char *argv[])
           firstarg++;
        }
        else if (!strcmp(argv[firstarg], "-V") || !strcmp(argv[firstarg], "--version")) {
-          fprintf(stderr, "Vesta Static Timing Analzyer version 0.2\n");
+          fprintf(stderr, "Vesta Static Timing Analyzer version 0.3\n");
           exit(0);
        }
        else {
