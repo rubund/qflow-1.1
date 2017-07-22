@@ -334,6 +334,10 @@ if ($makedef == 1) then
          set addspacers_options = ""
       endif
 
+      if ( "$techleffile" != "" ) then
+         set addspacers_options = "-techlef ${techlefpath} ${addspacers_options}"
+      endif
+
       echo "Running addspacers.tcl ${addspacers_options} ${rootname} ${lefpath} ${fillcell}" |& tee -a ${synthlog}
 
       ${scriptdir}/addspacers.tcl ${addspacers_options} \

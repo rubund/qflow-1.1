@@ -348,7 +348,10 @@ proc read_lef {flef fillcell} {
     global layers vias
     set fillcells {}
     while {[gets $flef line] >= 0} {
-	if [regexp {[ \t]*MACRO[ \t]+([^ \t]+)[ \t]*$} $line lmatch macroname] {
+        # Ignore comment lines
+        if [regexp {[ \t]*#} $line lmatch] {
+	    continue
+	} elseif [regexp {[ \t]*MACRO[ \t]+([^ \t]+)[ \t]*$} $line lmatch macroname] {
 	    # Parse the "macro" statement
 	    parse_macro $flef $macroname
 	    if {[string first $fillcell $macroname] == 0} {
@@ -460,7 +463,9 @@ if {$pitchx == 0} {
 proc parse_components {deffile rows} {
     upvar $rows rdict
     while {[gets $deffile line] >= 0} {
-	if [regexp {[ \t]*END[ \t]+([^ \t]+)[ \t]*$} $line lmatch sectiontest] {
+        if [regexp {[ \t]*#} $line lmatch] {
+	    continue
+	} elseif [regexp {[ \t]*END[ \t]+([^ \t]+)[ \t]*$} $line lmatch sectiontest] {
 	    if {"$sectiontest" != "COMPONENTS"} {
 		puts -nonewline stderr "Unexpected END statement $line "
 		puts stderr "while reading section COMPONENTS"
@@ -771,7 +776,9 @@ puts stdout "Reading DEF file ${defname}. . ."
 flush stdout
 
 while {[gets $fdef line] >= 0} {
-    if [regexp {[ \t]*COMPONENTS[ \t]+([^ \t]+)[ \t]*;} $line lmatch number] {
+    if [regexp {[ \t]*#} $line lmatch] {
+	continue
+    } elseif [regexp {[ \t]*COMPONENTS[ \t]+([^ \t]+)[ \t]*;} $line lmatch number] {
 	set rows [dict create]
 	# Parse the "COMPONENTS" statement
 	parse_components $fdef rows
@@ -1024,7 +1031,9 @@ if {$dostretch == false} {
 }
 
 while {[gets $fdef line] >= 0} {
-    if [regexp {[ \t]*DIEAREA[ \t]*\([ \t]*([^ \t]+)[ \t]+([^ \t]+)[ \t]*\)[ \t]*\([ \t]*([^ \t]+)[ \t]+([^ \t]+)[ \t]*\)[ \t]*;} $line lmatch \
+    if [regexp {[ \t]*#} $line lmatch] {
+	continue
+    } elseif [regexp {[ \t]*DIEAREA[ \t]*\([ \t]*([^ \t]+)[ \t]+([^ \t]+)[ \t]*\)[ \t]*\([ \t]*([^ \t]+)[ \t]+([^ \t]+)[ \t]*\)[ \t]*;} $line lmatch \
 		diexlow dieylow diexhigh dieyhigh] {
 
 	# Add stripe width to die area total
