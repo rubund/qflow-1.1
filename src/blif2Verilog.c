@@ -343,7 +343,7 @@ void ReadNetlistAndConvert(FILE *NETFILE, FILE *OUT, int ImplicitPower, int Main
 		    glist = gl;
 		 }
 
-	         fprintf(OUT, "\t%s %s_%d ( ", gl->gatename, gl->gatename, gl->gatecount);
+	         fprintf(OUT, "%s %s_%d ( ", gl->gatename, gl->gatename, gl->gatecount);
 	         First = TRUE;
 	         if (ImplicitPower) fprintf(OUT, ".%s(%s), .%s(%s), ",
 			GndNet, GndNet, VddNet, VddNet); 
