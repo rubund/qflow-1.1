@@ -29,6 +29,7 @@ AC_PROG_RANLIB
 AC_CHECK_PROG(AUTOCONF, autoconf, autoconf, :)
 AC_CHECK_PROG(CP, cp, cp, :)
 AC_CHECK_PROG(RM, rm, rm, :)
+AC_CHECK_PROG(HAVE_PYTHON3, python3, yes, no)
 
 AC_LANG_C
 AC_HEADER_STDC
@@ -152,6 +153,7 @@ AC_SUBST(QFLOW_BIN_DIR)
 AC_SUBST(QFLOW_LIB_DIR)
 
 AC_SUBST(TCLSH_PATH)
+AC_SUBST(HAVE_PYTHON3)
 
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
@@ -195,6 +197,10 @@ if test "x${ac_cv_path_QFLOW_MAGIC_PATH}" == "x"; then
    echo "WARNING: Magic 8.0 not found.  Use --with-magic=<DIR>"
 else
    echo "Using Magic layout tool at: ${ac_cv_path_QFLOW_MAGIC_PATH}"
+fi
+
+if test "x${HAVE_PYTHON3}" == "x"; then
+   echo "No python3 on system, will not install spi2xspice.py"
 fi
 
 echo "----------------------------------------------------"

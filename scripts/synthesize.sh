@@ -580,20 +580,26 @@ if ( !( -f ${rootname}.spc || \
                 |& tee -a ${synthlog}
 else
 
-   echo "Running spi2xspice.py" |& tee -a ${synthlog}
-   if ("x${spicefile}" == "x") then
-       set spiceopt=""
-   else
-       set spiceopt="-l ${spicepath}"
-   endif
-   ${scriptdir}/spi2xspice.py ${libertypath} ${rootname}.spc \
+   set test=`which python3`
+   if ( $status == 0 ) then
+       echo "Running spi2xspice.py" |& tee -a ${synthlog}
+       if ("x${spicefile}" == "x") then
+           set spiceopt=""
+       else
+           set spiceopt="-l ${spicepath}"
+       endif
+       ${scriptdir}/spi2xspice.py ${libertypath} ${rootname}.spc \
 		${rootname}.xspice
-endif
 
-if ( !( -f ${rootname}.xspice || \
-	( -M ${rootname}.xspice < -M ${rootname}.spc ))) then
-   echo "spi2xspice.py failure:  No file ${rootname}.xspice created." \
+       if ( !( -f ${rootname}.xspice || \
+		( -M ${rootname}.xspice < -M ${rootname}.spc ))) then
+          echo "spi2xspice.py failure:  No file ${rootname}.xspice created." \
 		|& tee -a ${synthlog}
+       endif
+   else
+       echo "No python3 on system, not running spi2xspice.py"
+   endif
+
 endif
 
 #---------------------------------------------------------------------
