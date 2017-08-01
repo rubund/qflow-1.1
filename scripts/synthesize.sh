@@ -14,18 +14,26 @@
 # Open Circuit Design
 #-------------------------------------------------------------------------
 
-if ($#argv == 2) then
+if ($#argv == 2 || $#argv == 3) then
    set projectpath=$argv[1]
-   set sourcename=$argv[2]
+   set modulename=$argv[2]
+   if ($#argv == 3) then
+      set sourcename=$argv[3]
+   else 
+      set sourcename=""
+   endif
 else
-   echo Usage:  synthesize.sh <project_path> <source_name>
+   echo Usage:  synthesize.sh <project_path> <module_name> [<source_file>]
    echo
    echo   where
    echo
    echo	      <project_path> is the name of the project directory containing
    echo			a file called qflow_vars.sh.
    echo
-   echo	      <source_name> is the root name of the verilog file, and
+   echo	      <module_name> is the name of the verilog top-level module, and
+   echo
+   echo	      <source_file> is the name of the verilog file, if the module
+   echo			name and file root name are not the same.
    echo
    echo	      Options are set from project_vars.sh.  Use the following
    echo	      variable names:
@@ -36,8 +44,6 @@ else
    echo			$fanout_options	for blifFanout
    exit 1
 endif
-
-set rootname=${sourcename:h}
 
 #---------------------------------------------------------------------
 # This script is called with the first argument <project_path>, which should
@@ -104,22 +110,43 @@ while ($yerrcnt > 1)
 # works in yosys 0.3.1 and newer, the following line works for the
 # purpose of querying the hierarchy in all versions.
 
-set vext = "v"
 set svopt = ""
+if ($sourcename == "") then
+   set vext = "v"
 
-if ( !( -f ${rootname}.${vext} )) then
-   set vext = "sv"
-   set svopt = "-sv"
-   if ( !( -f ${rootname}.${vext} )) then
-      echo "Error:  Verilog source file ${rootname}.v (or .sv) cannot be found!" \
+   if ( !( -f ${modulename}.${vext} )) then
+      set vext = "sv"
+      set svopt = "-sv"
+      if ( !( -f ${modulename}.${vext} )) then
+         echo "Error:  Verilog source file ${modulename}.v (or .sv) cannot be found!" \
 		|& tee -a ${synthlog}
+      else
+         sourcename = ${modulename}.${vext}
+      endif
+   else
+      sourcename = ${modulename}.${vext}
+   endif
+else
+   if ( !( -f ${sourcename} )) then
+      echo "Error:  Verilog source file ${sourcename} cannot be found!" \
+		|& tee -a ${synthlog}
+   else
+      set vext = ${sourcename:e}
+      if ( ${vext} == "sv" ) then
+	 set svopt = "-sv"
+      endif
    endif
 endif
 
-cat > ${rootname}.ys << EOF
+if (${sourcename} == "") then
+   echo "Synthesis flow stopped due to error condition." >> ${synthlog}
+   exit 1
+endif
+
+cat > ${modulename}.ys << EOF
 # Synthesis script for yosys created by qflow
 read_liberty -lib -ignore_miss_dir -setattr blackbox ${libertypath}
-read_verilog ${svopt} ${rootname}.${vext}
+read_verilog ${svopt} ${sourcename}
 EOF
 
 foreach subname ( $uniquedeplist )
@@ -127,15 +154,15 @@ foreach subname ( $uniquedeplist )
 	echo "Error:  Verilog source file ${subname}.${vext} cannot be found!" \
 			|& tee -a ${synthlog}
     endif
-    echo "read_verilog ${svopt} ${subname}.${vext}" >> ${rootname}.ys
+    echo "read_verilog ${svopt} ${subname}.${vext}" >> ${modulename}.ys
 end
 
-cat >> ${rootname}.ys << EOF
+cat >> ${modulename}.ys << EOF
 # Hierarchy check
 hierarchy -check
 EOF
 
-set yerrors = `eval ${bindir}/yosys -s ${rootname}.ys |& sed -e "/\\/s#\\#/#g" \
+set yerrors = `eval ${bindir}/yosys -s ${modulename}.ys |& sed -e "/\\/s#\\#/#g" \
 		| grep ERROR`
 set yerrcnt = `echo $yerrors | wc -c`
 
@@ -145,7 +172,7 @@ if ($yerrcnt > 1) then
       set newdep = `echo $yerrors | cut -d " " -f 3 | cut -c3- | cut -d "'" -f 1`
       set uniquedeplist = "${uniquedeplist} ${newdep}"
    else
-      ${bindir}/yosys -s ${rootname}.ys >& ${synthlog}
+      ${bindir}/yosys -s ${modulename}.ys >& ${synthlog}
       echo "Errors detected in verilog source, need to be corrected." \
 		|& tee -a ${synthlog}
       echo "See file ${synthlog} for error output."
@@ -167,7 +194,7 @@ set blif_opts = ""
 set blif_opts = "${blif_opts} -buf ${bufcell} ${bufpin_in} ${bufpin_out}"
 
 # Set option for generating only the flattened top-level cell
-# set blif_opts = "${blif_opts} ${rootname}"
+# set blif_opts = "${blif_opts} ${modulename}"
 
 # Determine version of yosys
 set versionstring = `${bindir}/yosys -V | cut -d' ' -f2`
@@ -191,7 +218,7 @@ else
 
 endif
       
-cat > ${rootname}.ys << EOF
+cat > ${modulename}.ys << EOF
 # Synthesis script for yosys created by qflow
 EOF
 
@@ -201,18 +228,18 @@ if (( ${major} == 0 && ${minor} == 3 && ${revision} == 0 && ${subrevision} >= 51
     ( ${major} == 0 && ${minor} == 3 && ${revision} > 0 ) || \
     ( ${major} == 0 && ${minor} > 3 ) || \
     ( ${major} > 0) ) then
-cat > ${rootname}.ys << EOF
+cat > ${modulename}.ys << EOF
 read_liberty -lib -ignore_miss_dir -setattr blackbox ${libertypath}
 EOF
 endif
 
-cat > ${rootname}.ys << EOF
+cat > ${modulename}.ys << EOF
 read_liberty -lib -ignore_miss_dir -setattr blackbox ${libertypath}
-read_verilog ${svopt} ${rootname}.${vext}
+read_verilog ${svopt} ${sourcename}
 EOF
 
 foreach subname ( $uniquedeplist )
-    echo "read_verilog ${svopt} ${subname}.${vext}" >> ${rootname}.ys
+    echo "read_verilog ${svopt} ${subname}.${vext}" >> ${modulename}.ys
 end
 
 # Will not support yosys 0.0.x syntax; flag a warning instead
@@ -224,30 +251,30 @@ endif
 
 if ( ${major} == 0 && ${minor} < 5 ) then
 
-cat >> ${rootname}.ys << EOF
+cat >> ${modulename}.ys << EOF
 # High-level synthesis
-hierarchy -top ${rootname}
+hierarchy -top ${modulename}
 EOF
 
 endif
 
 if ( ${?yosys_script} ) then
    if ( -f ${yosys_script} ) then
-      cat ${yosys_script} >> ${rootname}.ys
+      cat ${yosys_script} >> ${modulename}.ys
    else
       echo "Error: yosys script ${yosys_script} specified but not found"
    endif
 else if ( ${major} != 0 || ${minor} >= 5 ) then
 
-   cat >> ${rootname}.ys << EOF
+   cat >> ${modulename}.ys << EOF
 
 # High-level synthesis
-synth -top ${rootname}
+synth -top ${modulename}
 EOF
 
 else
 
-   cat >> ${rootname}.ys << EOF
+   cat >> ${modulename}.ys << EOF
 
 # High-level synthesis
 proc; memory; opt; fsm; opt
@@ -258,7 +285,7 @@ EOF
 
 endif
 
-cat >> ${rootname}.ys << EOF
+cat >> ${modulename}.ys << EOF
 # Map register flops
 dfflibmap -liberty ${libertypath}
 opt
@@ -267,7 +294,7 @@ EOF
 
 if ( ${?abc_script} ) then
    if ( ${abc_script} != "" ) then
-      cat >> ${rootname}.ys << EOF
+      cat >> ${modulename}.ys << EOF
 abc -exe ${bindir}/yosys-abc -liberty ${libertypath} -script ${abc_script}
 flatten
 
@@ -275,14 +302,14 @@ EOF
    else
       echo "Warning: no abc script ${abc_script}, using default, no script" \
 		|& tee -a ${synthlog}
-      cat >> ${rootname}.ys << EOF
+      cat >> ${modulename}.ys << EOF
 abc -exe ${bindir}/yosys-abc -liberty ${libertypath}
 flatten
 
 EOF
    endif
 else
-   cat >> ${rootname}.ys << EOF
+   cat >> ${modulename}.ys << EOF
 # Map combinatorial cells, standard script
 abc -exe ${bindir}/yosys-abc -liberty ${libertypath} -script +strash;scorr;ifraig;retime,{D};strash;dch,-f;map,-M,1,{D}
 flatten
@@ -297,7 +324,7 @@ endif
 # be probed.
 
 if ( ! ${?yosys_debug} ) then
-   cat >> ${rootname}.ys << EOF
+   cat >> ${modulename}.ys << EOF
 clean -purge
 EOF
 endif
@@ -306,32 +333,32 @@ endif
 
 if ( ${?tiehi} && ${?tiehipin_out} ) then
    if ( "${tiehi}" != "" ) then
-      echo "hilomap -hicell $tiehi $tiehipin_out" >> ${rootname}.ys  
+      echo "hilomap -hicell $tiehi $tiehipin_out" >> ${modulename}.ys  
    endif
 endif
 
 if ( ${?tielo} && ${?tielopin_out} ) then
    if ( "${tielo}" != "" ) then
-      echo "hilomap -locell $tielo $tielopin_out" >> ${rootname}.ys  
+      echo "hilomap -locell $tielo $tielopin_out" >> ${modulename}.ys  
    endif
 endif
 
 # Output buffering, if not specifically prevented
 if ( ${major} > 0 || ${minor} > 1 ) then
    if (!($?nobuffers)) then
-       cat >> ${rootname}.ys << EOF
+       cat >> ${modulename}.ys << EOF
 # Output buffering
 iopadmap -outpad ${bufcell} ${bufpin_in}:${bufpin_out} -bits
 EOF
    endif
 endif
 
-cat >> ${rootname}.ys << EOF
+cat >> ${modulename}.ys << EOF
 # Cleanup
 opt
 clean
 rename -enumerate
-write_blif ${blif_opts} ${rootname}_mapped.blif
+write_blif ${blif_opts} ${modulename}_mapped.blif
 EOF
 
 #---------------------------------------------------------------------
@@ -346,43 +373,43 @@ endif
 # If not, call yosys with the default script.
 set usescript = `echo ${yosys_options} | grep -- -s | wc -l`
 
-# If there is a file ${rootname}_mapped.blif, move it to a temporary
+# If there is a file ${modulename}_mapped.blif, move it to a temporary
 # place so we can see if yosys generates a new one or not.
 
-if ( -f ${rootname}_mapped.blif ) then
-   mv ${rootname}_mapped.blif ${rootname}_mapped_orig.blif
+if ( -f ${modulename}_mapped.blif ) then
+   mv ${modulename}_mapped.blif ${modulename}_mapped_orig.blif
 endif
 
 echo "Running yosys for verilog parsing and synthesis" |& tee -a ${synthlog}
 if ( ${usescript} == 1 ) then
    eval ${bindir}/yosys ${yosys_options} |& tee -a ${synthlog}
 else
-   eval ${bindir}/yosys ${yosys_options} -s ${rootname}.ys |& tee -a ${synthlog}
+   eval ${bindir}/yosys ${yosys_options} -s ${modulename}.ys |& tee -a ${synthlog}
 endif
 
 #---------------------------------------------------------------------
-# Spot check:  Did yosys produce file ${rootname}_mapped.blif?
+# Spot check:  Did yosys produce file ${modulename}_mapped.blif?
 #---------------------------------------------------------------------
 
-if ( !( -f ${rootname}_mapped.blif )) then
-   echo "outputprep failure:  No file ${rootname}_mapped.blif." \
+if ( !( -f ${modulename}_mapped.blif )) then
+   echo "outputprep failure:  No file ${modulename}_mapped.blif." \
 	|& tee -a ${synthlog}
    echo "Premature exit." |& tee -a ${synthlog}
    echo "Synthesis flow stopped due to error condition." >> ${synthlog}
    # Replace the old blif file, if we had moved it
-   if ( -f ${rootname}_mapped_orig.blif ) then
-      mv ${rootname}_mapped_orig.blif ${rootname}_mapped.blif
+   if ( -f ${modulename}_mapped_orig.blif ) then
+      mv ${modulename}_mapped_orig.blif ${modulename}_mapped.blif
    endif
    exit 1
 else
    # Remove the old blif file, if we had moved it
-   if ( -f ${rootname}_mapped_orig.blif ) then
-      rm ${rootname}_mapped_orig.blif
+   if ( -f ${modulename}_mapped_orig.blif ) then
+      rm ${modulename}_mapped_orig.blif
    endif
 endif
 
 echo "Cleaning up output syntax" |& tee -a ${synthlog}
-${scriptdir}/ypostproc.tcl ${rootname}_mapped.blif ${rootname} \
+${scriptdir}/ypostproc.tcl ${modulename}_mapped.blif ${modulename} \
 	${techdir}/${techname}.sh
 
 #----------------------------------------------------------------------
@@ -391,16 +418,16 @@ ${scriptdir}/ypostproc.tcl ${rootname}_mapped.blif ${rootname} \
 
 if ( ${major} == 0 && ${minor} < 2 ) then
    if ($?nobuffers) then
-      set final_blif = "${rootname}_mapped_tmp.blif"
+      set final_blif = "${modulename}_mapped_tmp.blif"
    else
       echo "Adding output buffers"
-      ${scriptdir}/ybuffer.tcl ${rootname}_mapped_tmp.blif \
-		${rootname}_mapped_buf.blif ${techdir}/${techname}.sh
-      set final_blif = "${rootname}_mapped_buf.blif"
+      ${scriptdir}/ybuffer.tcl ${modulename}_mapped_tmp.blif \
+		${modulename}_mapped_buf.blif ${techdir}/${techname}.sh
+      set final_blif = "${modulename}_mapped_buf.blif"
    endif
 else
    # Buffers already handled within yosys
-   set final_blif = "${rootname}_mapped_tmp.blif"
+   set final_blif = "${modulename}_mapped_tmp.blif"
 endif
 
 #---------------------------------------------------------------------
@@ -439,7 +466,7 @@ cat ${final_blif} | sed \
 	-e 's/\\\([^$]\)/\1/g' \
 	-e 's/$techmap//g' \
 	-e 's/$0\([^ \t<]*\)<[0-9]*:[0-9]*>\([^ \t]*\)/\1\2_FF_INPUT/g' \
-	> ${synthdir}/${rootname}.blif
+	> ${synthdir}/${modulename}.blif
 
 # Switch to synthdir for processing of the BDNET netlist
 cd ${synthdir}
@@ -457,7 +484,7 @@ else
 # by the fanout handling process
 #---------------------------------------------------------------------
 
-   cp ${rootname}.blif ${rootname}_bak.blif
+   cp ${modulename}.blif ${modulename}_bak.blif
 
 #---------------------------------------------------------------------
 # Check all gates for fanout load, and adjust gate strengths as
@@ -470,13 +497,13 @@ else
 # maximum latency, in ps (default is 1000ps)
 #---------------------------------------------------------------------
 
-   rm -f ${rootname}_nofanout
-   touch ${rootname}_nofanout
+   rm -f ${modulename}_nofanout
+   touch ${modulename}_nofanout
    if ($?gndnet) then
-      echo $gndnet >> ${rootname}_nofanout
+      echo $gndnet >> ${modulename}_nofanout
    endif
    if ($?vddnet) then
-      echo $vddnet >> ${rootname}_nofanout
+      echo $vddnet >> ${modulename}_nofanout
    endif
 
    if (! $?fanout_options) then
@@ -488,7 +515,7 @@ else
    if (-f ${libertypath} && -f ${bindir}/blifFanout ) then
       set nchanged=1000
       while ($nchanged > 0)
-         mv ${rootname}.blif tmp.blif
+         mv ${modulename}.blif tmp.blif
          if ("x${separator}" == "x") then
 	    set sepoption=""
          else
@@ -499,9 +526,9 @@ else
          else
 	    set bufoption="-b ${bufcell} -i ${bufpin_in} -o ${bufpin_out}"
          endif
-         ${bindir}/blifFanout ${fanout_options} -I ${rootname}_nofanout \
+         ${bindir}/blifFanout ${fanout_options} -I ${modulename}_nofanout \
 		-p ${libertypath} ${sepoption} ${bufoption} \
-		tmp.blif ${rootname}.blif >>& ${synthlog}
+		tmp.blif ${modulename}.blif >>& ${synthlog}
          set nchanged=$status
          echo "gates resized: $nchanged" |& tee -a ${synthlog}
       end
@@ -527,17 +554,17 @@ echo "Generating RTL verilog and SPICE netlist file in directory" \
 		|& tee -a ${synthlog}
 echo "	 ${synthdir}" |& tee -a ${synthlog}
 echo "Files:" |& tee -a ${synthlog}
-echo "   Verilog: ${synthdir}/${rootname}.rtl.v" |& tee -a ${synthlog}
-echo "   Verilog: ${synthdir}/${rootname}.rtlnopwr.v" |& tee -a ${synthlog}
-echo "   Spice:   ${synthdir}/${rootname}.spc" |& tee -a ${synthlog}
+echo "   Verilog: ${synthdir}/${modulename}.rtl.v" |& tee -a ${synthlog}
+echo "   Verilog: ${synthdir}/${modulename}.rtlnopwr.v" |& tee -a ${synthlog}
+echo "   Spice:   ${synthdir}/${modulename}.spc" |& tee -a ${synthlog}
 echo "" >> ${synthlog}
 
 echo "Running blif2Verilog." |& tee -a ${synthlog}
-${bindir}/blif2Verilog -c -v ${vddnet} -g ${gndnet} ${rootname}.blif \
-	> ${rootname}.rtl.v
+${bindir}/blif2Verilog -c -v ${vddnet} -g ${gndnet} ${modulename}.blif \
+	> ${modulename}.rtl.v
 
-${bindir}/blif2Verilog -c -p -v ${vddnet} -g ${gndnet} ${rootname}.blif \
-	> ${rootname}.rtlnopwr.v
+${bindir}/blif2Verilog -c -p -v ${vddnet} -g ${gndnet} ${modulename}.blif \
+	> ${modulename}.rtlnopwr.v
 
 #---------------------------------------------------------------------
 # Spot check:  Did blif2Verilog exit with an error?
@@ -545,15 +572,15 @@ ${bindir}/blif2Verilog -c -p -v ${vddnet} -g ${gndnet} ${rootname}.blif \
 # so if they are missing, we flag a warning but do not exit.
 #---------------------------------------------------------------------
 
-if ( !( -f ${rootname}.rtl.v || \
-        ( -M ${rootname}.rtl.v < -M ${rootname}.blif ))) then
-   echo "blif2Verilog failure:  No file ${rootname}.rtl.v created." \
+if ( !( -f ${modulename}.rtl.v || \
+        ( -M ${modulename}.rtl.v < -M ${modulename}.blif ))) then
+   echo "blif2Verilog failure:  No file ${modulename}.rtl.v created." \
                 |& tee -a ${synthlog}
 endif
 
-if ( !( -f ${rootname}.rtlnopwr.v || \
-        ( -M ${rootname}.rtlnopwr.v < -M ${rootname}.blif ))) then
-   echo "blif2Verilog failure:  No file ${rootname}.rtlnopwr.v created." \
+if ( !( -f ${modulename}.rtlnopwr.v || \
+        ( -M ${modulename}.rtlnopwr.v < -M ${modulename}.blif ))) then
+   echo "blif2Verilog failure:  No file ${modulename}.rtlnopwr.v created." \
                 |& tee -a ${synthlog}
 endif
 
@@ -566,7 +593,7 @@ else
     set spiceopt="-l ${spicepath}"
 endif
 ${bindir}/blif2BSpice -i -p ${vddnet} -g ${gndnet} ${spiceopt} \
-	${rootname}.blif > ${rootname}.spc
+	${modulename}.blif > ${modulename}.spc
 
 #---------------------------------------------------------------------
 # Spot check:  Did blif2BSpice exit with an error?
@@ -574,9 +601,9 @@ ${bindir}/blif2BSpice -i -p ${vddnet} -g ${gndnet} ${spiceopt} \
 # so if they are missing, we flag a warning but do not exit.
 #---------------------------------------------------------------------
 
-if ( !( -f ${rootname}.spc || \
-        ( -M ${rootname}.spc < -M ${rootname}.blif ))) then
-   echo "blif2BSpice failure:  No file ${rootname}.spc created." \
+if ( !( -f ${modulename}.spc || \
+        ( -M ${modulename}.spc < -M ${modulename}.blif ))) then
+   echo "blif2BSpice failure:  No file ${modulename}.spc created." \
                 |& tee -a ${synthlog}
 else
 
@@ -588,12 +615,12 @@ else
        else
            set spiceopt="-l ${spicepath}"
        endif
-       ${scriptdir}/spi2xspice.py ${libertypath} ${rootname}.spc \
-		${rootname}.xspice
+       ${scriptdir}/spi2xspice.py ${libertypath} ${modulename}.spc \
+		${modulename}.xspice
 
-       if ( !( -f ${rootname}.xspice || \
-		( -M ${rootname}.xspice < -M ${rootname}.spc ))) then
-          echo "spi2xspice.py failure:  No file ${rootname}.xspice created." \
+       if ( !( -f ${modulename}.xspice || \
+		( -M ${modulename}.xspice < -M ${modulename}.spc ))) then
+          echo "spi2xspice.py failure:  No file ${modulename}.xspice created." \
 		|& tee -a ${synthlog}
        endif
    else

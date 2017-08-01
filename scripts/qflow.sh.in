@@ -34,8 +34,7 @@ if ( $project == "" ) then
    set project=`pwd`
 endif
 
-# Source file is not specified unless given on the command line,
-# or if there is only one source file in the source directory.
+set modulename=""
 set vsource=""
 
 # Don't do anything unless told to on the command line
@@ -133,10 +132,10 @@ while ($#argv > 0)
 	 shift
 	 breaksw
       default:
-	 if ($vsource != "") then
+	 if ($modulename != "") then
 	    break
 	 else
-	    set vsource=$argv[1]
+	    set modulename=$argv[1]
 	    shift
 	 endif
 	 breaksw
@@ -190,18 +189,48 @@ endif
 
 source QFLOW_SCRIPT_DIR/checkdirs.sh ${tech} ${project}
 
-if ($vsource == "") then
-   if (`ls ${sourcedir}/*.v | wc -l` == 1) then
+set nvsrc = `ls ${sourcedir}/*.v | grep -v match | wc -l`
+set nsvsrc = `ls ${sourcedir}/*.sv | wc -l`
+
+# Verilog file root name is the same as the module name, at least until
+# discovered otherwise.  If the module name is not given on the command
+# line, then there must be one source file and the filename root and
+# module name must match.
+
+if ($modulename == "") then
+   if ($nvsrc == 1) then
       set vsource=`ls ${sourcedir}/*.v`
+      set modulename=${vsource:r}
+   else if ($nsvsrc == 1) then
+      set vsource=`ls ${sourcedir}/*.sv`
+      set modulename=${vsource:r}
+   else if ($nvsrc == 0 && $nsvsrc == 0) then
+      echo "Error:  No verilog source files found in directory ${sourcedir}."
+      exit 1
    else
       echo "Error:  No verilog source file or module name has been specified"
       echo "and directory ${sourcedir} contains multiple verilog files."
+      echo "Please specify the source file or module name on the command line."
       exit 1
    endif
 endif
 
-# Module name is the root name of the verilog source file.
-set modulename=${vsource:r}
+if ($vsource == "") then
+   # Check all .v and .sv files for one with the specified module.
+
+   foreach file ( `ls ${sourcedir}/*.v ${sourcedir}/*.sv` )
+      set mline = `cat $file | grep module | grep ${modulename} | wc -l`
+      if ( $mline > 0 ) then
+	 set vsource = ${file}
+	 break
+      endif
+   end
+
+   if ( ${vsource} == "" ) then
+      echo "Error:  No verilog file in ${sourcedir} contains module ${modulename}."
+      exit 1
+   endif
+endif
 
 #------------------------------------------------------------------
 # Source the technology initialization script
@@ -311,7 +340,11 @@ endif
 if ($dosynth == 0) then
    echo -n "# " >> ${execfile}
 endif
-echo "${scriptdir}/synthesize.sh ${projectpath} ${modulename} || exit 1" >> ${execfile}
+if ( ${vsource} == "" ) then
+   echo "${scriptdir}/synthesize.sh ${projectpath} ${modulename} || exit 1" >> ${execfile}
+else
+   echo "${scriptdir}/synthesize.sh ${projectpath} ${modulename} ${vsource} || exit 1" >> ${execfile}
+endif
 
 if ($doplace == 0) then
    echo -n "# " >> ${execfile}
