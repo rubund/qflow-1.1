@@ -204,10 +204,10 @@ proc parse_pin {pinname macroname leffile ox oy} {
 	    parse_port $pinname $macroname $leffile $ox $oy
 	} elseif [regexp {[ \t]*DIRECTION[ \t]+([^ \t]+)[ \t]*;} $line lmatch porttype] {
 	    puts "Port type: $porttype"
-	    set ${macroname}(${pinname},type) $porttype
+	    set ${macroname}(${pinname},type) [string trim $porttype]
 	} elseif [regexp {[ \t]*DIRECTION[ \t]+([^:]+);} $line lmatch porttype] {
 	    puts "Port type: $porttype"
-	    set ${macroname}(${pinname},type) $porttype
+	    set ${macroname}(${pinname},type) [string trim $porttype]
 	} elseif [regexp {[ \t]*END[ \t]+([^ \t]+)[ \t]*$} $line lmatch pintest] {
 	    if {"$pintest" == "$pinname"} {
 		break
