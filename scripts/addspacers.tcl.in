@@ -1188,23 +1188,26 @@ while {[gets $fdef line] >= 0} {
 		# Check if instance position px exceeds xbreak and adjust accordingly
 		if {($px >= $xbreak) || ([- $xbreak $px] < [- [+ $px $pw] $xbreak])} {
 
-		    # Add to row stripe info
-		    lappend rowstripeinfo [+ $px $xadd]
+		    if {[llength $rowstripeinfo] < $numstripes} {
 
-		    # Add fill in the stripe area
-		    set i 0
-		    foreach fmacro $stripefills {
-			set fw [set ${fmacro}(w)]
-			set xpos [+ $px $xadd]
-			puts $fanno "- ${fmacro}_${r}_${s}_${i} ${fmacro} + PLACED ( $xpos $py ) $orient ;"
-			set xadd [+ $xadd $fw]
-			incr i
-		    }
-		    if {$s < $numstripes} {
-			set xbreak [+ $xbreak $stripepitch]
-			incr s
-		    } else {
-			set xbreak $rowmax
+			# Add to row stripe info
+			lappend rowstripeinfo [+ $px $xadd]
+
+			# Add fill in the stripe area
+			set i 0
+			foreach fmacro $stripefills {
+			    set fw [set ${fmacro}(w)]
+			    set xpos [+ $px $xadd]
+			    puts $fanno "- ${fmacro}_${r}_${s}_${i} ${fmacro} + PLACED ( $xpos $py ) $orient ;"
+			    set xadd [+ $xadd $fw]
+			    incr i
+			}
+			if {$s < $numstripes} {
+			    set xbreak [+ $xbreak $stripepitch]
+			    incr s
+			} else {
+			    set xbreak $rowmax
+			}
 		    }
 		}
 		set px [+ $px $xadd] 
@@ -1314,21 +1317,30 @@ if {$dostripes && $dostretch} {
 	puts stout "Error:  Cannot open file ${topname}.obsx for writing!"
 	return
     }
+    puts stdout "Adjusting obstructions for power striping"
+    # puts stdout "numstripes = $numstripes"
+    # puts stdout "stripewidth = $stripewidth um"
+    # puts stdout "stripepitch = $stripepitch um"
+    # puts stdout "stripeoffset = $stripeoffset um"
     while {[gets $infobs line] >= 0} {
 	if [regexp {[ \t]*obstruction[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]*$} $line \
 			lmatch xlow ylow xhigh yhigh layer] {
+            # puts stdout "In: $xlow $ylow $xhigh $yhigh $layer"
 	    if {$xlow > $stripeoffset} {
 		set ns [expr int(($xlow - $stripeoffset + $stripepitch) / $stripepitch)]
 		if {$ns > $numstripes} {set ns $numstripes}
 		set nw [* $ns $stripewidth]
 		set xlow [+ $xlow $nw]
+		# puts stdout "xlow adjust ns = $ns nw = $nw"
 	    } 
 	    if {$xhigh > $stripeoffset} {
-		set ns [expr int(($xlow - $stripeoffset + $stripepitch) / $stripepitch)]
+		set ns [expr int(($xhigh - $stripeoffset + $stripepitch) / $stripepitch)]
 		if {$ns > $numstripes} {set ns $numstripes}
 		set nw [* $ns $stripewidth]
 		set xhigh [+ $xhigh $nw]
+		# puts stdout "xhigh adjust ns = $ns nw = $nw"
 	    }
+            # puts stdout "Out: $xlow $ylow $xhigh $yhigh $layer"
 	    puts $outfobs "obstruction $xlow $ylow $xhigh $yhigh $layer"
 	} else {
 	    puts $outfobs $outline
