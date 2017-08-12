@@ -84,6 +84,7 @@ cd ${synthdir}
 
 echo ""
 echo "Running vesta static timing analysis"
+echo "${bindir}/vesta ${vesta_options} ${rootname}.rtlnopwr.v ${libertypath}"
 echo ""
 ${bindir}/vesta ${vesta_options} ${rootname}.rtlnopwr.v \
 		${libertypath} |& tee -a ${synthlog}

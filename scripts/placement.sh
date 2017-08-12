@@ -489,7 +489,7 @@ if ($makedef == 1) then
 
       echo "Copying ${rootname}.rtl.v and ${rootname}.rtlnopwr.v to backups"
       cp ${rootname}.rtl.v ${rootname}_synth.rtl.v
-      cp ${rootname}.rtlnopr.v ${rootname}_synth.rtlnopwr.v
+      cp ${rootname}.rtlnopwr.v ${rootname}_synth.rtlnopwr.v
 
       echo "Running blif2Verilog." |& tee -a ${synthlog}
       ${bindir}/blif2Verilog -c -v ${vddnet} -g ${gndnet} \

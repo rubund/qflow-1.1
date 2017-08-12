@@ -1,7 +1,8 @@
 #ifndef _HASH_H
 #define _HASH_H
 
-#define OBJHASHSIZE 997
+// #define OBJHASHSIZE 997
+#define OBJHASHSIZE 99997
 
 struct hashlist {
   char *name;
