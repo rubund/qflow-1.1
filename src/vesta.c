@@ -3125,7 +3125,6 @@ compdelay(ddataptr *a, ddataptr *b)
 void
 delayRead(FILE *fdly, struct hashlist **Nethash)
 {
-    fprintf(stdout, "delayRead\n");
     char c[128];
     char d[128];
     char *token;
@@ -3136,6 +3135,8 @@ delayRead(FILE *fdly, struct hashlist **Nethash)
     int i;
     int numRxers;
 
+    // fprintf(stdout, "delayRead\n");
+
     token = advancetoken(fdly, 0);
 
     while (token != NULL) {
@@ -3143,14 +3144,24 @@ delayRead(FILE *fdly, struct hashlist **Nethash)
         numRxers = 0;
         testnet = (netptr)HashLookup(token, Nethash);
 
+	if (testnet == NULL) {
+	    fprintf(stderr, "ERROR: Net %s not found in hash table\n", token);
+	    exit(-1);
+	}
+
         char *saveptr;
         char *saveptr2;
 
         // Read driver of interconnect and total interconnect capacitance
         fgets(c, 128, fdly);
+
         //fprintf(stdout, "\tDriver Inst: %s\n", strtok_r(c, "/", &saveptr));
         //fprintf(stdout, "\tDriver Pin: %s\n", strtok_r(NULL, " ", &saveptr));
         //fprintf(stdout, "\tTotC: %f\n", strtof(saveptr, NULL));
+
+	if (c[1] == '\0') {
+	    fprintf(stderr, "ERROR: Driver not found for net %s\n", testnet->name);
+	}
 
         testnet->loadr = (strtod(saveptr, NULL)) / 1e3;
         testnet->loadf = testnet->loadr;
@@ -3174,10 +3185,10 @@ delayRead(FILE *fdly, struct hashlist **Nethash)
                 testconn = testnet->receivers[i];
 
                 if (testnet->type == OUTTERM) {
-                    fprintf(stdout, "\tNet connects to output and has no receiving instance pin\n");
+                    // fprintf(stdout, "\tNet connects to output and has no receiving instance pin\n");
                     testconn->icDelay = strtof(saveptr, NULL);
                 } else {
-                    fprintf(stdout, "\trefinstname: %s\n", testconn->refinst->name);
+                    // fprintf(stdout, "\trefinstname: %s\n", testconn->refinst->name);
 
                     if (!strcmp(testconn->refinst->name, c)) {
 
@@ -3193,8 +3204,10 @@ delayRead(FILE *fdly, struct hashlist **Nethash)
         }
 
         if (numRxers != testnet->fanout) {
-            fprintf(stderr, "ERROR: Net %s did not have a number of receivers in delay file equal to the fanout of %d", testnet->name, testnet->fanout);
-            exit(-1);
+            fprintf(stderr, "ERROR: Net %s only had %d receivers in delay file, "
+			" but expected a fanout of %d\n", testnet->name,
+			numRxers, testnet->fanout);
+            // exit(-1);
         }
 
         token = advancetoken(fdly, 0);
@@ -3307,6 +3320,7 @@ main(int objc, char *argv[])
     char *delayfile = NULL;
     int ival, firstarg = 1;
     int longFormat = 0;    // Is the long format option present
+    int numReportPaths = 20;
 
     // Liberty database
 
@@ -3358,6 +3372,10 @@ main(int objc, char *argv[])
           longFormat = 1;
           firstarg++;
        }
+       else if (!strcmp(argv[firstarg], "-n") || !strcmp(argv[firstarg], "--num-paths")) {
+	  numReportPaths = strtod(argv[firstarg + 1], NULL);
+	  firstarg += 2;
+       }
        else if (!strcmp(argv[firstarg], "-v") || !strcmp(argv[firstarg], "--verbose")) {
           sscanf(argv[firstarg + 1], "%d", &ival);
           verbose = (unsigned char)ival;
@@ -3383,6 +3401,7 @@ main(int objc, char *argv[])
         fprintf(stderr, "--delay <delay_file>   or      -d <delay_file>\n");
         fprintf(stderr, "--period <period>      or      -p <period>\n");
         fprintf(stderr, "--load <load>          or      -l <load>\n");
+	fprintf(stderr, "--num-paths <numPaths>	or	-n <numPaths>\n");
         fprintf(stderr, "--long                 or      -L\n");
         fprintf(stderr, "--verbose <level>      or      -v <level>\n");
         fprintf(stderr, "--exhaustive           or      -e\n");
@@ -3590,13 +3609,14 @@ main(int objc, char *argv[])
 
     qsort(orderedpaths, numpaths, sizeof(ddataptr), (__compar_fn_t)compdelay);
 
-    /*--------------------------------------------------*/
-    /* Report on top 20 maximum delay paths             */
-    /*--------------------------------------------------*/
+    /*----------------------------------------------------*/
+    /* Report on top <numReportPaths> maximum delay paths */
+    /*----------------------------------------------------*/
 
-    fprintf(stdout, "\nTop %d maximum delay paths:\n", (numpaths >= 20) ? 20 : numpaths);
+    fprintf(stdout, "\nTop %d maximum delay paths:\n", (numpaths >= numReportPaths)
+		? numReportPaths : numpaths);
     badtiming = 0;
-    for (i = 0; ((i < 20) && (i < numpaths)); i++) {
+    for (i = 0; ((i < numReportPaths) && (i < numpaths)); i++) {
         testddata = orderedpaths[i];
         for (testbt = testddata->backtrace; testbt->next; testbt = testbt->next);
 
@@ -3682,13 +3702,14 @@ main(int objc, char *argv[])
 
     qsort(orderedpaths, numpaths, sizeof(ddataptr), (__compar_fn_t)compdelay);
 
-    /*--------------------------------------------------*/
-    /* Report on top 20 minimum delay paths             */
-    /*--------------------------------------------------*/
+    /*----------------------------------------------------*/
+    /* Report on top <numReportPaths> minimum delay paths */
+    /*----------------------------------------------------*/
 
-    fprintf(stdout, "\nTop %d minimum delay paths:\n", (numpaths >= 20) ? 20 : numpaths);
+    fprintf(stdout, "\nTop %d minimum delay paths:\n", (numpaths >= numReportPaths) ?
+		numReportPaths : numpaths);
     badtiming = 0;
-    for (i = numpaths; (i > (numpaths - 20)) && (i > 0); i--) {
+    for (i = numpaths; (i > (numpaths - numReportPaths)) && (i > 0); i--) {
         testddata = orderedpaths[i - 1];
         for (testbt = testddata->backtrace; testbt->next; testbt = testbt->next);
 
@@ -3766,12 +3787,13 @@ main(int objc, char *argv[])
 
     qsort(orderedpaths, numpaths, sizeof(ddataptr), (__compar_fn_t)compdelay);
 
-    /*--------------------------------------------------*/
-    /* Report on top 20 maximum delay paths             */
-    /*--------------------------------------------------*/
+    /*----------------------------------------------------*/
+    /* Report on top <numReportPaths> maximum delay paths */
+    /*----------------------------------------------------*/
 
-    fprintf(stdout, "\nTop %d maximum delay paths:\n", (numpaths >= 20) ? 20 : numpaths);
-    for (i = 0; ((i < 20) && (i < numpaths)); i++) {
+    fprintf(stdout, "\nTop %d maximum delay paths:\n", (numpaths >= numReportPaths) ?
+			numReportPaths : numpaths);
+    for (i = 0; ((i < numReportPaths) && (i < numpaths)); i++) {
         testddata = orderedpaths[i];
         for (testbt = testddata->backtrace; testbt->next; testbt = testbt->next);
 
@@ -3841,12 +3863,13 @@ main(int objc, char *argv[])
 
     qsort(orderedpaths, numpaths, sizeof(ddataptr), (__compar_fn_t)compdelay);
 
-    /*--------------------------------------------------*/
-    /* Report on top 20 minimum delay paths             */
-    /*--------------------------------------------------*/
+    /*----------------------------------------------------*/
+    /* Report on top <numReportPaths> minimum delay paths */
+    /*----------------------------------------------------*/
 
-    fprintf(stdout, "\nTop %d minimum delay paths:\n", (numpaths >= 20) ? 20 : numpaths);
-    for (i = numpaths; (i > (numpaths - 20)) && (i > 0); i--) {
+    fprintf(stdout, "\nTop %d minimum delay paths:\n", (numpaths >= numReportPaths) ?
+			numReportPaths : numpaths);
+    for (i = numpaths; (i > (numpaths - numReportPaths)) && (i > 0); i--) {
         testddata = orderedpaths[i - 1];
         for (testbt = testddata->backtrace; testbt->next; testbt = testbt->next);
 

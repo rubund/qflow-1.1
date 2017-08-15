@@ -103,21 +103,21 @@ if [catch {open $leffile r} flef] {
     puts stderr "Error: second argument is not a LEF file ($leffile)!"
     exit 0
 } else {
-    puts "Loaded LEF file ($leffile) for reading..."
+    puts "Opened LEF file ($leffile) for reading..."
 }
 
 if [catch {open $bliffile r} fnet] {
     puts stderr "Error: can't open file $bliffile for reading!"
     exit 0
 } else {
-    puts "Loaded BLIF file ($bliffile) for reading ..."
+    puts "Opened BLIF file ($bliffile) for reading ..."
 }
 
 if [catch {open $celfile w} fcel] {
     puts stderr "Error: can't open file $celfile for writing!"
     exit 0
 } else {
-    puts "Loaded CEL file ($celfile) for writing..."
+    puts "Opened CEL file ($celfile) for writing..."
 }
 
 set fhardmacro {}
@@ -183,11 +183,11 @@ proc parse_port {pinname macroname leffile ox oy} {
 	    set ${macroname}(${pinname},yp) $yp
 	} elseif [regexp {[ \t]*END[ \t]*$} $line lmatch] { break }
     }
-    puts -nonewline stdout "${pinname}"
-    puts -nonewline stdout " [set ${macroname}(${pinname},xp)]"
-    puts -nonewline stdout " [set ${macroname}(${pinname},yp)]"
-    puts -nonewline stdout " [set ${macroname}(${pinname},layer)]"
-    puts stdout ""
+    # puts -nonewline stdout "${pinname}"
+    # puts -nonewline stdout " [set ${macroname}(${pinname},xp)]"
+    # puts -nonewline stdout " [set ${macroname}(${pinname},yp)]"
+    # puts -nonewline stdout " [set ${macroname}(${pinname},layer)]"
+    # puts stdout ""
 }
 
 #----------------------------------------------------------------
@@ -196,17 +196,17 @@ proc parse_port {pinname macroname leffile ox oy} {
 
 proc parse_pin {pinname macroname leffile ox oy} {
     global $macroname
-    puts "parse_pin"
-    puts "macroname: $macroname, pinname: $pinname"
+    # puts "parse_pin"
+    # puts "macroname: $macroname, pinname: $pinname"
 
     while {[gets $leffile line] >= 0} {
 	if [regexp {[ \t]*PORT} $line lmatch] {
 	    parse_port $pinname $macroname $leffile $ox $oy
 	} elseif [regexp {[ \t]*DIRECTION[ \t]+([^ \t]+)[ \t]*;} $line lmatch porttype] {
-	    puts "Port type: $porttype"
+	    # puts "Port type: $porttype"
 	    set ${macroname}(${pinname},type) [string trim $porttype]
 	} elseif [regexp {[ \t]*DIRECTION[ \t]+([^:]+);} $line lmatch porttype] {
-	    puts "Port type: $porttype"
+	    # puts "Port type: $porttype"
 	    set ${macroname}(${pinname},type) [string trim $porttype]
 	} elseif [regexp {[ \t]*END[ \t]+([^ \t]+)[ \t]*$} $line lmatch pintest] {
 	    if {"$pintest" == "$pinname"} {
@@ -303,7 +303,8 @@ proc parse_layer {leffile layername} {
 proc parse_hard_macro {leffile macroname} {
     global $macroname units
 
-    puts stderr "Parsing hard macro $macroname:  Ports are:"
+    # puts stderr "Parsing hard macro $macroname:  Ports are:"
+    puts stderr "Parsing hard macro $macroname"
     while {[gets $leffile line] >= 0} {
 	if [regexp {[ \t]*SYMMETRY[ \t]+(.+)[ \t]*;} $line lmatch symmetry] {
 	    set ${macroname}(symmetry) $symmetry
@@ -357,7 +358,8 @@ proc parse_hard_macro {leffile macroname} {
 proc parse_macro {leffile macroname} {
     global $macroname units
 
-    puts stderr "Parsing macro $macroname:  Ports are:"
+    # puts stderr "Parsing macro $macroname:  Ports are:"
+    puts stderr "Parsing macro $macroname"
     while {[gets $leffile line] >= 0} {
 	if [regexp {[ \t]*SYMMETRY[ \t]+(.+)[ \t]*;} $line lmatch symmetry] {
 	    set ${macroname}(symmetry) $symmetry

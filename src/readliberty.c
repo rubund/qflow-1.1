@@ -1260,7 +1260,7 @@ get_pin_by_name(Cell *curcell, char *pinname)
 
     for (curpin = curcell->pins; curpin; curpin = curpin->next) {
         if (!strcmp(curpin->name, pinname)) {
-            printf("found pin %s\n", pinname);
+            // printf("found pin %s\n", pinname);
             return curpin;
         }
     }

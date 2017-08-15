@@ -21,7 +21,7 @@ HAVE_ABC = @HAVE_ABC@
 HAVE_YOSYS = @HAVE_YOSYS@
 HAVE_ODIN_II = @HAVE_ODIN_II@
 
-OBJECTS = blif2BSpice.o blif2Verilog.o blifFanout.o vesta.o spice2delay.o
+OBJECTS = blif2BSpice.o blif2Verilog.o blifFanout.o vesta.o spice2delay.o rc2dly.o
 HASHLIB = hash.o
 LIBERTYLIB = readliberty.o
 SOURCES := $(patsubst %.o,%.c,$(OBJECTS))
@@ -46,6 +46,9 @@ vesta$(EXEEXT): vesta.o $(HASHLIB)
 
 spice2delay$(EXEEXT): spice2delay.o $(HASHLIB) $(LIBERTYLIB)
 	$(CC) $(LDFLAGS) spice2delay.o $(HASHLIB) $(LIBERTYLIB) -o $@ $(LIBS)
+
+rc2dly$(EXEEXT): rc2dly.o $(LIBERTYLIB)
+	$(CC) $(LDFLAGS) rc2dly.o $(LIBERTYLIB) -o $@ $(LIBS)
 
 install: $(TARGETS)
 	@echo "Installing verilog and BDNET file format handlers"

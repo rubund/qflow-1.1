@@ -11,7 +11,7 @@ if ($#argv < 2) then
 endif
 
 # Split out options from the main arguments
-set argline=(`getopt "nr" $argv[1-]`)
+set argline=(`getopt "d" $argv[1-]`)
 
 set options=`echo "$argline" | awk 'BEGIN {FS = "-- "} END {print $1}'`
 set cmdargs=`echo "$argline" | awk 'BEGIN {FS = "-- "} END {print $2}'`
@@ -26,8 +26,23 @@ else
    echo       <project_path> is the name of the project directory containing
    echo                 a file called qflow_vars.sh.
    echo       <source_name> is the root name of the verilog file
+   echo	      [options] are:
+   echo			-d	use delay file to back-annotate wire delays
+   echo
    exit 1
 endif
+
+set dodelays=0
+
+foreach option (${argline})
+   switch (${option})
+      case -d:
+         set dodelays=1
+         breaksw
+      case --:
+         break
+   endsw
+end
 
 set projectpath=$argv1
 set sourcename=$argv2
@@ -50,7 +65,7 @@ if (-f project_vars.sh) then
 endif
 
 if (! ${?vesta_options} ) then
-   set vesta_options = ${options}
+   set vesta_options = ""
 endif
 
 # logfile should exist, but just in case. . .
@@ -76,15 +91,76 @@ endif
 # Done with initialization
 #----------------------------------------------------------
 
-cd ${synthdir}
+cd ${layoutdir}
 
 #------------------------------------------------------------------
 # Generate the static timing analysis results
 #------------------------------------------------------------------
 
+if ($dodelays == 1) then
+    # Check if a .rc file exists.  This file is produced by qrouter
+    # and contains delay information in nested RC pairs
+    if ( -f ${rootname}.rc ) then
+
+       echo "Running rc2vestaCleanse.py ${synthdir}/${rootname}_anno.blif" \
+		|& tee -a ${synthlog}
+       echo "		${rootname}.rc ${synthdir}/${rootname}.rc" \
+		|& tee -a ${synthlog}
+
+       # Run syntax cleaner and place result in the layout directory
+       ${scriptdir}/rc2vestaCleanse.py ${synthdir}/${rootname}_anno.blif \
+		${rootname}.rc ${synthdir}/${rootname}.rc
+
+       cd ${synthdir}
+
+       # Spot check for output file
+       if ( !( -f ${rootname}.rc || \
+		( -M ${rootname}_anno.blif < -M ${rootname}.rc ))) then
+	  echo "rc2vestaCleanse.py failure:  No file ${rootname}.rc created." \
+		|& tee -a ${synthlog}
+          echo "Premature exit." |& tee -a ${synthlog}
+          echo "Synthesis flow stopped due to error condition." >> ${synthlog}
+          exit 1
+       endif
+
+       # Run rc2dly
+       echo "Converting qrouter output to vesta delay format" |& tee -a ${synthlog}
+       echo "Running rc2dly -r ${rootname}.rc -l ${libertypath} -d ${rootname}.dly" \
+		|& tee -a ${synthlog}
+       ${bindir}/rc2dly -r ${rootname}.rc -l ${libertypath} -d ${rootname}.dly
+
+       # Spot check for output file
+       if ( !( -f ${rootname}.dly || \
+		( -M ${rootname}.dly < -M ${rootname}.rc ))) then
+	  echo "rc2dly failure:  No file ${rootname}.dly created." \
+		|& tee -a ${synthlog}
+          echo "Premature exit." |& tee -a ${synthlog}
+          echo "Synthesis flow stopped due to error condition." >> ${synthlog}
+          exit 1
+       endif
+
+       # Add delay file, assuming it exists.
+       set vesta_options = "-d ${rootname}.dly ${vesta_options}"
+    else
+       echo "Error:  No file ${rootname}.rc, cannot back-annotate delays!" \
+		|& tee -a ${synthlog}
+       echo "Premature exit." |& tee -a ${synthlog}
+       echo "Synthesis flow stopped due to error condition." >> ${synthlog}
+       exit 1
+    endif
+endif
+
+cd ${synthdir}
+
 echo ""
-echo "Running vesta static timing analysis"
-echo "${bindir}/vesta ${vesta_options} ${rootname}.rtlnopwr.v ${libertypath}"
+if ($dodelays == 1) then
+   echo "Running vesta static timing analysis with back-annotated extracted wire delays" \
+		|& tee -a ${synthlog}
+else
+   echo "Running vesta static timing analysis" |& tee -a ${synthlog}
+endif
+echo "vesta ${vesta_options} ${rootname}.rtlnopwr.v ${libertypath}" \
+		|& tee -a ${synthlog}
 echo ""
 ${bindir}/vesta ${vesta_options} ${rootname}.rtlnopwr.v \
 		${libertypath} |& tee -a ${synthlog}

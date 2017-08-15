@@ -24,6 +24,7 @@ TCL_SCRIPTS += place2net2.tcl ypostproc.tcl ybuffer.tcl
 TCL_SCRIPTS += decongest.tcl addspacers.tcl getfillcell.tcl
 TCL_SCRIPTS += blifanno.tcl powerbus.tcl
 PYTHON_SCRIPTS = spi2xspice.py
+PYTHON_SCRIPTS += rc2vestaCleanse.py
 SHELL_SCRIPTS = synthesize.sh placement.sh router.sh vesta.sh
 SHELL_SCRIPTS += qflow.sh checkdirs.sh
 SHELL_SCRIPTS += cleanup.sh display.sh createGDS.sh

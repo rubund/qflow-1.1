@@ -30,6 +30,7 @@ AC_CHECK_PROG(AUTOCONF, autoconf, autoconf, :)
 AC_CHECK_PROG(CP, cp, cp, :)
 AC_CHECK_PROG(RM, rm, rm, :)
 AC_CHECK_PROG(HAVE_PYTHON3, python3, yes, no)
+AC_CHECK_PROG(HAVE_PYTHON, python, yes, no)
 
 AC_LANG_C
 AC_HEADER_STDC
@@ -154,6 +155,7 @@ AC_SUBST(QFLOW_LIB_DIR)
 
 AC_SUBST(TCLSH_PATH)
 AC_SUBST(HAVE_PYTHON3)
+AC_SUBST(HAVE_PYTHON)
 
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
@@ -201,6 +203,10 @@ fi
 
 if test "x${HAVE_PYTHON3}" == "x"; then
    echo "No python3 on system, will not install spi2xspice.py"
+fi
+
+if test "x${HAVE_PYTHON}" == "x"; then
+   echo "No python on system, will not install rc2vestaCleanse.py"
 fi
 
 echo "----------------------------------------------------"
