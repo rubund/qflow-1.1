@@ -59,6 +59,9 @@ endif
 
 if (! ${?qrouter_options} ) then
    set qrouter_options = ${options}
+   if (!($?route_show)) then
+      set qrouter_options = "-noc ${qrouter_options}"
+   endif
 endif
 
 # logfile should exist, but just in case. . .
@@ -115,7 +118,7 @@ if (${scripting} == "T") then
 #------------------------------------------------------------------
 
    echo "Running qrouter $version"
-   ${bindir}/qrouter -noc -s ${rootname}.cfg ${qrouter_options} \
+   ${bindir}/qrouter ${qrouter_options} -s ${rootname}.cfg \
 		|& tee -a ${synthlog} | \
 		grep - -e fail -e Progress -e remaining.\*00\$ \
 		-e remaining:\ \[1-9\]0\\\?\$ -e \\\*\\\*\\\*
