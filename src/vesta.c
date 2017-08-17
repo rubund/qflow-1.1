@@ -17,8 +17,10 @@
 /*              -l <value>      Output load, in fF              */
 /*              -v <level>      set verbose mode                */
 /*              -V              report version number           */
+/*		-n <number>	number of paths to print	*/
 /*		-L 		Long format (print paths)	*/
 /*              -e              exhaustive search               */
+/*		-s <file>	summary file or directory	*/
 /*                                                              */
 /*      Currently the only output this tool generates is a      */
 /*      list of paths with negative slack.  If no paths have    */
@@ -57,6 +59,8 @@
 #include <string.h>
 #include <errno.h>
 #include <stdarg.h>
+#include <sys/types.h>	// For mkdir()
+#include <sys/stat.h>	// For mkdir()
 #include <math.h>       // Temporary, for fabs()
 #include "hash.h"       // For net hash table
 
@@ -3221,31 +3225,32 @@ delayRead(FILE *fdly, struct hashlist **Nethash)
 
 void
 print_path_component(int netFWidth, int instFWidth, int pinFWidth, int recvFWidth, 
-                     btptr backtrace)
+                     btptr backtrace, FILE *file)
 {
     // Return immediately if we have niether a driver or a receiver instance
-    if( backtrace->receiver->refnet->driver == NULL && backtrace->receiver->refinst == NULL ) return;
+    if (backtrace->receiver->refnet->driver == NULL &&
+		backtrace->receiver->refinst == NULL) return;
 
-    fprintf(stdout, " %8.1f ps", backtrace->delay);
-    if( backtrace->receiver->refnet != NULL ) {
+    fprintf(file, " %8.1f ps", backtrace->delay);
+    if (backtrace->receiver->refnet != NULL) {
         netptr net = backtrace->receiver->refnet;
-        fprintf(stdout, "  %*s: ", netFWidth, net->name);
-        if( net->driver != NULL ) {   // If the driver exists, it has a refinst
-            fprintf(stdout, "%*s/%*s",
+        fprintf(file, "  %*s: ", netFWidth, net->name);
+        if (net->driver != NULL) {   // If the driver exists, it has a refinst
+            fprintf(file, "%*s/%*s",
                     instFWidth, net->driver->refinst->name,
                     -pinFWidth, net->driver->refpin->name);
         }
         else {
-            fprintf(stdout, "%*s", instFWidth+pinFWidth+1, "");
+            fprintf(file, "%*s", instFWidth + pinFWidth + 1, "");
         }
     }
-    fprintf(stdout, " -> ");
-    if( backtrace->receiver->refinst != NULL ) {
-        fprintf(stdout, "%*s/%s",
+    fprintf(file, " -> ");
+    if (backtrace->receiver->refinst != NULL) {
+        fprintf(file, "%*s/%s",
                 recvFWidth, backtrace->receiver->refinst->name,
                               backtrace->receiver->refpin->name);
     }
-    fprintf(stdout, "\n");
+    fprintf(file, "\n");
 }
 
 /*--------------------------------------------------------------*/
@@ -3254,7 +3259,7 @@ print_path_component(int netFWidth, int instFWidth, int pinFWidth, int recvFWidt
 /*--------------------------------------------------------------*/
 
 void
-print_path(btptr backtrace)
+print_path(btptr backtrace, FILE *file)
 {
     int netFWidth = 0;
     int instFWidth = 0;
@@ -3265,23 +3270,23 @@ print_path(btptr backtrace)
     // The back trace is last entry first, so we do one pointer reversal to
     // get it in first entry first order, then we reverse it back again.
 
-    while( curr != NULL ) {
+    while (curr != NULL) {
         // Find max length of net name, inst name and pin name
         netptr net = curr->receiver->refnet;
-        if( net != NULL ) {
+        if (net != NULL) {
             int namelen = strlen(net->name);
-            if(namelen > netFWidth) netFWidth = namelen;
-            if( net->driver != NULL ) { // If driver exists, it has an instance
-                int instlen = strlen( net->driver->refinst->name );
-                if( instlen > instFWidth ) instFWidth = instlen;
-                int pinlen = strlen( net->driver->refpin->name );
-                if( pinlen > pinFWidth ) pinFWidth = pinlen;
+            if (namelen > netFWidth) netFWidth = namelen;
+            if (net->driver != NULL) { // If driver exists, it has an instance
+                int instlen = strlen(net->driver->refinst->name);
+                if (instlen > instFWidth) instFWidth = instlen;
+                int pinlen = strlen(net->driver->refpin->name);
+                if (pinlen > pinFWidth) pinFWidth = pinlen;
             }
         }
         // Find max length of receiving inst name
-        if( curr->receiver->refinst != NULL ) {
+        if (curr->receiver->refinst != NULL) {
             int instlen = strlen(curr->receiver->refinst->name);
-            if( instlen > recvFWidth ) recvFWidth = instlen;
+            if (instlen > recvFWidth) recvFWidth = instlen;
         }
         // Do the first pointer reversal
         btptr tmp = curr->next;
@@ -3293,15 +3298,15 @@ print_path(btptr backtrace)
     curr = prev;
     prev = NULL;
 
-    while( curr != NULL ) {
-        print_path_component( netFWidth, instFWidth, pinFWidth, recvFWidth, curr );
+    while (curr != NULL) {
+        print_path_component(netFWidth, instFWidth, pinFWidth, recvFWidth, curr, file);
         // Do the second pointer reversal
         btptr tmp = curr->next;
         curr->next = prev;
         prev = curr;
         curr = tmp;
     }
-    fprintf(stdout, "\n");
+    fprintf(file, "\n");
 }
 
 /*--------------------------------------------------------------*/
@@ -3314,10 +3319,13 @@ main(int objc, char *argv[])
     FILE *flib;
     FILE *fsrc;
     FILE *fdly;
+    FILE *fsum;
     double period = 0.0;
     double outLoad = 0.0;
     double inTrans = 0.0;
     char *delayfile = NULL;
+    char *summaryfile = NULL;
+    char *summarydir = NULL;
     int ival, firstarg = 1;
     int longFormat = 0;    // Is the long format option present
     int numReportPaths = 20;
@@ -3375,6 +3383,19 @@ main(int objc, char *argv[])
        else if (!strcmp(argv[firstarg], "-n") || !strcmp(argv[firstarg], "--num-paths")) {
 	  numReportPaths = strtod(argv[firstarg + 1], NULL);
 	  firstarg += 2;
+       }
+       else if (!strcmp(argv[firstarg], "-s") || !strcmp(argv[firstarg], "--summary")) {
+          summaryfile = strdup(argv[firstarg + 1]);
+          /* Rule:  If argument has a file extension, then treat it as a single	*/
+	  /* file and dump all output to it.  If not, then treat it as a	*/
+	  /* directory and create individual files for each timing check.	*/
+          if (strrchr(summaryfile, '.') == NULL) {
+	     summarydir = summaryfile;
+	     summaryfile = NULL;
+	     /* Make directory if it doesn't exist */
+	     mkdir(summarydir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	  }
+          firstarg += 2;
        }
        else if (!strcmp(argv[firstarg], "-v") || !strcmp(argv[firstarg], "--verbose")) {
           sscanf(argv[firstarg + 1], "%d", &ival);
@@ -3613,7 +3634,28 @@ main(int objc, char *argv[])
     /* Report on top <numReportPaths> maximum delay paths */
     /*----------------------------------------------------*/
 
+    if (summarydir != NULL) {
+        summaryfile = (char *)malloc(256);
+	sprintf(summaryfile, "%s/reg_to_reg_max.log", summarydir);
+    }
+    if (summaryfile != NULL) {
+        fsum = fopen(summaryfile, "w");
+        if (fsum == NULL) {
+            fprintf(stderr, "Cannot open %s for writing\n", summaryfile);
+	    if (summarydir == NULL) {
+ 		free(summaryfile);
+		summaryfile = NULL;
+	    }
+        }
+    }
+    if (fsum)
+	fprintf(fsum, "Vesta static timing analysis, "
+			"register-to-register maximum timing\n");
+
     fprintf(stdout, "\nTop %d maximum delay paths:\n", (numpaths >= numReportPaths)
+		? numReportPaths : numpaths);
+    if (fsum)
+	fprintf(fsum, "\nTop %d maximum delay paths:\n", (numpaths >= numReportPaths)
 		? numReportPaths : numpaths);
     badtiming = 0;
     for (i = 0; ((i < numReportPaths) && (i < numpaths)); i++) {
@@ -3627,9 +3669,20 @@ main(int objc, char *argv[])
                         testddata->backtrace->receiver->refinst->name,
                         testddata->backtrace->receiver->refpin->name,
                         testddata->delay);
+            if (fsum) fprintf(fsum, "Path %s/%s to %s/%s delay %g ps",
+                        testbt->receiver->refinst->name,
+                        testbt->receiver->refpin->name,
+                        testddata->backtrace->receiver->refinst->name,
+                        testddata->backtrace->receiver->refpin->name,
+                        testddata->delay);
         }
         else {
             fprintf(stdout, "Path %s/%s to output pin %s delay %g ps",
+                        testbt->receiver->refinst->name,
+                        testbt->receiver->refpin->name,
+                        testddata->backtrace->receiver->refnet->name,
+                        testddata->delay);
+            if (fsum) fprintf(fsum, "Path %s/%s to output pin %s delay %g ps",
                         testbt->receiver->refinst->name,
                         testbt->receiver->refpin->name,
                         testddata->backtrace->receiver->refnet->name,
@@ -3639,25 +3692,34 @@ main(int objc, char *argv[])
         if (period > 0.0) {
             slack = period - testddata->delay;
             fprintf(stdout, "   Slack = %g ps", slack);
+            if (fsum) fprintf(fsum, "   Slack = %g ps", slack);
             if (slack < 0.0) badtiming = 1;
         }
         fprintf(stdout, "\n");
-        if( longFormat ) print_path(testddata->backtrace);
+        if (fsum) fprintf(fsum, "\n");
+        if (longFormat) print_path(testddata->backtrace, stdout);
+        if (fsum) print_path(testddata->backtrace, fsum);
     }
 
     if (period > 0.0) {
         if (badtiming) {
             fprintf(stdout, "ERROR:  Design fails timing requirements.\n");
+            if (fsum) fprintf(fsum, "ERROR:  Design fails timing requirements.\n");
         }
         else {
             fprintf(stdout, "Design meets timing requirements.\n");
+            if (fsum) fprintf(fsum, "Design meets timing requirements.\n");
         }
     }
     else if (orderedpaths[0] != NULL) {
         fprintf(stdout, "Computed maximum clock frequency (zero slack) = %g MHz\n",
                 (1.0E6 / orderedpaths[0]->delay));
+        if (fsum) fprintf(fsum, "Computed maximum clock frequency "
+			"(zero slack) = %g MHz\n",
+                	(1.0E6 / orderedpaths[0]->delay));
     }
     fprintf(stdout, "-----------------------------------------\n\n");
+    if (fsum) fprintf(fsum, "-----------------------------------------\n\n");
     fflush(stdout);
 
     /*--------------------------------------------------*/
@@ -3706,8 +3768,22 @@ main(int objc, char *argv[])
     /* Report on top <numReportPaths> minimum delay paths */
     /*----------------------------------------------------*/
 
+    if (summarydir != NULL) {
+        if (fsum != NULL) fclose(fsum);
+	sprintf(summaryfile, "%s/reg_to_reg_min.log", summarydir);
+        fsum = fopen(summaryfile, "w");
+        if (fsum == NULL) {
+	    fprintf(stderr, "Cannot open %s for writing\n", summaryfile);
+	}
+    }
+    if (fsum)
+	fprintf(fsum, "Vesta static timing analysis, "
+			"register-to-register minimum timing\n");
+
     fprintf(stdout, "\nTop %d minimum delay paths:\n", (numpaths >= numReportPaths) ?
 		numReportPaths : numpaths);
+    if (fsum) fprintf(fsum, "\nTop %d minimum delay paths:\n",
+		(numpaths >= numReportPaths) ?  numReportPaths : numpaths);
     badtiming = 0;
     for (i = numpaths; (i > (numpaths - numReportPaths)) && (i > 0); i--) {
         testddata = orderedpaths[i - 1];
@@ -3720,6 +3796,12 @@ main(int objc, char *argv[])
                         testddata->backtrace->receiver->refinst->name,
                         testddata->backtrace->receiver->refpin->name,
                         testddata->delay);
+            if (fsum) fprintf(fsum, "Path %s/%s to %s/%s delay %g ps\n",
+                        testbt->receiver->refinst->name,
+                        testbt->receiver->refpin->name,
+                        testddata->backtrace->receiver->refinst->name,
+                        testddata->backtrace->receiver->refpin->name,
+                        testddata->delay);
         }
         else {
             fprintf(stdout, "Path %s/%s to output pin %s delay %g ps\n",
@@ -3727,17 +3809,28 @@ main(int objc, char *argv[])
                         testbt->receiver->refpin->name,
                         testddata->backtrace->receiver->refnet->name,
                         testddata->delay);
+            if (fsum) fprintf(fsum, "Path %s/%s to output pin %s delay %g ps\n",
+                        testbt->receiver->refinst->name,
+                        testbt->receiver->refpin->name,
+                        testddata->backtrace->receiver->refnet->name,
+                        testddata->delay);
         }
-        if( longFormat ) print_path(testddata->backtrace);
+        if (longFormat) print_path(testddata->backtrace, stdout);
+        if (fsum) print_path(testddata->backtrace, fsum);
 
         if (testddata->delay < 0.0) badtiming = 1;
     }
-    if (badtiming)
+    if (badtiming) {
         fprintf(stdout, "ERROR:  Design fails minimum hold timing.\n");
-    else
+        if (fsum) fprintf(fsum, "ERROR:  Design fails minimum hold timing.\n");
+    }
+    else {
         fprintf(stdout, "Design meets minimum hold timing.\n");
+        if (fsum) fprintf(fsum, "Design meets minimum hold timing.\n");
+    }
 
     fprintf(stdout, "-----------------------------------------\n\n");
+    if (fsum) fprintf(fsum, "-----------------------------------------\n\n");
     fflush(stdout);
 
     /*--------------------------------------------------*/
@@ -3791,7 +3884,22 @@ main(int objc, char *argv[])
     /* Report on top <numReportPaths> maximum delay paths */
     /*----------------------------------------------------*/
 
+    if (summarydir != NULL) {
+        if (fsum != NULL) fclose(fsum);
+	sprintf(summaryfile, "%s/pin_to_reg_max.log", summarydir);
+        fsum = fopen(summaryfile, "w");
+        if (fsum == NULL) {
+	    fprintf(stderr, "Cannot open %s for writing\n", summaryfile);
+	}
+    }
+    if (fsum)
+	fprintf(fsum, "Vesta static timing analysis, "
+			"pin-to-register and register-to-pin maximum timing\n");
+
     fprintf(stdout, "\nTop %d maximum delay paths:\n", (numpaths >= numReportPaths) ?
+			numReportPaths : numpaths);
+    if (fsum) fprintf(fsum, "\nTop %d maximum delay paths:\n",
+			(numpaths >= numReportPaths) ?
 			numReportPaths : numpaths);
     for (i = 0; ((i < numReportPaths) && (i < numpaths)); i++) {
         testddata = orderedpaths[i];
@@ -3803,17 +3911,28 @@ main(int objc, char *argv[])
                         testddata->backtrace->receiver->refinst->name,
                         testddata->backtrace->receiver->refpin->name,
                         testddata->delay);
+            if (fsum) fprintf(fsum, "Path input pin %s to %s/%s delay %g ps\n",
+                        testbt->receiver->refnet->name,
+                        testddata->backtrace->receiver->refinst->name,
+                        testddata->backtrace->receiver->refpin->name,
+                        testddata->delay);
         }
         else {
             fprintf(stdout, "Path input pin %s to output pin %s delay %g ps\n",
                         testbt->receiver->refnet->name,
                         testddata->backtrace->receiver->refnet->name,
                         testddata->delay);
+            if (fsum) fprintf(fsum, "Path input pin %s to output pin %s delay %g ps\n",
+                        testbt->receiver->refnet->name,
+                        testddata->backtrace->receiver->refnet->name,
+                        testddata->delay);
         }
-        if( longFormat ) print_path(testddata->backtrace);
+        if (longFormat) print_path(testddata->backtrace, stdout);
+        if (fsum) print_path(testddata->backtrace, fsum);
     }
 
     fprintf(stdout, "-----------------------------------------\n\n");
+    if (fsum) fprintf(fsum, "-----------------------------------------\n\n");
     fflush(stdout);
 
     /*--------------------------------------------------*/
@@ -3867,7 +3986,22 @@ main(int objc, char *argv[])
     /* Report on top <numReportPaths> minimum delay paths */
     /*----------------------------------------------------*/
 
+    if (summarydir != NULL) {
+        if (fsum != NULL) fclose(fsum);
+	sprintf(summaryfile, "%s/pin_to_reg_min.log", summarydir);
+        fsum = fopen(summaryfile, "w");
+        if (fsum == NULL) {
+	    fprintf(stderr, "Cannot open %s for writing\n", summaryfile);
+	}
+    }
+    if (fsum)
+	fprintf(fsum, "Vesta static timing analysis, "
+			"pin-to-register and register-to-pin minimum timing\n");
+
     fprintf(stdout, "\nTop %d minimum delay paths:\n", (numpaths >= numReportPaths) ?
+			numReportPaths : numpaths);
+    if (fsum) fprintf(fsum, "\nTop %d minimum delay paths:\n",
+			(numpaths >= numReportPaths) ?
 			numReportPaths : numpaths);
     for (i = numpaths; (i > (numpaths - numReportPaths)) && (i > 0); i--) {
         testddata = orderedpaths[i - 1];
@@ -3879,18 +4013,33 @@ main(int objc, char *argv[])
                         testddata->backtrace->receiver->refinst->name,
                         testddata->backtrace->receiver->refpin->name,
                         testddata->delay);
+            if (fsum) fprintf(fsum, "Path input pin %s to %s/%s delay %g ps\n",
+                        testbt->receiver->refnet->name,
+                        testddata->backtrace->receiver->refinst->name,
+                        testddata->backtrace->receiver->refpin->name,
+                        testddata->delay);
         }
         else {
             fprintf(stdout, "Path input pin %s to output pin %s delay %g ps\n",
                         testbt->receiver->refnet->name,
                         testddata->backtrace->receiver->refnet->name,
                         testddata->delay);
+            if (fsum) fprintf(fsum, "Path input pin %s to output pin %s delay %g ps\n",
+                        testbt->receiver->refnet->name,
+                        testddata->backtrace->receiver->refnet->name,
+                        testddata->delay);
         }
-        if( longFormat ) print_path(testddata->backtrace);
+        if (longFormat) print_path(testddata->backtrace, stdout);
+        if (fsum) print_path(testddata->backtrace, fsum);
     }
 
     fprintf(stdout, "-----------------------------------------\n\n");
+    if (fsum) fprintf(fsum, "-----------------------------------------\n\n");
     fflush(stdout);
+
+    if (fsum != NULL) fclose(fsum);
+    if (summaryfile != NULL) free(summaryfile);
+    if (summarydir != NULL) free(summarydir);
 
     /*--------------------------------------------------*/
     /* Clean up the path list                           */
