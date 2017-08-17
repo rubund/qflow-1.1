@@ -106,15 +106,23 @@ else
    set spicepath=${techdir}/${spicefile}
 endif
 
-# logfile should exist, but just in case. . .
+mkdir -p ${logdir}
+set lastlog=${logdir}/synth.log
+set synthlog=${logdir}/place.log
+rm -f ${synthlog} >& /dev/null
+rm -f ${logdir}/sta.log >& /dev/null
+rm -f ${logdir}/route.log >& /dev/null
+rm -f ${logdir}/post_sta.log >& /dev/null
 touch ${synthlog}
+set date=`date`
+echo "Qflow placement logfile created on $date" > ${synthlog}
 
 #----------------------------------------------------------
 # Done with initialization
 #----------------------------------------------------------
 
 # Check if last line of log file says "error condition"
-set errcond = `tail -1 ${synthlog} | grep "error condition" | wc -l`
+set errcond = `tail -1 ${lastlog} | grep "error condition" | wc -l`
 if ( ${errcond} == 1 ) then
    echo "Synthesis flow stopped on error condition.  Placement will not proceed"
    echo "until error condition is cleared."

@@ -64,11 +64,18 @@ if (! ${?qrouter_options} ) then
    endif
 endif
 
-# logfile should exist, but just in case. . .
+mkdir -p ${logdir}
+set lastlog=${logdir}/sta.log
+set synthlog=${logdir}/route.log
+rm -f ${synthlog} >& /dev/null
+rm -f ${logdir}/post_sta.log >& /dev/null
 touch ${synthlog}
+set date=`date`
+echo "Qflow route logfile created on $date" > ${synthlog}
+
 
 # Check if last line of log file says "error condition"
-set errcond = `tail -1 ${synthlog} | grep "error condition" | wc -l`
+set errcond = `tail -1 ${lastlog} | grep "error condition" | wc -l`
 if ( ${errcond} == 1 ) then
    echo "Synthesis flow stopped on error condition.  Detail routing"
    echo "will not proceed until error condition is cleared."

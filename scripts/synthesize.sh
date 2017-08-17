@@ -63,9 +63,18 @@ if (-f project_vars.sh) then
    source project_vars.sh
 endif
 
-# Reset the logfile
+mkdir -p ${logdir}
+set synthlog=${logdir}/synth.log
+
+# Reset all the logfiles
 rm -f ${synthlog} >& /dev/null
+rm -f ${logdir}/place.log >& /dev/null
+rm -f ${logdir}/sta.log >& /dev/null
+rm -f ${logdir}/route.log >& /dev/null
+rm -f ${logdir}/post_sta.log >& /dev/null
 touch ${synthlog}
+set date=`date`
+echo "Qflow synthesis logfile created on $date" > ${synthlog}
 
 # Prepend techdir to libertyfile unless libertyfile begins with "/"
 set abspath=`echo ${libertyfile} | cut -c1`

@@ -90,7 +90,9 @@ cd ${synthdir}
 rm -f ${origname}_bak.blif
 rm -f ${origname}_tmp.blif
 rm -f ${rootname}_orig.blif
+rm -f ${rootname}_anno.blif
 rm -f ${rootname}_nofanout
+rm -f tmp.blif
 
 #----------------------------------------------------------
 # Clean up the (excessively numerous) GrayWolf files
@@ -104,6 +106,7 @@ rm -f ${rootname}.blk ${rootname}.gen ${rootname}.gsav ${rootname}.history
 rm -f ${rootname}.log ${rootname}.mcel ${rootname}.mdat ${rootname}.mgeo
 rm -f ${rootname}.mout ${rootname}.mpin ${rootname}.mpth ${rootname}.msav
 rm -f ${rootname}.mver ${rootname}.mvio ${rootname}.stat ${rootname}.out
+rm -f ${rootname}.mtmp ${rootname}.rc
 rm -f ${rootname}.pth ${rootname}.sav ${rootname}.scel
 rm -f ${rootname}.txt ${rootname}.info
 

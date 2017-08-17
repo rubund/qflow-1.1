@@ -45,7 +45,6 @@ set dosynth=0
 set doplace=0
 set dosta=0
 set doroute=0
-set dodecongest=0
 set dobackanno=0
 set doclean=0
 set dodisplay=0
@@ -87,6 +86,7 @@ while ($#argv > 0)
 	 shift
 	 breaksw
       case sta:
+      case vesta:
 	 set dosta=1
 	 set actions=1
 	 shift
@@ -94,10 +94,6 @@ while ($#argv > 0)
       case route:
 	 set doroute=1
 	 set actions=1
-	 shift
-	 breaksw
-      case decongest:
-	 set dodecongest=1
 	 shift
 	 breaksw
       case backanno:
@@ -108,7 +104,6 @@ while ($#argv > 0)
 	 set dosynth=1
 	 set doplace=1
 	 set doroute=1
-	 set dodecongest=1
 	 set dobackanno=1
 	 set actions=1
 	 shift
@@ -118,7 +113,6 @@ while ($#argv > 0)
 	 set doplace=1
 	 set dosta=1
 	 set doroute=1
-	 set dodecongest=1
 	 set dobackanno=1
 	 set doclean=1
 	 set dodisplay=1
@@ -164,7 +158,6 @@ if ($dohelp == 1 || $#argv != 0) then
    echo "            place			Run initial placement"
    echo "            sta			Static timing analysis"
    echo "            route			Run placement and route"
-   echo "            decongest			Run congestion analysis, final place and route"
    echo "            backanno			Post-route timing analysis"
    echo "            clean			Remove temporary working files"
    echo "            display			Display routed result"
@@ -292,7 +285,7 @@ echo "set layoutdir=${layoutdir}" >> ${varfile}
 echo "set techname=${techname}" >> ${varfile}
 echo "set scriptdir=${scriptdir}" >> ${varfile}
 echo "set bindir=${bindir}" >> ${varfile}
-echo "set synthlog=${projectpath}/synth.log" >> ${varfile}
+echo "set logdir=${projectpath}/log" >> ${varfile}
 echo "#-------------------------------------------" >> ${varfile}
 echo "" >> ${varfile}
 
@@ -340,7 +333,7 @@ if ( ! -f ${userfile} ) then
    echo ""
    echo "" >> ${userfile}
    echo "# Minimum operating period of the clock (in ps)" >> ${userfile}
-   echo '# set vesta_options = "--period 1E5"' >> ${userfile}
+   echo '# set vesta_options = "--summary reports --long --period 1E5"' >> ${userfile}
    echo "" >> ${userfile}
    echo "#------------------------------------------------------------" >> ${userfile}
    echo "" >> ${userfile}
@@ -371,17 +364,6 @@ if ($doroute == 0) then
    echo -n "# " >> ${execfile}
 endif
 echo "${scriptdir}/router.sh ${projectpath} ${modulename} || exit 1" >> ${execfile}
-
-if ($dodecongest == 0) then
-   echo -n "# " >> ${execfile}
-endif
-echo "${scriptdir}/placement.sh -f -d ${projectpath} ${modulename} || exit 1" >> ${execfile}
-
-if ($dodecongest == 0) then
-   echo -n "# " >> ${execfile}
-endif
-echo -n "${scriptdir}/router.sh ${projectpath} ${modulename} || exit 1" >> ${execfile}
-echo ' $status' >> ${execfile}
 
 if ($dobackanno == 0) then
    echo -n "# " >> ${execfile}

@@ -68,11 +68,24 @@ if (! ${?vesta_options} ) then
    set vesta_options = ""
 endif
 
-# logfile should exist, but just in case. . .
+mkdir -p ${logdir}
+if ($dodelays == 1) then
+   set lastlog=${logdir}/route.log
+   set synthlog=${logdir}/post_sta.log
+else
+   set lastlog=${logdir}/place.log
+   set synthlog=${logdir}/sta.log
+   rm -f ${logdir}/route.log >& /dev/null
+   rm -f ${logdir}/post_sta.log >& /dev/null
+endif
+rm -f ${synthlog} >& /dev/null
 touch ${synthlog}
+set date=`date`
+echo "Qflow static timing analysis logfile created on $date" > ${synthlog}
+
 
 # Check if last line of log file says "error condition"
-set errcond = `tail -1 ${synthlog} | grep "error condition" | wc -l`
+set errcond = `tail -1 ${lastlog} | grep "error condition" | wc -l`
 if ( ${errcond} == 1 ) then
    echo "Synthesis flow stopped on error condition.  Static timing analysis"
    echo "will not proceed until error condition is cleared."
