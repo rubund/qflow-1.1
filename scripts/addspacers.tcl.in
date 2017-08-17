@@ -884,10 +884,13 @@ set numcomps [+ $number $numfills]
 
 # Analyze design for power striping
 
+if {$dostripes} {
+    set stripefills {}
+}
+
 if {$dostripes && ($rowmax > $stripepitch)} {
 
     # What sizes of fill make up the stripe width, to the nearest unit cell?
-    set stripefills {}
 
     set xtot 0
     while {1} {
