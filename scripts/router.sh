@@ -57,10 +57,19 @@ if (-f project_vars.sh) then
    source project_vars.sh
 endif
 
+# "-nog" (no graphics) has no graphics or console.  "-noc"
+# (no console) has graphics but no console.  Console must
+# always be disabled or else the script cannot capture the
+# qrouter output.
+
 if (! ${?qrouter_options} ) then
    set qrouter_options = ${options}
-   if (!($?route_show)) then
+   if (! ${?route_show} ) then
+      set qrouter_options = "-nog ${qrouter_options}"
+   else if (${route_show} == 1) then
       set qrouter_options = "-noc ${qrouter_options}"
+   else
+      set qrouter_options = "-nog ${qrouter_options}"
    endif
 endif
 
