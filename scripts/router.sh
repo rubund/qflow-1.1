@@ -66,10 +66,12 @@ if (! ${?qrouter_options} ) then
    set qrouter_options = ${options}
    if (! ${?route_show} ) then
       set qrouter_options = "-nog ${qrouter_options}"
-   else if (${route_show} == 1) then
-      set qrouter_options = "-noc ${qrouter_options}"
    else
-      set qrouter_options = "-nog ${qrouter_options}"
+      if (${route_show} == 1) then
+         set qrouter_options = "-noc ${qrouter_options}"
+      else
+         set qrouter_options = "-nog ${qrouter_options}"
+      endif
    endif
 endif
 
