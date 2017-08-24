@@ -21,6 +21,7 @@
 /*		-L 		Long format (print paths)	*/
 /*              -e              exhaustive search               */
 /*		-s <file>	summary file or directory	*/
+/*		-c		cleanup of net name syntax	*/
 /*                                                              */
 /*      Currently the only output this tool generates is a      */
 /*      list of paths with negative slack.  If no paths have    */
@@ -47,7 +48,7 @@
 /*      ...                                                     */
 /*      <input_terminal_N> <delay_N>                            */
 /*                                                              */
-/*      -<net_capacitance> is in fF                             */
+/*      -<net_capacitance> is in pF                             */
 /*      -Values <delay_i> are in ps                             */
 /*      -<input_terminal_N> line *must* be following by a blank */
 /*       line                                                   */
@@ -343,8 +344,9 @@ typedef struct _connlist {
 
 /* Global variables */
 
-unsigned char verbose;          /* Level of debug output generated */
-unsigned char exhaustive;       /* Exhaustive search mode */
+unsigned char verbose;       /* Level of debug output generated */
+unsigned char exhaustive;    /* Exhaustive search mode */
+unsigned char cleanup;       /* Clean up net name syntax */
 
 /*--------------------------------------------------------------*/
 /* Grab a token from the input                                  */
@@ -3145,30 +3147,61 @@ delayRead(FILE *fdly, struct hashlist **Nethash)
 
     while (token != NULL) {
 
+        char *saveptr;
+        char *saveptr2;
+
         numRxers = 0;
         testnet = (netptr)HashLookup(token, Nethash);
+
+	/* Syntax cleanup for net renaming between various	*/
+	/* netlist formats.					*/
+
+	if ((testnet == NULL) && cleanup) {
+	    char *mchr, *dchr;
+	    if ((mchr = strrchr(token, '<')) != NULL) {
+		if ((dchr = strrchr(token, '>')) != NULL) {
+		    if (mchr < dchr) {
+			*mchr = '[';
+			*dchr = ']';
+		    }
+		}
+	    }
+	    for (mchr = token; *mchr != '\0'; mchr++) {
+		if ((*mchr == ':') || (*mchr == '.') || (*mchr == '$')
+				|| (*mchr == '<') || (*mchr == '>'))
+		    *mchr = '_';
+	    }
+	    testnet = (netptr)HashLookup(token, Nethash);
+	    if (testnet == NULL) {
+		for (mchr = token; *mchr != '\0'; mchr++) {
+		    if ((*mchr == '[') || (*mchr == ']'))
+			*mchr = '_';
+		}
+	    }
+	    testnet = (netptr)HashLookup(token, Nethash);
+	}
 
 	if (testnet == NULL) {
 	    fprintf(stderr, "ERROR: Net %s not found in hash table\n", token);
 	    exit(-1);
 	}
 
-        char *saveptr;
-        char *saveptr2;
-
         // Read driver of interconnect and total interconnect capacitance
         fgets(c, 128, fdly);
 
-        //fprintf(stdout, "\tDriver Inst: %s\n", strtok_r(c, "/", &saveptr));
-        //fprintf(stdout, "\tDriver Pin: %s\n", strtok_r(NULL, " ", &saveptr));
+        strtok_r(c, "/", &saveptr);
+        //fprintf(stdout, "\tDriver Inst: %s\n", saveptr);
+        strtok_r(NULL, " ", &saveptr);
+        //fprintf(stdout, "\tDriver Pin: %s\n", saveptr);
         //fprintf(stdout, "\tTotC: %f\n", strtof(saveptr, NULL));
 
 	if (c[1] == '\0') {
 	    fprintf(stderr, "ERROR: Driver not found for net %s\n", testnet->name);
 	}
 
-        testnet->loadr = (strtod(saveptr, NULL)) / 1e3;
-        testnet->loadf = testnet->loadr;
+        /* Load in .dly file is in pF, but we keep fF in loadr/loadf */
+        // testnet->loadr = (strtod(saveptr, NULL)) * 1e3;
+        // testnet->loadf = testnet->loadr;
 
         fgets(c, 128, fdly);
 
@@ -3358,6 +3391,7 @@ main(int objc, char *argv[])
 
     verbose = 0;
     exhaustive = 0;
+    cleanup = 0;
 
     while ((firstarg < objc) && (*argv[firstarg] == '-')) {
        if (!strcmp(argv[firstarg], "-d") || !strcmp(argv[firstarg], "--delay")) {
@@ -3406,6 +3440,10 @@ main(int objc, char *argv[])
           exhaustive = 1;
           firstarg++;
        }
+       else if (!strcmp(argv[firstarg], "-c") || !strcmp(argv[firstarg], "--cleanup")) {
+          cleanup = 1;
+          firstarg++;
+       }
        else if (!strcmp(argv[firstarg], "-V") || !strcmp(argv[firstarg], "--version")) {
           fprintf(stderr, "Vesta Static Timing Analyzer version 0.3\n");
           exit(0);
@@ -3426,6 +3464,7 @@ main(int objc, char *argv[])
         fprintf(stderr, "--long                 or      -L\n");
         fprintf(stderr, "--verbose <level>      or      -v <level>\n");
         fprintf(stderr, "--exhaustive           or      -e\n");
+        fprintf(stderr, "--cleanup              or      -c\n");
         fprintf(stderr, "--version              or      -V\n");
         exit (1);
     }

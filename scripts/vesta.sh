@@ -115,36 +115,17 @@ if ($dodelays == 1) then
     # and contains delay information in nested RC pairs
     if ( -f ${rootname}.rc ) then
 
-       echo "Running rc2vestaCleanse.py ${synthdir}/${rootname}_anno.blif" \
-		|& tee -a ${synthlog}
-       echo "		${rootname}.rc ${synthdir}/${rootname}.rc" \
-		|& tee -a ${synthlog}
-
-       # Run syntax cleaner and place result in the layout directory
-       ${scriptdir}/rc2vestaCleanse.py ${synthdir}/${rootname}_anno.blif \
-		${rootname}.rc ${synthdir}/${rootname}.rc
-
-       cd ${synthdir}
-
-       # Spot check for output file
-       if ( !( -f ${rootname}.rc || \
-		( -M ${rootname}_anno.blif < -M ${rootname}.rc ))) then
-	  echo "rc2vestaCleanse.py failure:  No file ${rootname}.rc created." \
-		|& tee -a ${synthlog}
-          echo "Premature exit." |& tee -a ${synthlog}
-          echo "Synthesis flow stopped due to error condition." >> ${synthlog}
-          exit 1
-       endif
-
        # Run rc2dly
        echo "Converting qrouter output to vesta delay format" |& tee -a ${synthlog}
        echo "Running rc2dly -r ${rootname}.rc -l ${libertypath} -d ${rootname}.dly" \
 		|& tee -a ${synthlog}
-       ${bindir}/rc2dly -r ${rootname}.rc -l ${libertypath} -d ${rootname}.dly
+       ${bindir}/rc2dly -r ${rootname}.rc -l ${libertypath} -d ${synthdir}/${rootname}.dly
+
+       cd ${synthdir}
 
        # Spot check for output file
        if ( !( -f ${rootname}.dly || \
-		( -M ${rootname}.dly < -M ${rootname}.rc ))) then
+		( -M ${rootname}.dly < -M ${layoutdir}/${rootname}.rc ))) then
 	  echo "rc2dly failure:  No file ${rootname}.dly created." \
 		|& tee -a ${synthlog}
           echo "Premature exit." |& tee -a ${synthlog}
@@ -152,10 +133,10 @@ if ($dodelays == 1) then
           exit 1
        endif
 
-       # Add delay file, assuming it exists.
-       set vesta_options = "-d ${rootname}.dly ${vesta_options}"
+       # Add delay file to vesta options, assuming it exists.
+       set vesta_options = "-c -d ${rootname}.dly ${vesta_options}"
     else
-       echo "Error:  No file ${rootname}.rc, cannot back-annotate delays!" \
+       echo "Error:  No file ${rootname}.dly, cannot back-annotate delays!" \
 		|& tee -a ${synthlog}
        echo "Premature exit." |& tee -a ${synthlog}
        echo "Synthesis flow stopped due to error condition." >> ${synthlog}
