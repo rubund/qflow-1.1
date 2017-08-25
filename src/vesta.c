@@ -3200,8 +3200,8 @@ delayRead(FILE *fdly, struct hashlist **Nethash)
 	}
 
         /* Load in .dly file is in pF, but we keep fF in loadr/loadf */
-        // testnet->loadr = (strtod(saveptr, NULL)) * 1e3;
-        // testnet->loadf = testnet->loadr;
+        testnet->loadr = (strtod(saveptr, NULL)) * 1e3;
+        testnet->loadf = testnet->loadr;
 
         fgets(c, 128, fdly);
 

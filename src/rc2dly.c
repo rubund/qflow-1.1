@@ -70,6 +70,7 @@ typedef struct _node {
     ritemptr    rlist;
     double      nodeCap;
     double      totCapDownstream;
+    double      totCapDownstreamLessGates;
     short       visited;
 } node;
 
@@ -78,6 +79,7 @@ void print_node (nodeptr node) {
     printf("Type: %d\n", node->type);
     printf("Cap: %.10f\n", node->nodeCap);
     printf("DownstreamCap: %.10f\n", node->totCapDownstream);
+    printf("DownstreamCapLessGates: %.10f\n", node->totCapDownstreamLessGates);
     printf("\n");
 }
 
@@ -248,14 +250,18 @@ void sum_downstream_cap(nodeptr curr_node, nodeptr prev_node) {
 
             sum_downstream_cap(curr_ritem->r->node1, curr_node);
             curr_node->totCapDownstream += (curr_ritem->r->node1->totCapDownstream + curr_ritem->r->node1->nodeCap);
-
+	    if (curr_ritem->r->node1->type != SNK) {
+		curr_node->totCapDownstreamLessGates += (curr_ritem->r->node1->totCapDownstreamLessGates + curr_ritem->r->node1->nodeCap);
+	    }
         } else if (     (curr_ritem->r->node2 != prev_node)
                     &&  (curr_ritem->r->node2 != curr_node)
            ) {
 
             sum_downstream_cap(curr_ritem->r->node2, curr_node);
             curr_node->totCapDownstream += (curr_ritem->r->node2->totCapDownstream + curr_ritem->r->node2->nodeCap);
-
+	    if (curr_ritem->r->node2->type != SNK) {
+		curr_node->totCapDownstreamLessGates += (curr_ritem->r->node2->totCapDownstreamLessGates + curr_ritem->r->node2->nodeCap);
+	    }
         }
 
         curr_ritem = curr_ritem->next;
@@ -781,7 +787,7 @@ int main (int argc, char* argv[]) {
 
             if (verbose > 3) fprintf(stdout, "ELM: %s\t\t%s\t\t%f\n", currElm->name, currElm->src->name, currElm->src->nodeCap + currElm->src->totCapDownstream);
             fprintf(outfile, "%s\n", currElm->name);
-            fprintf(outfile, "%s %f\n", currElm->src->name, currElm->src->totCapDownstream);
+            fprintf(outfile, "%s %f\n", currElm->src->name, currElm->src->totCapDownstreamLessGates);
  
             currSnk = currElm->snklist;
  
