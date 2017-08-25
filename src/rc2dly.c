@@ -490,6 +490,7 @@ int main (int argc, char* argv[]) {
 
     if (verbose > 3) {
         for (newcell = cells; newcell; newcell = newcell->next) {
+	    if (newcell->name == NULL) continue;  /* "don't use" cell */
             fprintf(stdout, "Cell: %s\n", newcell->name);
             fprintf(stdout, "   Function: %s\n", newcell->function);
             for (newpin = newcell->pins; newpin; newpin = newpin->next) {
