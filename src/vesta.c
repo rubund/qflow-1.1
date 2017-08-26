@@ -3687,6 +3687,8 @@ main(int objc, char *argv[])
 	    }
         }
     }
+    else
+	fsum = NULL;
     if (fsum)
 	fprintf(fsum, "Vesta static timing analysis, "
 			"register-to-register maximum timing\n");
