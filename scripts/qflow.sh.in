@@ -328,6 +328,7 @@ if ( ! -f ${userfile} ) then
    echo "# -------------------------------------------" >> ${userfile}
    echo "# set route_show = " >> ${userfile}
    echo "# set route_layers = " >> ${userfile}
+   echo "# set via_use = " >> ${userfile}
    echo "# set via_stacks = " >> ${userfile}
    echo "# set qrouter_options = " >> ${userfile}
    echo ""

@@ -377,10 +377,11 @@ if ($makedef == 1) then
 
    # Create the main configuration file
 
-   # Variables "via_pattern" (none, normal, invert) and "via_stacks"
-   # can be specified in the tech script, and are appended to the
-   # qrouter configuration file.  via_stacks defaults to 2 if not
-   # specified.  It can be overridden from the user's .cfg2 file.
+   # Variables "via_pattern" (none, normal, invert), "via_stacks",
+   # and "via_use" can be specified in the tech script, and are
+   # appended to the qrouter configuration file.  via_stacks defaults
+   # to 2 if not specified.  It can be overridden from the user's .cfg2
+   # file.
 
    if (${scripting} == "T") then
       echo "# qrouter runtime script for project ${rootname}" > ${rootname}.cfg
@@ -391,6 +392,10 @@ if ($makedef == 1) then
       endif
       echo "read_lef ${lefpath}" >> ${rootname}.cfg
       echo "catch {layers ${route_layers}}" >> ${rootname}.cfg
+      if ( ${?via_use} ) then
+         echo "" >> ${rootname}.cfg
+         echo "via use ${via_use}" >> ${rootname}.cfg
+      endif
       if ( ${?via_pattern} ) then
          echo "" >> ${rootname}.cfg
          echo "via pattern ${via_pattern}" >> ${rootname}.cfg

@@ -87,11 +87,18 @@ echo "Qflow route logfile created on $date" > ${synthlog}
 
 
 # Check if last line of log file says "error condition"
-set errcond = `tail -1 ${lastlog} | grep "error condition" | wc -l`
-if ( ${errcond} == 1 ) then
-   echo "Synthesis flow stopped on error condition.  Detail routing"
-   echo "will not proceed until error condition is cleared."
-   exit 1
+if ( ! -f ${lastlog} ) then
+   set lastlog=${logdir}/place.log
+endif
+if ( ! -f ${lastlog} ) then
+   echo "Warning:  No placement or static timing analysis logfiles found."
+else
+   set errcond = `tail -1 ${lastlog} | grep "error condition" | wc -l`
+   if ( ${errcond} == 1 ) then
+      echo "Synthesis flow stopped on error condition.  Detail routing"
+      echo "will not proceed until error condition is cleared."
+      exit 1
+   endif
 endif
 
 # Prepend techdir to leffile unless leffile begins with "/"
