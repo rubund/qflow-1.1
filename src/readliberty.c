@@ -1088,7 +1088,7 @@ read_liberty(char *libfile, char *pattern)
 					    *(newcell->values + j * reftable->tsize
 							+ i) = gval * time_unit;
 					    while (*iptr != ' ' && *iptr != '\"' &&
-							*iptr != ',')
+							*iptr != ',' && *iptr != '\0')
 						iptr++;
 					}
 				    }
