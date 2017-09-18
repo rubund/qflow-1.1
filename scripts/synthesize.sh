@@ -368,6 +368,7 @@ opt
 clean
 rename -enumerate
 write_blif ${blif_opts} ${modulename}_mapped.blif
+stat
 EOF
 
 #---------------------------------------------------------------------
