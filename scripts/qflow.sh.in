@@ -318,43 +318,43 @@ if ( ! -f ${userfile} ) then
    #------------------------------------------------------------------
 
    if ( ${?yosys_options_default} ) then
-      echo "set yosys_options = ${yosys_options_default}" >> ${userfile}
+      echo set yosys_options = \"${yosys_options_default}\" >> ${userfile}
    else
       echo "# set yosys_options = " >> ${userfile}
    endif
 
    if ( ${?yosys_script_default} ) then
-      echo "set yosys_script = ${yosys_script_default}" >> ${userfile}
+      echo set yosys_script = \"${yosys_script_default}\" >> ${userfile}
    else
       echo "# set yosys_script = " >> ${userfile}
    endif
 
    if ( ${?yosys_debug_default} ) then
-      echo "set yosys_debug = ${yosys_debug_default}" >> ${userfile}
+      echo set yosys_debug = \"${yosys_debug_default}\" >> ${userfile}
    else
       echo "# set yosys_debug = " >> ${userfile}
    endif
 
    if ( ${?abc_script_default} ) then
-      echo "set abc_script = ${abc_script_default}" >> ${userfile}
+      echo set abc_script = \"${abc_script_default}\" >> ${userfile}
    else
       echo "# set abc_script = " >> ${userfile}
    endif
 
    if ( ${?nobuffers_default} ) then
-      echo "set nobuffers = ${nobuffers_default}" >> ${userfile}
+      echo set nobuffers = \"${nobuffers_default}\" >> ${userfile}
    else
       echo "# set nobuffers = " >> ${userfile}
    endif
 
    if ( ${?nofanout_default} ) then
-      echo "set nofanout = ${nofanout_default}" >> ${userfile}
+      echo set nofanout = \"${nofanout_default}\" >> ${userfile}
    else
       echo "# set nofanout = " >> ${userfile}
    endif
 
    if ( ${?fanout_options_default} ) then
-      echo "set fanout_options = ${fanout_options_default}" >> ${userfile}
+      echo set fanout_options = \"${fanout_options_default}\" >> ${userfile}
    else
       echo "# set fanout_options = " >> ${userfile}
    endif
@@ -364,19 +364,19 @@ if ( ! -f ${userfile} ) then
    echo "# -------------------------------------------" >> ${userfile}
 
    if ( ${?initial_density_default} ) then
-      echo "set initial_density = ${initial_density_default}" >> ${userfile}
+      echo set initial_density = \"${initial_density_default}\" >> ${userfile}
    else
       echo "# set initial_density = " >> ${userfile}
    endif
 
    if ( ${?graywolf_options_default} ) then
-      echo "set graywolf_options = ${graywolf_options_default}" >> ${userfile}
+      echo set graywolf_options = \"${graywolf_options_default}\" >> ${userfile}
    else
       echo "# set graywolf_options = " >> ${userfile}
    endif
 
    if ( ${?addspacers_options_default} ) then
-      echo 'set addspacers_options = ${addspacers_options_default}' >> ${userfile}
+      echo set addspacers_options = \"${addspacers_options_default}\" >> ${userfile}
    else
       echo '# set addspacers_options = "-stripe 5 200 PG -nostretch"' >> ${userfile}
    endif
@@ -386,31 +386,31 @@ if ( ! -f ${userfile} ) then
    echo "# -------------------------------------------" >> ${userfile}
 
    if ( ${?route_show_default} ) then
-      echo "set route_show = ${route_show_default}" >> ${userfile}
+      echo set route_show = \"${route_show_default}\" >> ${userfile}
    else
       echo "# set route_show = " >> ${userfile}
    endif
 
    if ( ${?route_layers_default} ) then
-      echo "set route_layers = ${route_layers_default}" >> ${userfile}
+      echo set route_layers = \"${route_layers_default}\" >> ${userfile}
    else
       echo "# set route_layers = " >> ${userfile}
    endif
 
    if ( ${?via_use_default} ) then
-      echo "set via_use = ${via_use_default}" >> ${userfile}
+      echo set via_use = \"${via_use_default}\" >> ${userfile}
    else
       echo "# set via_use = " >> ${userfile}
    endif
 
    if ( ${?via_stacks_default} ) then
-      echo "set via_stacks = ${via_stacks_default}" >> ${userfile}
+      echo set via_stacks = \"${via_stacks_default}\" >> ${userfile}
    else
       echo "# set via_stacks = " >> ${userfile}
    endif
 
    if ( ${?qrouter_options_default} ) then
-      echo "set qrouter_options = ${qrouter_options_default}" >> ${userfile}
+      echo set qrouter_options = \"${qrouter_options_default}\" >> ${userfile}
    else
       echo "# set qrouter_options = " >> ${userfile}
    endif
@@ -420,7 +420,7 @@ if ( ! -f ${userfile} ) then
    echo "# Minimum operating period of the clock (in ps)" >> ${userfile}
 
    if ( ${?vesta_options_default} ) then
-      echo 'set vesta_options = ${vesta_options_default}' >> ${userfile}
+      echo set vesta_options = \"${vesta_options_default}\" >> ${userfile}
    else
       echo '# set vesta_options = "--summary reports --long --period 1E5"' >> ${userfile}
    endif
