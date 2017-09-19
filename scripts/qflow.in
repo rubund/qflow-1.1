@@ -4,6 +4,5 @@
 # qflow --- main program launcher
 #------------------------------------------------------------------
 
-QFLOW_SCRIPT_DIR/qflow.sh $argv
-
-exit 0
+exec QFLOW_SCRIPT_DIR/qflow.sh $argv:q
+exit 1
