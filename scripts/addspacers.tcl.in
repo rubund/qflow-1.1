@@ -299,7 +299,7 @@ proc parse_port {pinname macroname leffile ox oy} {
 		    break
 		}
 	    }
-	    if {$i < [llenght $xvals]} {
+	    if {$i < [llength $xvals]} {
 		set llx [* $ox $units]
 		set lly [* $ybase $units]
 		set urx [* $x2 $units]
@@ -992,7 +992,7 @@ if {$dostripes && ($rowmax > $stripepitch)} {
 	    # If xtot is zero, then there were no fill cells narrower than
 	    # the stripe width, so just choose the smallest fill cell.
 	    if {$xtot == 0} {
-		lappend stripefills [lindex $fillwidths $fmidx] 0]
+		lappend stripefills [lindex [lindex $fillwidths $fmidx] 0]
 		set xtot [+ $xtot $fmin]
 	    }
 	    break
