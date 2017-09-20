@@ -251,7 +251,77 @@ proc parse_port {pinname macroname leffile ox oy} {
 	    # To do:  If bus is made of more than one rectangle, merge
 	    # leftmost and rightmost rectangles into one entry.
 
-	# NOTE: To do: parse POLYGON records, if this ever comes up in practice.
+	} elseif [regexp {[ \t]*POLYGON[ \t]+(.*)[ \t]*;} $line lmatch rest] {
+
+	    # parse POLYGON records.  To capture the main power stripe
+	    # from a polygon, look for one line stretching from beginning
+	    # to end of the cell.  Then find the one or two lines attached
+	    # to the long one at the corners.  Assume the power stripe
+	    # height is the shorter of the two lines.
+
+	    # Sort polygon points into X and Y arrays
+	    set i 0
+	    set xvals {}
+	    set yvals {}
+	    foreach coord $rest {
+		if {$i == 0} {
+		    lappend xvals $coord
+		} else {
+		    lappend yvals $coord
+		}
+		set i [expr 1 - $i]
+	    }
+
+	    # Find the pair of points that covers the width of the cell
+	    for {set i 1} {$i < [llength $xvals]} {incr i} {
+		set x0 [lindex $xvals $i-1]
+		set x1 [lindex $xvals $i]
+		if {($x0 <= 0 && $x1 >= 2.48) || ($x0 >= 2.48 && $x1 <= 0)} {
+		    set ybase [lindex $yvals $i]
+		    if {$i > 1} {
+			set ytop [lindex $yvals $i-1]
+		    }
+		    if {$i < [expr [llength $xvals] - 1]} {
+			if {$i > 1} {
+			    set ycheck [lindex $yvals $i+1]
+			    if {[expr abs($ycheck - $ybase)] > [expr abs($ytop - $ybase)]} {
+				set ytop $ycheck
+			    }
+			} else {
+			    set ytop [lindex $yvals $i+1]
+			}
+		    }
+		    if {$ytop < $ybase} {
+			set ycheck $ybase
+			set ybase $ytop
+			set ytop $ycheck
+		    }
+		    break
+		}
+	    }
+	    if {$i < [llenght $xvals]} {
+		set llx [* $ox $units]
+		set lly [* $ybase $units]
+		set urx [* $x2 $units]
+		set ury [* $ytop $units]
+	    } else {
+		# If port geometry did not span the cell then it was
+		# probably not a power pin.  Just capture the bounds.
+		set llx [lindex $xvals 0]
+		set lly [lindex $yvals 0]
+		set urx $llx
+		set ury $lly
+		for {set i 1} {$i < [llength $xvals]} {incr i} {
+		    if {[lindex $xvals $i] > $urx} {set $urx [lindex $xvals $i]}
+		    if {[lindex $xvals $i] < $llx} {set $llx [lindex $xvals $i]}
+		    if {[lindex $yvals $i] > $ury} {set $ury [lindex $yvals $i]}
+		    if {[lindex $yvals $i] < $lly} {set $lly [lindex $yvals $i]}
+		}
+	    }
+	    set ${macroname}(${pinname},llx) $llx
+	    set ${macroname}(${pinname},lly) $lly
+	    set ${macroname}(${pinname},urx) $urx
+	    set ${macroname}(${pinname},ury) $ury
 
         } elseif [regexp {[ \t]*END[ \t]*$} $line lmatch] { break }
     }
@@ -271,10 +341,13 @@ proc parse_pin {pinname macroname leffile ox oy} {
 	        parse_port $pinname $macroname $leffile $ox $oy
 	    }
         } elseif [regexp {[ \t]*DIRECTION[ \t]+([^ \t]+)[ \t]*;} $line lmatch porttype] {
+	    set porttype [string toupper $porttype]
             set ${macroname}(${pinname},type) $porttype
         } elseif [regexp {[ \t]*DIRECTION[ \t]+([^:]+);} $line lmatch porttype] {
+	    set porttype [string toupper $porttype]
             set ${macroname}(${pinname},type) $porttype
         } elseif [regexp {[ \t]*USE[ \t]+([^ \t]+)[ \t]*;} $line lmatch portuse] {
+	    set portuse [string toupper $portuse]
             set ${macroname}(${pinname},use) $portuse
         } elseif [regexp {[ \t]*END[ \t]+([^ \t]+)[ \t]*$} $line lmatch pintest] {
             if {"$pintest" == "$pinname"} {
@@ -897,6 +970,7 @@ if {$dostripes && ($rowmax > $stripepitch)} {
 	set fidx 0
 	set fmax 0
 	set fmin -1
+	set fmidx -1
 	set i 0
 	foreach fillset $fillwidths {
 	    set fw [lindex $fillset 1]
@@ -907,12 +981,20 @@ if {$dostripes && ($rowmax > $stripepitch)} {
 	    }
 	    if {$fmin < 0} {
 		set fmin $fw
+		set fmidx $i
 	    } elseif {$fmin > $fw} {
 		set fmin $fw
+		set fmidx $i
 	    }
 	    incr i
 	}
 	if {$fmax == 0} {
+	    # If xtot is zero, then there were no fill cells narrower than
+	    # the stripe width, so just choose the smallest fill cell.
+	    if {$xtot == 0} {
+		lappend stripefills [lindex $fillwidths $fmidx] 0]
+		set xtot [+ $xtot $fmin]
+	    }
 	    break
 	}
 	lappend stripefills [lindex [lindex $fillwidths $fidx] 0]
