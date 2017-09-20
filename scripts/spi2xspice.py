@@ -564,7 +564,7 @@ def parse_pin(function):
     primerex = re.compile('([^ \t]+)[ \t]*\'')
     outparenrex = re.compile('^[ \t]*\([ \t]*(.+)[ \t]*\)[ \t]*$')
     parenrex = re.compile('\([ \t]*([^ \t\)|&~^]+)[ \t]*\)')
-    pstring = function.strip('"').strip()
+    pstring = function.strip().strip('"').strip()
     pstring = pstring.replace('*', '&').replace('+', '|').replace('!', '~')
     pstring = outparenrex.sub('\g<1>', pstring)
     pstring = parenrex.sub('\g<1>', pstring)
