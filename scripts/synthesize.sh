@@ -63,6 +63,9 @@ if (-f project_vars.sh) then
    source project_vars.sh
 endif
 
+if (!($?logdir)) then
+   set logdir=${projectpath}/log
+endif
 mkdir -p ${logdir}
 set synthlog=${logdir}/synth.log
 
@@ -130,10 +133,10 @@ if ($sourcename == "") then
          echo "Error:  Verilog source file ${modulename}.v (or .sv) cannot be found!" \
 		|& tee -a ${synthlog}
       else
-         sourcename = ${modulename}.${vext}
+         set sourcename = ${modulename}.${vext}
       endif
    else
-      sourcename = ${modulename}.${vext}
+      set sourcename = ${modulename}.${vext}
    endif
 else
    if ( !( -f ${sourcename} )) then

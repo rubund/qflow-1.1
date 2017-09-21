@@ -106,6 +106,9 @@ else
    set spicepath=${techdir}/${spicefile}
 endif
 
+if (!($?logdir)) then
+   set logdir=${projectpath}/log
+endif
 mkdir -p ${logdir}
 set lastlog=${logdir}/synth.log
 set synthlog=${logdir}/place.log
@@ -402,8 +405,8 @@ if ($makedef == 1) then
       endif
       if (! ${?via_stacks} ) then
          set via_stacks=2
-         echo "via stack ${via_stacks}" >> ${rootname}.cfg
       endif
+      echo "via stack ${via_stacks}" >> ${rootname}.cfg
       if ( ${?vddnet} ) then
 	 echo "vdd $vddnet" >> ${rootname}.cfg
       endif

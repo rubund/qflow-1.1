@@ -68,6 +68,9 @@ if (! ${?vesta_options} ) then
    set vesta_options = ""
 endif
 
+if (!($?logdir)) then
+   set logdir=${projectpath}/log
+endif
 mkdir -p ${logdir}
 if ($dodelays == 1) then
    set lastlog=${logdir}/route.log

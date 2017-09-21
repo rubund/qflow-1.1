@@ -166,29 +166,31 @@ proc parse_via {leffile vianame} {
 # Parse a layer section for routing information
 #----------------------------------------------------------------
 
-proc parse_layer {leffile layername} {
+proc parse_layer {leffile layername layernum} {
     global units
 
     set layerrec [dict create]
     set pitch 0
     set type NONE
     dict set layerrec name $layername
-
-    if [regexp {[^0-9]*([0-9]+)} $layername lmatch lnum] {
-	dict set layerrec number $lnum
-    } else {
-	dict set layerrec number 0
-    }
+    dict set layerrec number 0
 
     while {[gets $leffile line] >= 0} {
 	if [regexp {[ \t]*TYPE[ \t]+([^ \t]+)[ \t]*;} $line lmatch type] {
 	    dict set layerrec type $type
+	    if {$type == "ROUTING"} {
+		incr layernum
+		dict set layerrec number $layernum
+	    }
+	    if {$type == "CUT"} {
+		dict set layerrec number $layernum
+	    }
 	} elseif [regexp {[ \t]*DIRECTION[ \t]+([^ \t]+)[ \t]*;} $line lmatch direc] {
 	    dict set layerrec direction $direc
 	} elseif [regexp {[ \t]*WIDTH[ \t]+([^ \t]+)[ \t]*;} $line lmatch width] {
-	    dict set layerrec width $width
+	    dict set layerrec width [* $width $units]
 	} elseif [regexp {[ \t]*SPACING[ \t]+([^ \t]+)[ \t]*;} $line lmatch space] {
-	    dict set layerrec spacing $space
+	    dict set layerrec spacing [* $space $units]
 	} elseif [regexp {[ \t]*PITCH[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]*;} $line \
 		lmatch xpitch ypitch] {
 	    dict set layerrec xpitch [* $xpitch $units]
@@ -220,9 +222,12 @@ proc parse_layer {leffile layername} {
 
 #----------------------------------------------------------------
 # Parse port information for a macro pin from the LEF MACRO block
-# Here, used only for power and ground pins.
+# Here, needed only for power and ground pins.
 # Assume that the power and ground ports define one rectangle that
 # reaches from end to end of the cell, and record that rectangle.
+# There are vaious contingencies in case the power rail does not
+# reach the cell bounds (which shouldn't happen), and in case the
+# power rail is a polygon that contains internal geometry.
 #----------------------------------------------------------------
 
 proc parse_port {pinname macroname leffile ox oy} {
@@ -272,52 +277,66 @@ proc parse_port {pinname macroname leffile ox oy} {
 		set i [expr 1 - $i]
 	    }
 
-	    # Find the pair of points that covers the width of the cell
-	    for {set i 1} {$i < [llength $xvals]} {incr i} {
-		set x0 [lindex $xvals $i-1]
-		set x1 [lindex $xvals $i]
-		if {($x0 <= 0 && $x1 >= 2.48) || ($x0 >= 2.48 && $x1 <= 0)} {
-		    set ybase [lindex $yvals $i]
-		    if {$i > 1} {
-			set ytop [lindex $yvals $i-1]
-		    }
-		    if {$i < [expr [llength $xvals] - 1]} {
-			if {$i > 1} {
-			    set ycheck [lindex $yvals $i+1]
-			    if {[expr abs($ycheck - $ybase)] > [expr abs($ytop - $ybase)]} {
-				set ytop $ycheck
-			    }
-			} else {
-			    set ytop [lindex $yvals $i+1]
-			}
-		    }
-		    if {$ytop < $ybase} {
-			set ycheck $ybase
-			set ybase $ytop
-			set ytop $ycheck
-		    }
-		    break
+	    # This code is based on the fact that standard cells are not
+	    # going to have metal jutting up or down from the power rails
+	    # at the extremities, because there the cells overlap other
+	    # cells (problem would be if *all* cells have a metal tab at
+	    # the overlap).  There are more complicated ways to extract
+	    # the largest rectangle of a polygon, but this should suffice
+	    # until a counterexample arises.
+
+	    # Find indexes of points at minimum and maximum X
+	    set minx [lindex $xvals 0]
+	    set maxx $minx
+	    set minxidx {}
+	    set maxxidx {}
+	    for {set i 0} {$i < [llength $xvals]} {incr i} {
+		set testx [lindex $xvals $i]
+		if {$testx <= $ox} {lappend minxidx $i}
+		if {$testx >= $x2} {lappend maxxidx $i}
+		if {$testx < $minx} {set minx $testx}
+		if {$testx > $maxx} {set maxx $testx}
+	    }
+	    # Clip extrema to cell bounds, if needed
+	    if {$minx < $ox} {set minx $ox}
+	    if {$maxx > $x2} {set maxx $x2}
+
+	    # If minxidx or maxxidx are empty, then set to the minx
+	    # and maxx indices.
+	    if {[llength $minxidx] == 0} {
+		for {set i 0} {$i < [llength $xvals]} {incr i} {
+		    set testx [lindex $xvals $i]
+		    if {$testx == $minx} {lappend minxidx $i}
 		}
 	    }
-	    if {$i < [llength $xvals]} {
-		set llx [* $ox $units]
-		set lly [* $ybase $units]
-		set urx [* $x2 $units]
-		set ury [* $ytop $units]
-	    } else {
-		# If port geometry did not span the cell then it was
-		# probably not a power pin.  Just capture the bounds.
-		set llx [lindex $xvals 0]
-		set lly [lindex $yvals 0]
-		set urx $llx
-		set ury $lly
-		for {set i 1} {$i < [llength $xvals]} {incr i} {
-		    if {[lindex $xvals $i] > $urx} {set $urx [lindex $xvals $i]}
-		    if {[lindex $xvals $i] < $llx} {set $llx [lindex $xvals $i]}
-		    if {[lindex $yvals $i] > $ury} {set $ury [lindex $yvals $i]}
-		    if {[lindex $yvals $i] < $lly} {set $lly [lindex $yvals $i]}
+	    if {[llength $maxxidx] == 0} {
+		for {set i 0} {$i < [llength $xvals]} {incr i} {
+		    set testx [lindex $xvals $i]
+		    if {$testx == $maxx} {lappend maxxidx $i}
 		}
 	    }
+
+	    # Find Y value minimum and maximum at both extrema
+	    set ymin [lindex $yvals 0]
+	    set ymax $ymin
+	    for {set i 0} {$i < [llength $minxidx]} {incr i} {
+		set j [lindex $minxidx $i]
+		set testy [lindex $yvals $j]
+		if {$testy < $ymin} {set ymin $testy}
+		if {$testy > $ymax} {set ymax $testy}
+	    }
+	    for {set i 0} {$i < [llength $maxxidx]} {incr i} {
+		set j [lindex $maxxidx $i]
+		set testy [lindex $yvals $j]
+		if {$testy < $ymin} {set ymin $testy}
+		if {$testy > $ymax} {set ymax $testy}
+	    }
+	    
+	    set llx [* $minx $units]
+	    set lly [* $ymin $units]
+	    set urx [* $maxx $units]
+	    set ury [* $ymax $units]
+
 	    set ${macroname}(${pinname},llx) $llx
 	    set ${macroname}(${pinname},lly) $lly
 	    set ${macroname}(${pinname},urx) $urx
@@ -415,10 +434,14 @@ proc parse_macro {leffile macroname} {
 #-----------------------------------------------------------------
 # Read a LEF file.  Returns a list of fill cells if the LEF file
 # was a standard cell set macro file.
+# NOTE:  Route layers are assumed to be listed from bottom to top,
+# so that the layer number can be determined by the position that
+# the layer description occurs in the LEF file.
 #-----------------------------------------------------------------
 
 proc read_lef {flef fillcell} {
     global layers vias
+    set layernum 0
     set fillcells {}
     while {[gets $flef line] >= 0} {
         # Ignore comment lines
@@ -432,7 +455,10 @@ proc read_lef {flef fillcell} {
 		lappend fillcells $macroname
 	    }
 	} elseif [regexp {[ \t]*LAYER[ \t]+([^ \t]+)} $line lmatch layername] {
-	    lappend layers [parse_layer $flef $layername]
+	    set newlayer [parse_layer $flef $layername $layernum]
+	    lappend layers $newlayer
+	    set newnum [dict get $newlayer number]
+	    if {$newnum != 0} {set layernum $newnum}
 	} elseif [regexp {[ \t]*VIA[ \t]+([^ \t]+)} $line lmatch vianame] {
 	    lappend vias [parse_via $flef $vianame]
 	} elseif [regexp {[ \t]*VIARULE[ \t]+([^ \t]+)} $line lmatch viarulename] {
@@ -604,9 +630,10 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
     set fillmacro [lindex $stripefills 0]
     global $fillmacro
 
-    # Parse layers for topmost vertical route layer.  Unfortunately,
-    # LEF syntax is too stupid to define which layer is which, so
-    # we rely on common convention of numbering the metal layers.
+    # Parse layers for topmost vertical route layer.  LEF syntax
+    # apparently depends on route layers to be described in order
+    # bottom to top in the LEF file, so we rely on this convention.
+
     set tnum 0
     set topmet 0
     foreach layer $layers {
@@ -645,22 +672,40 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
     # power stripe.
 
     set basevias {}
-    set viawidths {}
+    set viaoffsets {}
+    set viaheights {}
+    set viaspaces {}
     set nvias {}
     set blayer ""
     set tlayer ""
-    for {set i 1} {$i <= $topmet} {incr i} {
+    set clayer ""
+    set cwidth 0
+    set cspace 0
+    for {set i 1} {$i <= [- $topmet 1]} {incr i} {
 	foreach layer $layers {
-	    if {[dict get $layer type] != "ROUTING"} {continue}
-	    set lnum [dict get $layer number]
-	    if {$lnum == $i} {
-		set blayer [dict get $layer name]
-	    } elseif {$lnum == [+ $i 1]} {
-		set tlayer [dict get $layer name]
+	    if {[dict get $layer type] == "ROUTING"} {
+		set lnum [dict get $layer number]
+		if {$lnum == $i} {
+		    set blayer [dict get $layer name]
+		} elseif {$lnum == [+ $i 1]} {
+		    set tlayer [dict get $layer name]
+		}
+	    } elseif {[dict get $layer type] == "CUT"} {
+		set lnum [dict get $layer number]
+		if {$lnum == $i} {
+		    set clayer [dict get $layer name]
+		    if [catch {set cwidth [dict get $layer width]}] {set cwidth 0}
+		    if [catch {set cspace [dict get $layer spacing]}] {set cspace 0}
+		}
 	    }
 	}
+
 	set bestvia ""
 	set bestarea 0
+	set bestwidth 0
+	set bestheight 0
+	set bestcutwidth 0
+	set bestcutsep 0
 	foreach via $vias {
 	    set areab 0
 	    set areat 0
@@ -672,32 +717,88 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 		    set urx [lindex $coords 2]
 		    set ury [lindex $coords 3]
 		    set widthb [expr ($urx - $llx)]
-		    set areab [expr $widthb * ($ury - $lly)]
-		}
-		if {$vlayer == $tlayer} {
+		    set heightb [expr ($ury - $lly)]
+		    set areab [expr $widthb * $heightb]
+		} elseif {$vlayer == $tlayer} {
 		    set coords [dict get $via $vlayer]
 		    set llx [lindex $coords 0]
 		    set lly [lindex $coords 1]
 		    set urx [lindex $coords 2]
 		    set ury [lindex $coords 3]
 		    set widtht [expr ($urx - $llx)]
-		    set areat [expr $widtht * ($ury - $lly)]
+		    set heightt [expr ($ury - $lly)]
+		    set areat [expr $widtht * $heightt]
 		}
 	    }
 	    if {($areab > 0) && ($areat > 0)} {
 		set area [max $areab $areat]
 		set width [max $widthb $widtht]
+		set height [max $heightb $heightt]
 		if {($bestvia == "") || ($area < $bestarea)} {
 		    set bestvia [dict get $via name]
 		    set bestarea $area
 		    set bestwidth $width
+		    set bestheight $height
+		    if {$cwidth == 0} {
+			set coords [dict get $via $clayer]
+			set llx [lindex $coords 0]
+			set urx [lindex $coords 2]
+			set bestcutwidth [- $urx $llx]
+		    } else {
+			set bestcutwidth $cwidth
+		    }
+		    if {$cspace != 0} {
+			set bestcutsep $cspace
+		    }
 		}
 	    }
 	}
-	lappend basevias $bestvia
-	lappend viawidths $bestwidth
-	lappend nvias [expr ($stripewidth / $bestwidth) - 1]
 
+	if {$bestvia == ""} {
+	    puts stdout "Warning:  no via found between $blayer and $tlayer"
+	    continue
+	}
+
+	if {$bestcutsep == 0} {
+	    # If no cut spacing info, assume that abutting vias satisfy
+	    # the spacing minimum.
+	    set bestcutsep [- $bestwidth $cwidth]
+	}
+
+	# Find the minimum separation between these vias.  Find the
+	# minimum separation of the cuts within the via, and then
+	# use that to determine 
+
+	lappend basevias $bestvia
+	lappend viaheights $bestheight
+	set vspace [expr $bestcutwidth + $bestcutsep]
+	if {$vspace > 0} {
+	    lappend viaspaces $vspace
+
+	    # Two computations:  One is simply the available with divided by
+	    # the spacing between contacts, with half the space on either
+	    # side.  However, if there is a metal overlap that is large,
+	    # then the overlap will limit the number of vias, so take the
+	    # smaller of the two calculations.
+
+	    set numvias1 [expr int(floor($stripewidth / $vspace))]
+	    set numvias2 [expr int(floor((($stripewidth - $bestwidth) / ($bestcutwidth + $bestcutsep)) + 1))]
+	    set numvias [expr min($numvias1, $numvias2)]
+	    if {$numvias2 < $numvias1} {
+		set voffset [/ [+ $vspace $bestwidth] 2]
+	    } else {
+		set voffset [/ $vspace 2]
+	    }
+	    lappend viaoffsets $voffset
+	    lappend nvias $numvias
+
+	    puts stdout "Stripe width $stripewidth fits $numvias $bestvia at cut width $bestcutwidth separation $bestcutsep"
+	} else {
+	    puts stdout "Warning: couldn't get cut size and spacing for via $bestvia"
+	    lappend viaspaces $bestwidth
+	    lappend nvias [expr floor($stripewidth / $bestwidth)]
+	    lappend viaoffsets [/ $bestwidth 2]
+	}
     }
     # topmet will be used to index basevias and layerlist, which are
     # 0 to tnum - 1, not 1 to tnum.
@@ -744,7 +845,9 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 		    set ry [+ $rowy $ay]
 		    set layer [lindex $layerlist $i]
 		    set via [lindex $basevias $i]
-		    set vw [lindex $viawidths $i]
+		    set vh [lindex $viaheights $i]
+		    set vs [lindex $viaspaces $i]
+		    set vo [lindex $viaoffsets $i]
 		    set nv [lindex $nvias $i]
 		    set x1 $slow
 		    if $first {
@@ -753,11 +856,12 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 		    } else {
 		        puts -nonewline $fanno "  NEW "
 		    }
-		    puts $fanno "$layer $vw ( $shigh $ry ) ( $x1 * )"
+		    puts $fanno "$layer $vh ( $shigh $ry ) ( $x1 * )"
+		    set x2 [+ $x1 $vo]
 		    for {set k 0} {$k < $nv} {incr k} {
-			set x2 [+ $x1 $vw]
-		        puts $fanno "  NEW $layer $vw ( $x1 $ry ) ( $x2 * ) $via"
+		        puts $fanno "  NEW $layer $vh ( $x1 $ry ) ( $x2 * ) $via"
 			set x1 $x2
+			set x2 [+ $x1 $vs]
 		    }
 		}
 	    }
@@ -812,7 +916,9 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 		    set ry [+ $rowy $ay]
 		    set layer [lindex $layerlist $i]
 		    set via [lindex $basevias $i]
-		    set vw [lindex $viawidths $i]
+		    set vh [lindex $viaheights $i]
+		    set vs [lindex $viaspaces $i]
+		    set vo [lindex $viaoffsets $i]
 		    set nv [lindex $nvias $i]
 		    set x1 $slow
 		    if $first {
@@ -821,11 +927,12 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 		    } else {
 			puts -nonewline $fanno "  NEW "
 		    }
-		    puts $fanno "$layer $vw ( $shigh $ry ) ( $x1 * )"
+		    puts $fanno "$layer $vh ( $shigh $ry ) ( $x1 * )"
+		    set x2 [+ $x1 $vo]
 		    for {set k 0} {$k < $nv} {incr k} {
-			set x2 [+ $x1 $vw]
-			puts $fanno "  NEW $layer $vw ( $x1 $ry ) ( $x2 * ) $via"
+			puts $fanno "  NEW $layer $vh ( $x1 $ry ) ( $x2 * ) $via"
 			set x1 $x2
+			set x2 [+ $x1 $vs]
 		    }
 		}
 	    }

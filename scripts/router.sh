@@ -76,6 +76,9 @@ else
    endif
 endif
 
+if (!($?logdir)) then
+   set logdir=${projectpath}/log
+endif
 mkdir -p ${logdir}
 set lastlog=${logdir}/sta.log
 set synthlog=${logdir}/route.log
