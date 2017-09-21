@@ -315,114 +315,120 @@ if ( ! -f ${userfile} ) then
    # Check for any option defaults set by the .sh file for each entry
    # in the project_vars.sh file.  If they are not defined, then set
    # them to an empty string or a global default, if there is one.
+   # Note that this does not change the behavior that options set
+   # in the tech .sh file become the defaults and are overridden by
+   # the same variables set in the project variables file.  The
+   # purpose is to show the user what the default is, so that they
+   # are aware what they may be changing.
    #------------------------------------------------------------------
 
-   if ( ${?yosys_options_default} ) then
-      echo set yosys_options = \"${yosys_options_default}\" >> ${userfile}
+   if ( ${?yosys_options} ) then
+      echo \# set yosys_options = \"${yosys_options}\" >> ${userfile}
    else
-      echo "# set yosys_options = " >> ${userfile}
+      echo \# set yosys_options = >> ${userfile}
    endif
 
-   if ( ${?yosys_script_default} ) then
-      echo set yosys_script = \"${yosys_script_default}\" >> ${userfile}
+   if ( ${?yosys_script} ) then
+      echo \# set yosys_script = \"${yosys_script}\" >> ${userfile}
    else
-      echo "# set yosys_script = " >> ${userfile}
+      echo \# set yosys_script = >> ${userfile}
    endif
 
-   if ( ${?yosys_debug_default} ) then
-      echo set yosys_debug = \"${yosys_debug_default}\" >> ${userfile}
+   if ( ${?yosys_debug} ) then
+      echo \# set yosys_debug = \"${yosys_debug}\" >> ${userfile}
    else
-      echo "# set yosys_debug = " >> ${userfile}
+      echo \# set yosys_debug = >> ${userfile}
    endif
 
-   if ( ${?abc_script_default} ) then
-      echo set abc_script = \"${abc_script_default}\" >> ${userfile}
+   if ( ${?abc_script} ) then
+      echo \# set abc_script = \"${abc_script}\" >> ${userfile}
    else
-      echo "# set abc_script = " >> ${userfile}
+      echo \# set abc_script = >> ${userfile}
    endif
 
-   if ( ${?nobuffers_default} ) then
-      echo set nobuffers = \"${nobuffers_default}\" >> ${userfile}
+   if ( ${?nobuffers} ) then
+      echo \# set nobuffers = \"${nobuffers}\" >> ${userfile}
    else
-      echo "# set nobuffers = " >> ${userfile}
+      echo \# set nobuffers = >> ${userfile}
    endif
 
-   if ( ${?nofanout_default} ) then
-      echo set nofanout = \"${nofanout_default}\" >> ${userfile}
+   if ( ${?nofanout} ) then
+      echo \# set nofanout = \"${nofanout}\" >> ${userfile}
    else
-      echo "# set nofanout = " >> ${userfile}
+      echo \# set nofanout = >> ${userfile}
    endif
 
-   if ( ${?fanout_options_default} ) then
-      echo set fanout_options = \"${fanout_options_default}\" >> ${userfile}
+   if ( ${?fanout_options} ) then
+      echo \# set fanout_options = \"${fanout_options}\" >> ${userfile}
    else
-      echo "# set fanout_options = " >> ${userfile}
+      echo \# set fanout_options = >> ${userfile}
    endif
 
    echo "" >> ${userfile}
    echo "# Placement command options:" >> ${userfile}
    echo "# -------------------------------------------" >> ${userfile}
 
-   if ( ${?initial_density_default} ) then
-      echo set initial_density = \"${initial_density_default}\" >> ${userfile}
+   if ( ${?initial_density} ) then
+      echo \# set initial_density = \"${initial_density}\" >> ${userfile}
    else
-      echo "# set initial_density = " >> ${userfile}
+      echo \# set initial_density = >> ${userfile}
    endif
 
-   if ( ${?graywolf_options_default} ) then
-      echo set graywolf_options = \"${graywolf_options_default}\" >> ${userfile}
+   if ( ${?graywolf_options} ) then
+      echo \# set graywolf = \"${graywolf_options}\" >> ${userfile}
    else
-      echo "# set graywolf_options = " >> ${userfile}
+      echo \# set graywolf_options = >> ${userfile}
    endif
 
-   if ( ${?addspacers_options_default} ) then
-      echo set addspacers_options = \"${addspacers_options_default}\" >> ${userfile}
+   if ( ${?addspacers_options} ) then
+      echo \# set addspacers_options = \"${addspacers_options}\" >> ${userfile}
    else
-      echo '# set addspacers_options = "-stripe 5 200 PG -nostretch"' >> ${userfile}
+      echo \# set addspacers_options = >> ${userfile}
    endif
 
    echo "" >> ${userfile}
    echo "# Router command options:" >> ${userfile}
    echo "# -------------------------------------------" >> ${userfile}
 
-   if ( ${?route_show_default} ) then
-      echo set route_show = \"${route_show_default}\" >> ${userfile}
+   if ( ${?route_show} ) then
+      echo \# set route_show = \"${route_show}\" >> ${userfile}
    else
-      echo "# set route_show = " >> ${userfile}
+      echo \# set route_show = >> ${userfile}
    endif
 
-   if ( ${?route_layers_default} ) then
-      echo set route_layers = \"${route_layers_default}\" >> ${userfile}
+   if ( ${?route_layers} ) then
+      echo \# set route_layers = \"${route_layers}\" >> ${userfile}
    else
-      echo "# set route_layers = " >> ${userfile}
+      echo \# set route_layers = >> ${userfile}
    endif
 
-   if ( ${?via_use_default} ) then
-      echo set via_use = \"${via_use_default}\" >> ${userfile}
+   if ( ${?via_use} ) then
+      echo \# set via_use = \"${via_use}\" >> ${userfile}
    else
-      echo "# set via_use = " >> ${userfile}
+      echo \# set via_use = >> ${userfile}
    endif
 
-   if ( ${?via_stacks_default} ) then
-      echo set via_stacks = \"${via_stacks_default}\" >> ${userfile}
+   if ( ${?via_stacks} ) then
+      echo \# set via_stacks = \"${via_stacks}\" >> ${userfile}
    else
-      echo "# set via_stacks = " >> ${userfile}
+      echo \# set via_stacks = >> ${userfile}
    endif
 
-   if ( ${?qrouter_options_default} ) then
-      echo set qrouter_options = \"${qrouter_options_default}\" >> ${userfile}
+   if ( ${?qrouter_options} ) then
+      echo \# set qrouter_options = \"${qrouter_options}\" >> ${userfile}
    else
-      echo "# set qrouter_options = " >> ${userfile}
+      echo \# set qrouter_options = >> ${userfile}
    endif
 
    echo ""
    echo "" >> ${userfile}
-   echo "# Minimum operating period of the clock (in ps)" >> ${userfile}
+   echo \# Minimum period of the clock use \"--period value\" \(value in ps\) \
+	>> ${userfile}
 
-   if ( ${?vesta_options_default} ) then
-      echo set vesta_options = \"${vesta_options_default}\" >> ${userfile}
+   if ( ${?vesta_options} ) then
+      echo \# set vesta_options = \"${vesta_options}\" >> ${userfile}
    else
-      echo '# set vesta_options = "--summary reports --long --period 1E5"' >> ${userfile}
+      echo \# set vesta_options = >> ${userfile}
    endif
 
    echo "" >> ${userfile}

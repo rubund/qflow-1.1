@@ -67,9 +67,8 @@ set techfile=SCN3ME_SUBM.30	;# magic techfile
 set magicrc=osu050.magicrc	;# magic startup script
 set gdsfile=osu05_stdcells.gds	;# GDS database of standard cells
 
-set fanout_options_default="-l 300 -c 75"       ;# blifFanout target maximum latency
-                                                ;# per gate 300ps, output load set to
-                                                ;# 75fF
-set vesta_options_default="--long"
-set addspacers_options_default="-stripe 8 225 PG"
-
+# Option defaults
+set fanout_options="-l 300 -c 75"   ;# blifFanout target maximum latency
+                                    ;# per gate 300ps, output load set to 75fF
+set vesta_options="--long"
+set addspacers_options="-stripe 8 225 PG"

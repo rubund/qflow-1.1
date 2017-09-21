@@ -67,8 +67,8 @@ set techfile=SCN4M_SUBM.20	;# magic techfile
 set magicrc=osu018.magicrc	;# magic startup script
 set gdsfile=osu018_stdcells.gds	;# GDS database of standard cells
 
-set fanout_options_default="-l 100 -c 20"       ;# blifFanout target maximum latency
-                                                ;# per gate 100ps, output load set to
-                                                ;# 20fF
-set vesta_options_default="--long"
-set addspacers_options_default="-stripe 2.0 50.0 PG"
+# Option defaults
+set fanout_options="-l 100 -c 20"    ;# blifFanout target maximum latency
+                                     ;# per gate 100ps, output load set to 20fF
+set vesta_options="--summary reports --long"
+set addspacers_options="-stripe 2.0 50.0 PG"

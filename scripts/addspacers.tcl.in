@@ -1137,22 +1137,30 @@ if {$dostripes && ($rowmax > $stripepitch)} {
 	    if {$newstripes == $numstripes} {break}
 	    set numstripes $newstripes
 	}
-	if {$numstripes == 0} {
-	    set stripewidth 0
-	    set dostripes false
-	    puts stdout "addspacers:  No room for stripes, none added."
-	} else {
-	    set stripeoffset [expr $stripepitch - (($stripepitch * ($numstripes + 1)) - $rowmax) / 2]
-	    set nw [expr int($stripeoffset / $fmin)]
-	    set stripeoffset [* $nw $fmin]
-
-	    # Number of components increases by number of fill cells per stripe *
-	    # number of stripes * number of rows.
-	    set numfills [* [llength $stripefills] $numstripes $numrows]
-	    set numcomps [+ $numcomps $numfills]
-	    puts stdout "addspacers:  Inserting $numstripes stripes of width [/ $stripewidth $units] um ($stripewidthreq um requested)"
-	    puts stdout "  Pitch [/ $stripepitch $units] um, offset [/ $stripeoffset $units] um"
+	if {$numstripes < 2} {
+	    # Recalculate to make sure there are at least one stripe each
+	    # for power and ground.
+	    set oldpitch $stripepitch
+	    set oldpattern $stripepattern
+            if {[string range $stripepattern 0 0] == "G"} {
+	        set stripepattern "GP"
+	    } else {
+	        set stripepattern "PG"
+	    }
+	    set stripepitch [expr ($rowmax + 2 * $stripewidth) / 2.5]
+	    set numstripes 2
+	    puts stdout "addspacers:  No room for stripes, pitch reduced from ${oldpitch} to ${stripepitch}."
 	}
+	set stripeoffset [expr $stripepitch - (($stripepitch * ($numstripes + 1)) - $rowmax) / 2]
+	set nw [expr int($stripeoffset / $fmin)]
+	set stripeoffset [* $nw $fmin]
+
+	# Number of components increases by number of fill cells per stripe *
+	# number of stripes * number of rows.
+	set numfills [* [llength $stripefills] $numstripes $numrows]
+	set numcomps [+ $numcomps $numfills]
+	puts stdout "addspacers:  Inserting $numstripes stripes of width [/ $stripewidth $units] um ($stripewidthreq um requested)"
+	puts stdout "  Pitch [/ $stripepitch $units] um, offset [/ $stripeoffset $units] um"
 	puts stdout "stretch:  Number of components is $numcomps"
     } else {
 	set numstripes [expr int(($rowmax + 0.5 * $stripepitch) / $stripepitch) - 1]
