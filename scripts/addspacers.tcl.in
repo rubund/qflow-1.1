@@ -800,9 +800,16 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 	    lappend viaoffsets [/ $bestwidth 2]
 	}
     }
+
     # topmet will be used to index basevias and layerlist, which are
-    # 0 to tnum - 1, not 1 to tnum.
-    if {$tnum >= 3} {set topmet [- $tnum 1]}
+    # 0 to tnum - 1, not 1 to tnum, unless there is no top metal to
+    # use for the vertical power bus, in which case it is 1 to tnum.
+
+    if {$tnum >= 3} {
+	set topmet [- $tnum 1]
+    } else {
+	set topmet $tnum
+    }
 
     set powername [get_power $fillmacro]
 
@@ -863,6 +870,11 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 			set x1 $x2
 			set x2 [+ $x1 $vs]
 		    }
+		}
+		if {$tnum < 3} {
+		    # Top metal is just a post.
+		    set layer [lindex $layerlist $tnum]
+		    puts $fanno "  NEW $layer $vh ( $slow $ry ) ( $shigh $ry )"
 		}
 	    }
 	    # At the end, put top vertical metal stripe from top to bottom
@@ -934,6 +946,11 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 			set x1 $x2
 			set x2 [+ $x1 $vs]
 		    }
+		}
+		if {$tnum < 3} {
+		    # Top metal is just a post.
+		    set layer [lindex $layerlist $tnum]
+		    puts $fanno "  NEW $layer $vh ( $slow $ry ) ( $shigh $ry )"
 		}
 	    }
 	    # At the end, put top vertical metal stripe from top to bottom
