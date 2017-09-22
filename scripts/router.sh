@@ -80,7 +80,7 @@ if (!($?logdir)) then
    set logdir=${projectpath}/log
 endif
 mkdir -p ${logdir}
-set lastlog=${logdir}/sta.log
+set lastlog=${logdir}/place.log
 set synthlog=${logdir}/route.log
 rm -f ${synthlog} >& /dev/null
 rm -f ${logdir}/post_sta.log >& /dev/null
@@ -88,10 +88,9 @@ touch ${synthlog}
 set date=`date`
 echo "Qflow route logfile created on $date" > ${synthlog}
 
-
-# Check if last line of log file says "error condition"
+# Check if last line of placement log file says "error condition"
 if ( ! -f ${lastlog} ) then
-   set lastlog=${logdir}/place.log
+   set lastlog=${logdir}/synth.log
 endif
 if ( ! -f ${lastlog} ) then
    echo "Warning:  No placement or static timing analysis logfiles found."
@@ -147,6 +146,7 @@ if (${scripting} == "T") then
 #------------------------------------------------------------------
 
    echo "Running qrouter $version"
+   echo "qrouter ${qrouter_options} -s ${rootname}.cfg" |& tee -a ${synthlog} 
    ${bindir}/qrouter ${qrouter_options} -s ${rootname}.cfg \
 		|& tee -a ${synthlog} | \
 		grep - -e fail -e Progress -e remaining.\*00\$ \
@@ -160,6 +160,8 @@ else
 #------------------------------------------------------------------
 
    echo "Running qrouter $version"
+   echo "qrouter -c ${rootname}.cfg -p ${vddnet} -g ${gndnet} ${qrouter_options} ${rootname}" \
+		 |& tee -a ${synthlog}
    ${bindir}/qrouter -c ${rootname}.cfg -p ${vddnet} -g ${gndnet} \
 		${qrouter_options} ${rootname} |& tee -a ${synthlog} | \
 		grep - -e fail -e Progress -e remaining.\*00\$ \

@@ -107,6 +107,14 @@ endif
 # Done with initialization
 #----------------------------------------------------------
 
+# Check if last line of log file says "error condition"
+set errcond = `tail -1 ${lastlog} | grep "error condition" | wc -l`
+if ( ${errcond} == 1 ) then
+   echo "Synthesis flow stopped on error condition.  Timing analysis will not"
+   echo "proceed until error condition is cleared."
+   exit 1
+endif
+
 cd ${layoutdir}
 
 #------------------------------------------------------------------

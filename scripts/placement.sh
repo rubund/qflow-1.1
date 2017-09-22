@@ -138,10 +138,18 @@ endif
 
 cd ${projectpath}
 
-echo "Running blif2cel.tcl" |& tee -a ${synthlog}
+echo "Running blif2cel to generate input files for graywolf" |& tee -a ${synthlog}
+echo "blif2cel.tcl --blif ${synthdir}/${rootname}.blif --lef ${lefpath} --cel ${layoutdir}/${rootname}.cel" |& tee -a ${synthlog}
 
 ${scriptdir}/blif2cel.tcl --blif ${synthdir}/${rootname}.blif \
 	--lef ${lefpath} --cel ${layoutdir}/${rootname}.cel >>& ${synthlog}
+set errcond = $status
+if ( ${errcond} != 0 ) then
+   echo "blif2cel.tcl failed with exit status ${errcond}" |& tee -a ${synthlog}
+   echo "Premature exit." |& tee -a ${synthlog}
+   echo "Synthesis flow stopped on error condition." >>& ${synthlog}
+   exit 1
+endif
 
 #---------------------------------------------------------------------
 # Spot check:  Did blif2cel produce file ${rootname}.cel?
@@ -166,9 +174,19 @@ endif
 cd ${layoutdir}
 
 if ( ${?initial_density} ) then
-   echo "Running decongest to set initial density of ${initial_density}"
+   echo "Running decongest to set initial density of ${initial_density}" \
+		|& tee -a ${synthlog}
+   echo "decongest.tcl ${rootname} ${lefpath} ${fillcell} ${initial_density}" \
+		|& tee -a ${synthlog}
    ${scriptdir}/decongest.tcl ${rootname} ${lefpath} \
 		${fillcell} ${initial_density} |& tee -a ${synthlog}
+   set errcond = $status
+   if ( ${errcond} != 0 ) then
+	 echo "decongest.tcl failed with exit status ${errcond}" |& tee -a ${synthlog}
+	 echo "Premature exit." |& tee -a ${synthlog}
+	 echo "Synthesis flow stopped on error condition." >>& ${synthlog}
+	 exit 1
+   endif
    cp ${rootname}.cel ${rootname}.cel.bak
    mv ${rootname}.acel ${rootname}.cel
 endif
@@ -210,20 +228,6 @@ else
    echo "continuing without pin placement hints" |& tee -a ${synthlog}
 endif
 
-# Add fill cells for the power bus stripes
-# (this is work in progress, commented out for now)
-
-# echo "Running powerbus to add spacers for power bus stripes" |& tee -a ${synthlog}
-# ${scriptdir}/powerbus.tcl ${rootname} ${lefpath} ${fillcell} |& tee -a ${synthlog}
-
-# powerbus.tcl creates a .acel file if successful.  If not, then
-# leave the .cel file in place
-
-if ( -f ${rootname}.acel && ( -M ${rootname}.acel >= -M ${rootname}.cel )) then
-   cp ${rootname}.cel ${rootname}.cel.bak
-   mv ${rootname}.acel ${rootname}.cel
-endif
-
 #-----------------------------------------------
 # 1) Run GrayWolf
 #-----------------------------------------------
@@ -237,7 +241,15 @@ if ( !( ${?graywolf_options} )) then
 endif
 
 echo "Running GrayWolf placement" |& tee -a ${synthlog}
-   ${bindir}/graywolf ${graywolf_options} $rootname >>& ${synthlog}
+echo "graywolf ${graywolf_options} $rootname" |& tee -a ${synthlog}
+${bindir}/graywolf ${graywolf_options} $rootname >>& ${synthlog}
+
+set errcond = $status
+if ( ${errcond} != 0 ) then
+   echo "graywolf failed with exit status ${errcond}" |& tee -a ${synthlog}
+   echo "Premature exit." |& tee -a ${synthlog}
+   echo "Synthesis flow stopped on error condition." >>& ${synthlog}
+   exit 1
 endif
 
 #---------------------------------------------------------------------
@@ -306,7 +318,8 @@ if ($makedef == 1) then
    # been disabled, or else we'll try passing $fillcell directly to
    # place2def
 
-   echo "Running getfillcell.tcl" |& tee -a ${synthlog}
+   echo "Running getfillcell to determine cell to use for fill." |& tee -a ${synthlog}
+   echo "getfillcell.tcl $rootname ${lefpath} $fillcell" |& tee -a ${synthlog}
    set usefillcell = `${scriptdir}/getfillcell.tcl $rootname \
 	${lefpath} $fillcell | grep fill= | cut -d= -f2`
 
@@ -318,8 +331,18 @@ if ($makedef == 1) then
    # Run place2def to turn the GrayWolf output into a DEF file
 
    if ( ${?route_layers} ) then
+      echo "Running place2def to translate graywolf output to DEF format." \
+		|& tee -a ${synthlog}
+      echo "place2def.tcl $rootname $usefillcell ${route_layers}" |& tee -a ${synthlog}
       ${scriptdir}/place2def.tcl $rootname $usefillcell ${route_layers} \
 		 >>& ${synthlog}
+      set errcond = $status
+      if ( ${errcond} != 0 ) then
+	 echo "place2def.tcl failed with exit status ${errcond}" |& tee -a ${synthlog}
+	 echo "Premature exit." |& tee -a ${synthlog}
+	 echo "Synthesis flow stopped on error condition." >>& ${synthlog}
+	 exit 1
+      endif
    else
       ${scriptdir}/place2def.tcl $rootname $usefillcell >>& ${synthlog}
    endif
@@ -349,10 +372,21 @@ if ($makedef == 1) then
          set addspacers_options = "-techlef ${techlefpath} ${addspacers_options}"
       endif
 
-      echo "Running addspacers.tcl ${addspacers_options} ${rootname} ${lefpath} ${fillcell}" |& tee -a ${synthlog}
+      echo "Running addspacers to generate power stripes and align cell right edge" \
+		|& tee -a ${synthlog}
+      echo "addspacers.tcl ${addspacers_options} ${rootname} ${lefpath} ${fillcell}" \
+		|& tee -a ${synthlog}
 
       ${scriptdir}/addspacers.tcl ${addspacers_options} \
 		${rootname} ${lefpath} ${fillcell} >>& ${synthlog}
+      set errcond = $status
+      if ( ${errcond} != 0 ) then
+	 echo "addspacers.tcl failed with exit status ${errcond}" |& tee -a ${synthlog}
+	 echo "Premature exit." |& tee -a ${synthlog}
+	 echo "Synthesis flow stopped on error condition." >>& ${synthlog}
+	 exit 1
+      endif
+
       if ( -f ${rootname}_filled.def ) then
 	 mv ${rootname}_filled.def ${rootname}.def
 	 # Copy the .def file to a backup called "unroute"
@@ -472,8 +506,17 @@ if ($makedef == 1) then
    # netlists.
    #------------------------------------------------------------------
 
+   echo "blifanno.tcl ${synthdir}/${rootname}.blif ${rootname}.def ${synthdir}/${rootname}_anno.blif" \
+	|& tee -a ${synthlog}
    ${scriptdir}/blifanno.tcl ${synthdir}/${rootname}.blif ${rootname}.def \
 		${synthdir}/${rootname}_anno.blif >>& ${synthlog}
+   set errcond = $status
+   if ( ${errcond} != 0 ) then
+      echo "blifanno.tcl failed with exit status ${errcond}" |& tee -a ${synthlog}
+      echo "Premature exit." |& tee -a ${synthlog}
+      echo "Synthesis flow stopped on error condition." >>& ${synthlog}
+      exit 1
+   endif
 
    #------------------------------------------------------------------
    # Spot check:  Did blifanno.tcl produce an output file?

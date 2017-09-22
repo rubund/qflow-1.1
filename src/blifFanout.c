@@ -311,7 +311,7 @@ int main (int argc, char *argv[])
 	    break;
          case 'h':
 	    helpmessage();
-	    return -3;
+	    return 3;
 	    break;
          default:
 	    break;
@@ -327,7 +327,7 @@ int main (int argc, char *argv[])
       Inputfname = strdup(argv[i]);
       if (!(infptr = fopen(Inputfname, "r"))) {
 	  fprintf(stderr, "blifFanout: Couldn't open %s for reading.\n", Inputfname);
-	  return -1;
+	  return 1;
       }
    }
    i++;
@@ -335,7 +335,7 @@ int main (int argc, char *argv[])
       Outputfname = strdup(argv[i]);
       if (!(outfptr = fopen(Outputfname, "w"))) {
 	 fprintf(stderr, "blifFanout: Couldn't open %s for writing.\n", Outputfname);
-	 return -1;
+	 return 1;
       }
    }
    i++;
@@ -343,7 +343,7 @@ int main (int argc, char *argv[])
    // Make sure we have a valid gate file path
    if (Gatepath == NULL) {
       fprintf(stderr, "blifFanout: No liberty file specified.\n");
-      return -1;
+      return 1;
    }
    gatecount = read_gate_file(Gatepath);
 
@@ -362,7 +362,7 @@ int main (int argc, char *argv[])
 
    if (gatecount == 0) {
       fprintf(stderr, "blifFanout:  No gates found in %s file!\n", Gatepath);
-      return -1;
+      return 1;
    }
    if (GatePrintFlag) {
       showgatelist();
@@ -426,7 +426,7 @@ int main (int argc, char *argv[])
 	 else
             fprintf(stderr, "blifFanout:  Buffer cell %s cannot be found.\n",
 			Buffername);
-         return -1;
+         return 1;
       }
       for (curpin = gl->gatecell->pins; curpin; curpin = curpin->next) {
 	 if (curpin->type == PIN_INPUT) {
@@ -441,7 +441,7 @@ int main (int argc, char *argv[])
       if (buf_in_pin == NULL || buf_out_pin == NULL) {
 	 fprintf(stderr, "blifFanout:  Could not parse I/O pins "
 			"of buffer cell %s.\n", Buffername);
-	 return -1;
+	 return 1;
       }
    }
 
@@ -650,10 +650,10 @@ int main (int argc, char *argv[])
    if (infptr != stdin) fclose(infptr);
    if (outfptr != stdout) fclose(outfptr);
 
-   // return with number of gates changed so we can iterate until
-   // this is zero.
+   // Output number of gates changed so we can iterate until this is zero.
 
-   return (Changed_count + Buffer_count);
+   fprintf(stdout, "Number of gates changed: %d\n", Changed_count + Buffer_count);
+   return 0;
 }
 
 /*

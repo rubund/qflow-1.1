@@ -395,8 +395,10 @@ endif
 
 echo "Running yosys for verilog parsing and synthesis" |& tee -a ${synthlog}
 if ( ${usescript} == 1 ) then
+   echo "yosys ${yosys_options}" |& tee -a ${synthlog}
    eval ${bindir}/yosys ${yosys_options} |& tee -a ${synthlog}
 else
+   echo "yosys ${yosys_options} -s ${modulename}.ys" |& tee -a ${synthlog}
    eval ${bindir}/yosys ${yosys_options} -s ${modulename}.ys |& tee -a ${synthlog}
 endif
 
@@ -422,8 +424,18 @@ else
 endif
 
 echo "Cleaning up output syntax" |& tee -a ${synthlog}
+echo "ypostproc.tcl ${modulename}_mapped.blif ${modulename} ${techdir}/${techname}.sh" \
+	|& tee -a ${synthlog}
 ${scriptdir}/ypostproc.tcl ${modulename}_mapped.blif ${modulename} \
 	${techdir}/${techname}.sh
+set errcond = ${status}
+if ( $errcond != 0 ) then
+   echo "ypostproc failure.  See file ${synthlog} for error messages." \
+	|& tee -a ${synthlog}
+   echo "Premature exit." |& tee -a ${synthlog}
+   echo "Synthesis flow stopped due to error condition." >> ${synthlog}
+   exit 1
+endif
 
 #----------------------------------------------------------------------
 # Add buffers in front of all outputs (for yosys versions before 0.2.0)
@@ -450,7 +462,7 @@ endif
 # defined.
 #---------------------------------------------------------------------
 
-echo "Cleaning Up blif file syntax" |& tee -a ${synthlog}
+echo "Cleaning up blif file syntax" |& tee -a ${synthlog}
 
 if ( "$tielo" == "") then
    set subs0a="/LOGIC0/s/O=/${bufpin_in}=gnd ${bufpin_out}=/"
@@ -523,29 +535,45 @@ else
       set fanout_options=""
    endif
 
-   echo "Running blifFanout (iterative)" |& tee -a ${synthlog}
-   echo "" >> ${synthlog}
    if (-f ${libertypath} && -f ${bindir}/blifFanout ) then
+
+      if ("x${separator}" == "x") then
+	 set sepoption=""
+      else
+	 set sepoption="-s ${separator}"
+      endif
+      if ("x${bufcell}" == "x") then
+	 set bufoption=""
+      else
+	 set bufoption="-b ${bufcell} -i ${bufpin_in} -o ${bufpin_out}"
+      endif
+
+      echo "Running blifFanout (iterative)" |& tee -a ${synthlog}
+      echo "Each iteration calls:" |& tee -a ${synthlog}
+      echo "blifFanout ${fanout_options} -I ${modulename}_nofanout -p ${libertypath} ${sepoption} ${bufoption} tmp.blif ${modulename}.blif" |& tee -a ${synthlog}
+      echo "" >> ${synthlog}
+
       set nchanged=1000
       while ($nchanged > 0)
          mv ${modulename}.blif tmp.blif
-         if ("x${separator}" == "x") then
-	    set sepoption=""
-         else
-	    set sepoption="-s ${separator}"
-         endif
-         if ("x${bufcell}" == "x") then
-	    set bufoption=""
-         else
-	    set bufoption="-b ${bufcell} -i ${bufpin_in} -o ${bufpin_out}"
-         endif
-         ${bindir}/blifFanout ${fanout_options} -I ${modulename}_nofanout \
-		-p ${libertypath} ${sepoption} ${bufoption} \
-		tmp.blif ${modulename}.blif >>& ${synthlog}
-         set nchanged=$status
-         echo "gates resized: $nchanged" |& tee -a ${synthlog}
+         set nchanged = `${bindir}/blifFanout ${fanout_options} \
+		-I ${modulename}_nofanout -p ${libertypath} ${sepoption} \
+		${bufoption} tmp.blif ${modulename}.blif |& tee -a ${synthlog} | \
+		grep "changed:" | cut -f5 -d' '`
+
+         set errcond=$status
+	 if ( $errcond > 0 ) then
+	    echo "blifFanout failed with error condition ${errcond}." \
+			|& tee -a ${synthlog}
+	    echo "Premature exit." |& tee -a ${synthlog}
+	    echo "Synthesis flow stopped due to error condition." >> ${synthlog}
+	    exit 1
+	 else
+            echo "gates resized: $nchanged" |& tee -a ${synthlog}
+	 endif
       end
    else
+      echo "blifFanout not run:  No cell size optimization." |& tee -a ${synthlog}
       set nchanged=0
    endif
 endif

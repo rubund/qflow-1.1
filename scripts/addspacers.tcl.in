@@ -31,8 +31,6 @@ if {$argc < 3} {
     exit 0
 }
 
-puts stdout "Running addspacers.tcl"
-
 # NOTE:  There is no scaling.  GrayWolf values are in centimicrons,
 # as are DEF values (UNITS DISTANCE MICRONS 100)
 
@@ -650,7 +648,7 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 	}
     }
     if {$tnum < 3} {
-	puts stderr "Error:  No vertical routing layer at metal 3 or above"
+	puts stderr "Warning:  No vertical routing layer at metal 3 or above"
 	puts stderr "Only posts will be placed, and not connected"
     }
  
