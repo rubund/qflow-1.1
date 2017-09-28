@@ -143,6 +143,10 @@ while ($#argv > 0)
    endsw
 end
 
+if ($modulename == "") then
+   set dohelp=1
+endif
+
 if ($doversion == 1 || $dohelp == 1) then
    echo "Qflow version QFLOW_VERSION revision QFLOW_REVISION"
    echo ""
