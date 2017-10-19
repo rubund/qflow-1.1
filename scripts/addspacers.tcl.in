@@ -31,8 +31,10 @@ if {$argc < 3} {
     exit 0
 }
 
-# NOTE:  There is no scaling.  GrayWolf values are in centimicrons,
-# as are DEF values (UNITS DISTANCE MICRONS 100)
+# NOTE:  DEF values are by default centimicrons (UNITS DISTANCE MICRONS 100)
+# but may be in nanometers if the LEF file declares a manufacturing grid
+# that is smaller than centimicrons.  Pick up the scalefactor (100 or 1000)
+# from the DEF file written by the place2def script.
 
 set argidx 0
 set dostripes false	;# no power bus striping by default
@@ -90,13 +92,10 @@ set fillcell [lindex $argv $argidx]
 set defname ${topname}.def
 set defoutname ${topname}_filled.def
 
-set units 100.0		;# write centimicron units into the DEF file
+set units 100		;# write centimicron units into the DEF file (default)
 
 # Input arguments are assumed to be in microns.  Convert them to the
 # DEF file units.
-
-set stripewidth [* $units $stripewidth]
-set stripepitch [* $units $stripepitch]
 
 set diexlow 0
 set diexhigh 0
@@ -124,6 +123,30 @@ if {$techlef != ""} {
 	set techlef ""
     }
 }
+
+#----------------------------------------------------------------
+# Initial read of top of DEF file to determine what the units
+# conversion is going to be.
+#----------------------------------------------------------------
+
+while {[gets $fdef line] >= 0} {
+    if [regexp {[ \t]*#} $line lmatch] {
+	continue
+    } elseif [regexp {[ \t]*UNITS[ \t]+DISTANCE[ \t]+MICRONS[ \t]+([^ \t]+)} $line lmatch dunits] {
+        # Units are expected to be 100 (centimicrons) but may be divided further
+	# and affect how we generate geometry for the power and ground nets.
+	set units $dunits
+	break
+    }
+}
+# Close and reopen the file for the second pass
+close $fdef
+set fdef [open $defname r]
+
+# Multiply stripe width and pitch values by units to get output values
+set stripewidth [* $units $stripewidth]
+set stripepitch [* $units $stripepitch]
+
 
 #----------------------------------------------------------------
 # Parse a via section for routing information
@@ -465,6 +488,8 @@ proc read_lef {flef fillcell} {
 	    skip_section $flef $sitename
 	} elseif [regexp {[ \t]*UNITS[ \t]*$} $line lmatch] {
 	    skip_section $flef UNITS
+	} elseif [regexp {[ \t]*PROPERTYDEFINITIONS[ \t]*$} $line lmatch] {
+	    skip_section $flef PROPERTYDEFINITIONS
 	} elseif [regexp {[ \t]*SPACING[ \t]*$} $line lmatch] {
 	    skip_section $flef SPACING
 	} elseif [regexp {[ \t]*END[ \t]+LIBRARY[ \t]*$} $line lmatch] {
@@ -861,10 +886,17 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 		    } else {
 		        puts -nonewline $fanno "  NEW "
 		    }
-		    puts $fanno "$layer $vh ( $shigh $ry ) ( $x1 * )"
+		    set ovh [expr int($vh)]
+		    set oshigh [expr int($shigh)]
+		    set ory [expr int($ry)]
+		    set ox1 [expr int($x1)]
+
+		    puts $fanno "$layer $ovh ( $oshigh $ory ) ( $ox1 * )"
 		    set x2 [+ $x1 $vo]
 		    for {set k 0} {$k < $nv} {incr k} {
-		        puts $fanno "  NEW $layer $vh ( $x1 $ry ) ( $x2 * ) $via"
+		        set ox1 [expr int($x1)]
+		        set ox2 [expr int($x2)]
+		        puts $fanno "  NEW $layer $ovh ( $ox1 $ory ) ( $ox2 * ) $via"
 			set x1 $x2
 			set x2 [+ $x1 $vs]
 		    }
@@ -872,13 +904,21 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 		if {$tnum < 3} {
 		    # Top metal is just a post.
 		    set layer [lindex $layerlist $tnum]
-		    puts $fanno "  NEW $layer $vh ( $slow $ry ) ( $shigh $ry )"
+
+		    set outvh [expr int($vh)]
+		    set outshigh [expr int($shigh)]
+		    set outslow [expr int($slow)]
+		    set outry [expr int($ry)]
+
+		    puts $fanno "  NEW $layer $outvh ( $outslow $outry ) ( $outshigh $outry )"
 		}
 	    }
 	    # At the end, put top vertical metal stripe from top to bottom
 	    if {$tnum >= 3} {
 		set layer [lindex $layerlist [- $tnum 1]]
-		puts $fanno "  NEW $layer $stripewidth ( $smean $dieylow ) ( * $dieyhigh )"
+
+		set osmean [expr int($smean)]
+		puts $fanno "  NEW $layer $stripewidth ( $osmean $dieylow ) ( * $dieyhigh )"
 	    }
 	}
 	incr j
@@ -937,10 +977,18 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 		    } else {
 			puts -nonewline $fanno "  NEW "
 		    }
-		    puts $fanno "$layer $vh ( $shigh $ry ) ( $x1 * )"
+
+		    set ovh [expr int($vh)]
+		    set oshigh [expr int($shigh)]
+		    set ory [expr int($ry)]
+		    set ox1 [expr int($x1)]
+
+		    puts $fanno "$layer $ovh ( $oshigh $ory ) ( $ox1 * )"
 		    set x2 [+ $x1 $vo]
 		    for {set k 0} {$k < $nv} {incr k} {
-			puts $fanno "  NEW $layer $vh ( $x1 $ry ) ( $x2 * ) $via"
+			set ox1 [expr int($x1)]
+			set ox2 [expr int($x2)]
+			puts $fanno "  NEW $layer $ovh ( $ox1 $ory ) ( $ox2 * ) $via"
 			set x1 $x2
 			set x2 [+ $x1 $vs]
 		    }
@@ -948,13 +996,18 @@ proc write_special {stripeinfo stripefills stripewidth stripepattern
 		if {$tnum < 3} {
 		    # Top metal is just a post.
 		    set layer [lindex $layerlist $tnum]
-		    puts $fanno "  NEW $layer $vh ( $slow $ry ) ( $shigh $ry )"
+		    set ovh [expr int($vh)]
+		    set oshigh [expr int($shigh)]
+		    set oslow [expr int($slow)]
+		    set ory [expr int($ry)]
+		    puts $fanno "  NEW $layer $ovh ( $oslow $ory ) ( $oshigh $ory )"
 		}
 	    }
 	    # At the end, put top vertical metal stripe from top to bottom
 	    if {$tnum >= 3} {
 		set layer [lindex $layerlist [- $tnum 1]]
-		puts $fanno "  NEW $layer $stripewidth ( $smean $dieylow ) ( * $dieyhigh )"
+		set osmean [expr int($smean)]
+		puts $fanno "  NEW $layer $stripewidth ( $osmean $dieylow ) ( * $dieyhigh )"
 	    }
 	}
 	incr j
@@ -1008,9 +1061,9 @@ while {[gets $fdef line] >= 0} {
 	    incr matches
 	} elseif [regexp {[ \t]*MANUFACTURINGGRID} $line lmatch] {
 	    incr matches
-	} elseif [regexp {[ \t]*UNITS} $line lmatch] {
-	    incr matches
 	} elseif [regexp {[ \t]*DESIGN} $line lmatch] {
+	    incr matches
+	} elseif [regexp {[ \t]*UNITS} $line lmatch] {
 	    incr matches
 	} elseif [regexp {[ \t]*DIEAREA} $line lmatch] {
 	    incr matches
@@ -1054,7 +1107,7 @@ dict for {row rowvals} $rows {
     if {$xmax > $rowmax} {set rowmax $xmax}
 }
 puts stdout "Number of rows is $numrows"
-puts stdout "Longest row has width [/ $rowmax $units] um"
+puts stdout "Longest row has width [/ $rowmax [+ $units 0.0]] um"
 
 # Now, for each row, find the difference between the row end and row max,
 # and create a list of how many of each fill macro it takes to fill the
@@ -1122,7 +1175,7 @@ if {$dostripes && ($rowmax > $stripepitch)} {
 	lappend stripefills [lindex [lindex $fillwidths $fidx] 0]
 	set xtot [+ $xtot $fmax]
 	# puts stdout "Added to stripe filler [lindex [lindex $fillwidths $fidx] 0]"
-	# puts stdout "Total stripe width now $xtot]
+	# puts stdout "Total stripe width now $xtot"
     }     
     # Reduce final stripe width to xtot so that it is equal to the
     # best compatible fill size and is a multiple of the unit cell
@@ -1144,6 +1197,7 @@ if {$dostripes && ($rowmax > $stripepitch)} {
     # stripe pitch.  "numstripes" does not include power stripes
     # outside of the track area on right and left sides.
 
+    set gunits [+ $units 0.0]
     if $dostretch {
 	set numstripes [expr int($rowmax / $stripepitch) - 1]
 	while true {
@@ -1174,8 +1228,8 @@ if {$dostripes && ($rowmax > $stripepitch)} {
 	# number of stripes * number of rows.
 	set numfills [* [llength $stripefills] $numstripes $numrows]
 	set numcomps [+ $numcomps $numfills]
-	puts stdout "addspacers:  Inserting $numstripes stripes of width [/ $stripewidth $units] um ($stripewidthreq um requested)"
-	puts stdout "  Pitch [/ $stripepitch $units] um, offset [/ $stripeoffset $units] um"
+	puts stdout "addspacers:  Inserting $numstripes stripes of width [/ $stripewidth $gunits] um ($stripewidthreq um requested)"
+	puts stdout "  Pitch [/ $stripepitch $gunits] um, offset [/ $stripeoffset $gunits] um"
 	puts stdout "stretch:  Number of components is $numcomps"
     } else {
 	set numstripes [expr int(($rowmax + 0.5 * $stripepitch) / $stripepitch) - 1]
@@ -1187,8 +1241,8 @@ if {$dostripes && ($rowmax > $stripepitch)} {
 	    set stripeoffset [expr $stripepitch - (($stripepitch * ($numstripes + 1)) - $rowmax) / 2]
 	    set nw [expr int($stripeoffset / $fmin)]
 	    set stripeoffset [* $nw $fmin]
-	    puts stdout "addspacers:  Inserting $numstripes stripes of width [/ $stripewidth $units] um ($stripewidthreq um requested)"
-	    puts stdout "  Pitch [/ $stripepitch $units] um, offset [/ $stripeoffset $units] um"
+	    puts stdout "addspacers:  Inserting $numstripes stripes of width [/ $stripewidth $gunits] um ($stripewidthreq um requested)"
+	    puts stdout "  Pitch [/ $stripepitch $gunits] um, offset [/ $stripeoffset $gunits] um"
 	}
     }
 
@@ -1313,21 +1367,25 @@ while {[gets $fdef line] >= 0} {
 		set smean [* $nw $fmin]
 		set hw [/ $stripewidth 2.0]
 		set qw [/ $hw 2.0]
+		set qw [expr int($qw + 0.5)]	;# ensure qw is integer
 		set slow [- $smean $hw]
 		set shigh [+ $smean $hw]
 		set cy [+ $dieylow $qw]
 
+		set ohw [expr int($hw)]
+		set osmean [expr int($smean)]
+
 		if {!$donepower && ($stripetype == "P")} {
 		    set powername [get_power $fillmacro]
 		    puts $fanno "- $powername + NET $powername"
-		    puts $fanno "  + LAYER $toplayer ( -$hw -$qw ) ( $hw $qw )"
-		    puts $fanno "  + PLACED ( $smean $cy ) N ;"
+		    puts $fanno "  + LAYER $toplayer ( -$ohw -$qw ) ( $ohw $qw )"
+		    puts $fanno "  + PLACED ( $osmean $cy ) N ;"
 		    set donepower true
 		} elseif {!$doneground && ($stripetype == "G")} {
 		    set groundname [get_ground $fillmacro]
 		    puts $fanno "- $groundname + NET $groundname"
-		    puts $fanno "  + LAYER $toplayer ( -$hw -$qw ) ( $hw $qw )"
-		    puts $fanno "  + PLACED ( $smean $cy ) N ;"
+		    puts $fanno "  + LAYER $toplayer ( -$ohw -$qw ) ( $ohw $qw )"
+		    puts $fanno "  + PLACED ( $osmean $cy ) N ;"
 		    set doneground true
 		}
 		incr i
@@ -1519,9 +1577,10 @@ if {$techlef != ""} {
 if {$dostripes && $dostretch} {
 
     # Cast values back into microns, which are the units used by the .obs file
-    set stripewidth [/ $stripewidth $units]
-    set stripepitch [/ $stripepitch $units]
-    set stripeoffset [/ $stripeoffset $units]
+    set gunits [+ $units 0.0]
+    set stripewidth [/ $stripewidth $gunits]
+    set stripepitch [/ $stripepitch $gunits]
+    set stripeoffset [/ $stripeoffset $gunits]
 
     if [catch {open ${topname}.obs r} infobs] {
 	# No .obs file, no action needed.
@@ -1555,6 +1614,9 @@ if {$dostripes && $dostretch} {
 		set xhigh [+ $xhigh $nw]
 		# puts stdout "xhigh adjust ns = $ns nw = $nw"
 	    }
+            # Ensure numerical precision matches DEF file units
+	    set xlow [expr round($xlow * $gunits) / $gunits]
+	    set xhigh [expr round($xhigh * $gunits) / $gunits]
             # puts stdout "Out: $xlow $ylow $xhigh $yhigh $layer"
 	    puts $outfobs "obstruction $xlow $ylow $xhigh $yhigh $layer"
 	} else {

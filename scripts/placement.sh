@@ -139,10 +139,17 @@ endif
 cd ${projectpath}
 
 echo "Running blif2cel to generate input files for graywolf" |& tee -a ${synthlog}
-echo "blif2cel.tcl --blif ${synthdir}/${rootname}.blif --lef ${lefpath} --cel ${layoutdir}/${rootname}.cel" |& tee -a ${synthlog}
-
-${scriptdir}/blif2cel.tcl --blif ${synthdir}/${rootname}.blif \
+if ( "$techleffile" == "" ) then
+    echo "blif2cel.tcl --blif ${synthdir}/${rootname}.blif --lef ${lefpath} --cel ${layoutdir}/${rootname}.cel" |& tee -a ${synthlog}
+    ${scriptdir}/blif2cel.tcl --blif ${synthdir}/${rootname}.blif \
 	--lef ${lefpath} --cel ${layoutdir}/${rootname}.cel >>& ${synthlog}
+else
+    echo "blif2cel.tcl --blif ${synthdir}/${rootname}.blif --lef ${techlefpath} --lef ${lefpath} --cel ${layoutdir}/${rootname}.cel" |& tee -a ${synthlog}
+    ${scriptdir}/blif2cel.tcl --blif ${synthdir}/${rootname}.blif \
+	--lef ${techlefpath} --lef ${lefpath} \
+	--cel ${layoutdir}/${rootname}.cel >>& ${synthlog}
+endif
+
 set errcond = $status
 if ( ${errcond} != 0 ) then
    echo "blif2cel.tcl failed with exit status ${errcond}" |& tee -a ${synthlog}

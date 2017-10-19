@@ -29,9 +29,11 @@ set pitchy 0		;# value overridden from LEF file
 set trackskip 0		;# reduce number of implicit feedthroughs
 			;# to avoid routing congestion
 
-
 set arglen [llength $argv]
 set index 0
+set args(hard_macros) {}
+set args(lefs) {}
+
 while {$index < $arglen} {
     set arg [lindex $argv $index]
     switch -exact $arg {
@@ -41,8 +43,7 @@ while {$index < $arglen} {
 	}
 
 	--lef {
-	    #lappend args(lefs) [lindex $argv [incr index]]
-	    set args(lef) [lindex $argv [incr index]]
+	    lappend args(lefs) [lindex $argv [incr index]]
 	}
 
 	--blif {
@@ -60,16 +61,12 @@ while {$index < $arglen} {
     incr index
 }
 
-if {[info exists args(hard_macros)]} {
-    set hardmacros $args(hard_macros)
-} else {
-    set hardmacros {}
-}
+set hardmacros $args(hard_macros)
 
-if {[info exists args(lef)]} {
-    set leffile $args(lef)
+if {[llength args(lefs)] > 0} {
+    set leffiles $args(lefs)
 } else {
-    puts stderr "No LEF file defined"
+    puts stderr "No LEF files defined!"
     exit
 }
 
@@ -90,21 +87,21 @@ if {[info exists args(cel)]} {
 
 
 #-------------------------------------------------------------
+# Recover full file name from each listed LEF file
 
-set lefname [file rootname $leffile]
-if {"$lefname" == "$leffile"} {
-    set leffile ${lefname}.lef
+set fulllef {}
+foreach leffile $leffiles {
+    set lefname [file rootname $leffile]
+    if {"$lefname" == "$leffile"} {
+        lappend fulllef ${lefname}.lef
+    } else {
+        lappend fulllef ${leffile}
+    }
 }
+set leffiles $fulllef
 
 #-------------------------------------------------------------
 # Open files for read and write
-
-if [catch {open $leffile r} flef] {
-    puts stderr "Error: second argument is not a LEF file ($leffile)!"
-    exit 0
-} else {
-    puts "Opened LEF file ($leffile) for reading..."
-}
 
 if [catch {open $bliffile r} fnet] {
     puts stderr "Error: can't open file $bliffile for reading!"
@@ -120,14 +117,25 @@ if [catch {open $celfile w} fcel] {
     puts "Opened CEL file ($celfile) for writing..."
 }
 
-set fhardmacro {}
+set fhardmacros {}
 foreach hardmacro $hardmacros {
     if [catch {open $hardmacro r} fhardmacro_tmp] {
 	puts stderr "Error: can't open file $hardmacro for reading!"
 	exit 0
     } else {
 	puts "Loaded $hardmacro file for reading..."
-	lappend fhardmacro $fhardmacro_tmp
+	lappend fhardmacros $fhardmacro_tmp
+    }
+}
+
+set flefs {}
+foreach leffile $leffiles {
+    if [catch {open $leffile r} flef_tmp] {
+	puts stderr "Error: can't open file $leffile for reading!"
+	exit 0
+    } else {
+	puts "Loaded $leffile file for reading..."
+	lappend flefs $flef_tmp
     }
 }
 
@@ -241,17 +249,22 @@ proc skip_section {leffile sectionname} {
 proc parse_layer {leffile layername} {
     global pitchx pitchy units
 
-    set pitch 0
+    set haspitch1 false
+    set haspitch2 false
+    set direc NONE
     set type NONE
 
     while {[gets $leffile line] >= 0} {
 	regexp {[ \t]*TYPE[ \t]+(.+)[ \t]*;} $line lmatch type
 	regexp {[ \t]*DIRECTION[ \t]+(.+)[ \t]*;} $line lmatch direc
+	regexp {[ \t]*MAXWIDTH[ \t]+(.+)[ \t]*;} $line lmatch maxwidth
 	regexp {[ \t]*WIDTH[ \t]+(.+)[ \t]*;} $line lmatch width
 	regexp {[ \t]*SPACING[ \t]+(.+)[ \t]*;} $line lmatch space
 	set p2 [regexp {[ \t]*PITCH[ \t]+(.+)[ \t]+(.+)[ \t]*;} $line \
 		lmatch xpitch ypitch]
+ 	if {$p2 == 1} {set haspitch2 true}
 	set p1 [regexp {[ \t]*PITCH[ \t]+(.+)[ \t]*;} $line lmatch pitch]
+ 	if {$p1 == 1} {set haspitch1 true}
 	if [regexp {[ \t]*END[ \t]+(.+)[ \t]*$} $line lmatch layertest] {
 	    if {"$layertest" != "$layername"} {
 		puts -nonewline stderr "Unexpected END statement $line while "
@@ -264,12 +277,12 @@ proc parse_layer {leffile layername} {
     # All we want to do here is determine the horizontal and vertical
     # route pitches
 
-    if {$p2 == 1} {
+    if {$haspitch2 == true} {
 	set tpitch [expr int($units * $xpitch)]
 	set pitchx $tpitch
 	set tpitch [expr int($units * $ypitch)]
 	set pitchy $tpitch
-    } elseif {$p1 == 1} {
+    } elseif {$haspitch1 == true} {
 	set tpitch [expr int($units * $pitch)]
 	if {$tpitch > 0} {
             if {[string first "HORIZONTAL" $direc] == 0} {
@@ -291,7 +304,7 @@ proc parse_layer {leffile layername} {
 	    }
 	}
     } elseif {$type == "ROUTING"} {
-	puts stdout "LEF file route layer ${layername} has no pitch information"
+	puts stderr "LEF file route layer ${layername} has no pitch information"
     }
 }
 
@@ -404,73 +417,75 @@ proc parse_macro {leffile macroname} {
     }
 }
 
-puts stdout "Reading macros from LEF file. . ."
-flush stdout
+foreach flef $flefs { 
+    puts stdout "Reading macros and/or technology data from LEF file. . ."
+    flush stdout
 
-while {[gets $flef line] >= 0} {
-    if [regexp {[ \t]*LAYER[ \t]+(.+)[ \t]*$} $line lmatch layername] {
-	parse_layer $flef $layername
-    } elseif [regexp {[ \t]*MACRO[ \t]+(.+)[ \t]*$} $line lmatch macroname] {
-	if {[lsearch $macrolist $macroname] >= 0} {
-	    # Parse the "macro" statement 
-	    parse_macro $flef $macroname
-	} else {
-	    # This macro is not used. . . skip to end of macro
-	    while {[gets $flef line] >= 0} {
-		if [regexp {[ \t]*END[ \t]+(.+)[ \t]*$} $line lmatch macrotest] {
-		    if {"$macroname" == "$macrotest"} {
-			break
+    while {[gets $flef line] >= 0} {
+	if [regexp {[ \t]*LAYER[ \t]+(.+)[ \t]*$} $line lmatch layername] {
+	    parse_layer $flef $layername
+	} elseif [regexp {[ \t]*MACRO[ \t]+(.+)[ \t]*$} $line lmatch macroname] {
+	    if {[lsearch $macrolist $macroname] >= 0} {
+		# Parse the "macro" statement 
+		parse_macro $flef $macroname
+	    } else {
+		# This macro is not used. . . skip to end of macro
+		while {[gets $flef line] >= 0} {
+		    if [regexp {[ \t]*END[ \t]+(.+)[ \t]*$} $line lmatch macrotest] {
+			if {"$macroname" == "$macrotest"} {
+			    break
+			}
 		    }
 		}
 	    }
-	}
-    } elseif [regexp {[ \t]*VIA[ \t]+([^ \t]+)} $line lmatch vianame] {
-	skip_section $flef $vianame
-    } elseif [regexp {[ \t]*VIARULE[ \t]+([^ \t]+)} $line lmatch viarulename] {
-	skip_section $flef $viarulename
-    } elseif [regexp {[ \t]*NONDEFAULTRULE[ \t]+([^ \t]+)} $line lmatch rulename] {
-	skip_section $flef $rulename
-    } elseif [regexp {[ \t]*SITE[ \t]+(.+)[ \t]*$} $line lmatch sitename] {
-	skip_section $flef $sitename
-    } elseif [regexp {[ \t]*UNITS[ \t]*$} $line lmatch] {
-	skip_section $flef UNITS
-    } elseif [regexp {[ \t]*SPACING[ \t]*$} $line lmatch] {
-	skip_section $flef SPACING
-    } elseif [regexp {[ \t]*PROPERTYDEFINITIONS[ \t]*$} $line lmatch] {
-	skip_section $flef PROPERTYDEFINITIONS
-    } elseif [regexp {[ \t]*END[ \t]+LIBRARY[ \t]*$} $line lmatch] {
-	break
-    } elseif [regexp {^[ \t]*#} $line lmatch] {
-	# Comment line, ignore.
-    } elseif ![regexp {^[ \t]*$} $line lmatch] {
-	# Other things we don't care about
-	set matches 0
-	if [regexp {[ \t]*NAMESCASESENSITIVE} $line lmatch] {
-	    incr matches
-	} elseif [regexp {[ \t]*VERSION} $line lmatch] {
-	    incr matches
-	} elseif [regexp {[ \t]*BUSBITCHARS} $line lmatch] {
-	    incr matches
-	} elseif [regexp {[ \t]*DIVIDERCHAR} $line lmatch] {
-	    incr matches
-	} elseif [regexp {[ \t]*USEMINSPACING} $line lmatch] {
-	    incr matches
-	} elseif [regexp {[ \t]*CLEARANCEMEASURE} $line lmatch] {
-	    incr matches
-	} elseif [regexp {[ \t]*MANUFACTURINGGRID} $line lmatch] {
-	    incr matches
-	} elseif [regexp {[ \t]*MAXVIASTACK} $line lmatch] {
-	    # We *should* care about this one;  need to pass it on to the router
-	    incr matches
-	} else {
-            puts stderr "Unexpected input in LEF file:  Only macro defs were expected!"
-            puts stdout "Line is: $line"
+	} elseif [regexp {[ \t]*VIA[ \t]+([^ \t]+)} $line lmatch vianame] {
+	    skip_section $flef $vianame
+	} elseif [regexp {[ \t]*VIARULE[ \t]+([^ \t]+)} $line lmatch viarulename] {
+	    skip_section $flef $viarulename
+	} elseif [regexp {[ \t]*NONDEFAULTRULE[ \t]+([^ \t]+)} $line lmatch rulename] {
+	    skip_section $flef $rulename
+	} elseif [regexp {[ \t]*SITE[ \t]+(.+)[ \t]*$} $line lmatch sitename] {
+	    skip_section $flef $sitename
+	} elseif [regexp {[ \t]*UNITS[ \t]*$} $line lmatch] {
+	    skip_section $flef UNITS
+	} elseif [regexp {[ \t]*SPACING[ \t]*$} $line lmatch] {
+	    skip_section $flef SPACING
+	} elseif [regexp {[ \t]*PROPERTYDEFINITIONS[ \t]*$} $line lmatch] {
+	    skip_section $flef PROPERTYDEFINITIONS
+	} elseif [regexp {[ \t]*END[ \t]+LIBRARY[ \t]*$} $line lmatch] {
+	    break
+	} elseif [regexp {^[ \t]*#} $line lmatch] {
+	    # Comment line, ignore.
+	} elseif ![regexp {^[ \t]*$} $line lmatch] {
+	    # Other things we don't care about
+	    set matches 0
+	    if [regexp {[ \t]*NAMESCASESENSITIVE} $line lmatch] {
+		incr matches
+	    } elseif [regexp {[ \t]*VERSION} $line lmatch] {
+		incr matches
+	    } elseif [regexp {[ \t]*BUSBITCHARS} $line lmatch] {
+		incr matches
+	    } elseif [regexp {[ \t]*DIVIDERCHAR} $line lmatch] {
+		incr matches
+	    } elseif [regexp {[ \t]*USEMINSPACING} $line lmatch] {
+		incr matches
+	    } elseif [regexp {[ \t]*CLEARANCEMEASURE} $line lmatch] {
+		incr matches
+	    } elseif [regexp {[ \t]*MANUFACTURINGGRID} $line lmatch] {
+		incr matches
+	    } elseif [regexp {[ \t]*MAXVIASTACK} $line lmatch] {
+		# We *should* care about this one;  need to pass it on to the router
+		incr matches
+	    } else {
+        	puts stderr "Unexpected input in LEF file:"
+		puts stdout "Line is: $line"
+	    }
 	}
     }
 }
  
 set label_hard_macro {}
-foreach fhardmacro $fhardmacro { 
+foreach fhardmacro $fhardmacros { 
     puts stdout "Reading macros from hard macro LEF file. . ."
     flush stdout
 

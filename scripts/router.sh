@@ -149,7 +149,7 @@ if (${scripting} == "T") then
    echo "qrouter ${qrouter_options} -s ${rootname}.cfg" |& tee -a ${synthlog} 
    ${bindir}/qrouter ${qrouter_options} -s ${rootname}.cfg \
 		|& tee -a ${synthlog} | \
-		grep - -e fail -e Progress -e remaining.\*00\$ \
+		grep - -e Failed -e Progress -e remaining.\*00\$ \
 		-e remaining:\ \[1-9\]0\\\?\$ -e \\\*\\\*\\\*
 else
 
@@ -164,7 +164,7 @@ else
 		 |& tee -a ${synthlog}
    ${bindir}/qrouter -c ${rootname}.cfg -p ${vddnet} -g ${gndnet} \
 		${qrouter_options} ${rootname} |& tee -a ${synthlog} | \
-		grep - -e fail -e Progress -e remaining.\*00\$ \
+		grep - -e Failed -e Progress -e remaining.\*00\$ \
 		-e remaining:\ \[1-9\]0\\\?\$ -e \\\*\\\*\\\*
 endif
 

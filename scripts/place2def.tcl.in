@@ -73,8 +73,6 @@ puts $fdef "NAMESCASESENSITIVE ON ;"
 puts $fdef "DIVIDERCHAR \"/\" ;"
 puts $fdef "BUSBITCHARS \"<>\" ;"
 puts $fdef "DESIGN $topname ;"
-puts $fdef "UNITS DISTANCE MICRONS 100 ;"
-puts $fdef ""
 
 #-----------------------------------------------------------------
 # Part 1:  Area and routing tracks
@@ -96,6 +94,7 @@ if [catch {open $infoname r} finf] {
    set offsety 100
    set widthx 160
    set widthy 200
+   set multiplier 1
 
    set numlayers 3
    for {set i 1} {$i <= $numlayers} {incr i 2} {
@@ -189,6 +188,22 @@ set halfpitchy [expr $pitchy / 2];
 set halfwidthx [expr $widthx / 2];
 set halfwidthy [expr $widthy / 2];
 
+# Deal with manufacturing grids that are less than 1 centimicron, so
+# that all values in the DEF file remain integer.  The cheap way is
+# just to multiply up by 10.
+
+set nanopitch [expr int(round($halfpitchx * 10))]
+if {[expr $nanopitch % 10] != 0} {
+    set multiplier 10
+    puts stdout "DEF database: nanometers"
+    puts $fdef "UNITS DISTANCE MICRONS 1000 ;"
+} else {
+    puts stdout "DEF database: centimicrons"
+    puts $fdef "UNITS DISTANCE MICRONS 100 ;"
+}
+puts $fdef ""
+
+
 set xbot 1000
 set ybot 1000 
 set cellxbot 1000
@@ -252,6 +267,11 @@ set coreytop [expr $offsety + $coreytop - $coreybot]
 set corexbot $offsetx
 set coreybot $offsety
 
+set outcorextop [expr int($corextop * $multiplier)]
+set outcoreytop [expr int($coreytop * $multiplier)]
+set outcorexbot [expr int($corexbot * $multiplier)]
+set outcoreybot [expr int($coreybot * $multiplier)]
+
 puts stdout "Core values: $corexbot $coreybot $corextop $coreytop"
 puts stdout "Offsets: $offsetx $offsety"
 
@@ -272,7 +292,12 @@ set dieytop [expr $ytop - $cellybot + $halfpitchy]
 set ygrid [expr floor($dieytop / $pitchy)]
 set dieytop [expr $ygrid * $pitchy]
 
-puts $fdef "DIEAREA ( $diexbot $dieybot ) ( $diextop $dieytop ) ;"
+set outdiexbot [expr int($diexbot * $multiplier)]
+set outdieybot [expr int($dieybot * $multiplier)]
+set outdiextop [expr int($diextop * $multiplier)]
+set outdieytop [expr int($dieytop * $multiplier)]
+
+puts $fdef "DIEAREA ( $outdiexbot $outdieybot ) ( $outdiextop $outdieytop ) ;"
 puts $fdef ""
 
 #------------------------------------------------------------------
@@ -285,12 +310,13 @@ set height [expr $dieytop - $dieybot]
 for {set i 1} {$i <= $numlayers} {incr i} {
    set mname [subst \$metal${i}(name)]
    set mpitch [expr 100 * [subst \$metal${i}(pitch)]]
+   set outmpitch [expr int($mpitch * $multiplier)]
    if {[subst \$metal${i}(orient)] == "vertical"} {
       set xtracks [expr 1 + int($width / $mpitch)];
-      puts $fdef "TRACKS X $diexbot DO $xtracks STEP $mpitch LAYER $mname ;"
+      puts $fdef "TRACKS X $outdiexbot DO $xtracks STEP $outmpitch LAYER $mname ;"
    } else {
       set ytracks [expr 1 + int($height / $mpitch)];
-      puts $fdef "TRACKS Y $dieybot DO $ytracks STEP $mpitch LAYER $mname ;"
+      puts $fdef "TRACKS Y $outdieybot DO $ytracks STEP $outmpitch LAYER $mname ;"
    }
 }
 puts $fdef ""
@@ -547,9 +573,12 @@ while {[gets $fpl1 line] >= 0} {
       }
       set posused(${llx},${lly}) $labname
 
+      set outllx [expr int($llx * $multiplier)]
+      set outlly [expr int($lly * $multiplier)]
+
       puts $fdef "- $labname + NET $labname"
       puts $fdef "  + LAYER $labtype ( 0 0 ) ( 1 1 )"
-      puts $fdef "  + PLACED ( $llx $lly ) N ;"
+      puts $fdef "  + PLACED ( $outllx $outlly ) N ;"
 
    } else {
 
@@ -574,7 +603,10 @@ while {[gets $fpl1 line] >= 0} {
 	    for {set i 0} {$i < $fmult} {incr i} {
 
 	       set llxoff [expr $llx - $cellxbot]
-	       puts $fdef "- ${fillname}_$baseinst $cellname + PLACED ( $llxoff $llyoff ) $ostr ;"
+
+	       set outllxoff [expr int($llxoff * $multiplier)]
+	       set outllyoff [expr int($llyoff * $multiplier)]
+	       puts $fdef "- ${fillname}_$baseinst $cellname + PLACED ( $outllxoff $outllyoff ) $ostr ;"
 	       incr numcomps -1
 	       set llx [expr $llx + $fillnom]
 	       set fillname "${cellname}$i"
@@ -588,7 +620,10 @@ while {[gets $fpl1 line] >= 0} {
       set llxoff [expr $llx - $cellxbot]
       set llyoff [expr $lly - $cellybot]
 	
-      puts $fdef "- $instance $cellname + PLACED ( $llxoff $llyoff ) $ostr ;"
+      set outllxoff [expr int($llxoff * $multiplier)]
+      set outllyoff [expr int($llyoff * $multiplier)]
+
+      puts $fdef "- $instance $cellname + PLACED ( $outllxoff $outllyoff ) $ostr ;"
 
       incr numcomps -1
       if {$numcomps == 0} {
