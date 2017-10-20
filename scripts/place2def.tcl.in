@@ -94,7 +94,6 @@ if [catch {open $infoname r} finf] {
    set offsety 100
    set widthx 160
    set widthy 200
-   set multiplier 1
 
    set numlayers 3
    for {set i 1} {$i <= $numlayers} {incr i 2} {
@@ -198,6 +197,7 @@ if {[expr $nanopitch % 10] != 0} {
     puts stdout "DEF database: nanometers"
     puts $fdef "UNITS DISTANCE MICRONS 1000 ;"
 } else {
+    set multiplier 1
     puts stdout "DEF database: centimicrons"
     puts $fdef "UNITS DISTANCE MICRONS 100 ;"
 }
