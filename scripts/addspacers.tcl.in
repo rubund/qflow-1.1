@@ -1528,12 +1528,17 @@ while {[gets $fdef line] >= 0} {
 			    }
 			} else {
 			    foreach sx $rowstripeinfo {
-				set sinfo [lindex $stripeinfo $i]
-				set slow  [max [lindex $sinfo 1] $sx]
-				set shigh [min [lindex $sinfo 2] [+ $sx $stripewidth]]
-				set smean [+ [lindex $sinfo 0] [+ $sx [/ $stripewidth 2.0]]]
-				lappend newstripeinfo [list $smean $slow $shigh]
+				if [catch {set sinfo [lindex $stripeinfo $i]}] {
+				    set slow $sx
+				    set shigh [+ $sx $stripewidth]
+				    set smean [+ $sx [/ $stripewidth 2.0]]
+				} else {
+				    set slow  [max [lindex $sinfo 1] $sx]
+				    set shigh [min [lindex $sinfo 2] [+ $sx $stripewidth]]
+				    set smean [+ [lindex $sinfo 0] [+ $sx [/ $stripewidth 2.0]]]
+				}
 				incr i
+				lappend newstripeinfo [list $smean $slow $shigh]
 			    }
 			}
 			set stripeinfo $newstripeinfo

@@ -260,10 +260,10 @@ proc parse_layer {leffile layername} {
 	regexp {[ \t]*MAXWIDTH[ \t]+(.+)[ \t]*;} $line lmatch maxwidth
 	regexp {[ \t]*WIDTH[ \t]+(.+)[ \t]*;} $line lmatch width
 	regexp {[ \t]*SPACING[ \t]+(.+)[ \t]*;} $line lmatch space
-	set p2 [regexp {[ \t]*PITCH[ \t]+(.+)[ \t]+(.+)[ \t]*;} $line \
+	set p2 [regexp {[ \t]*PITCH[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]*;} $line \
 		lmatch xpitch ypitch]
  	if {$p2 == 1} {set haspitch2 true}
-	set p1 [regexp {[ \t]*PITCH[ \t]+(.+)[ \t]*;} $line lmatch pitch]
+	set p1 [regexp {[ \t]*PITCH[ \t]+([^ \t]+)[ \t]*;} $line lmatch pitch]
  	if {$p1 == 1} {set haspitch1 true}
 	if [regexp {[ \t]*END[ \t]+(.+)[ \t]*$} $line lmatch layertest] {
 	    if {"$layertest" != "$layername"} {
