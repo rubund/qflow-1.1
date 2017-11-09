@@ -1136,7 +1136,7 @@ if {$dostripes} {
     set stripefills {}
 }
 
-if {$dostripes && ($rowmax > $stripepitch)} {
+if {$dostripes} {
 
     # What sizes of fill make up the stripe width, to the nearest unit cell?
 
