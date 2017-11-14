@@ -174,8 +174,9 @@ cat >> ${modulename}.ys << EOF
 hierarchy -check
 EOF
 
+# Note:  Remove backslashes and brackets to avoid problems with tcsh
 set yerrors = `eval ${bindir}/yosys -s ${modulename}.ys |& sed -e "/\\/s#\\#/#g" \
-		| grep ERROR`
+		-e "/\[/s/\[//g" -e "/\]/s/\]//g" | grep ERROR`
 set yerrcnt = `echo $yerrors | wc -c`
 
 if ($yerrcnt > 1) then
