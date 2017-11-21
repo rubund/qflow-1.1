@@ -244,6 +244,7 @@ int main (int argc, char *argv[])
    int doLoadBalance = 1;
    int doFanout = 1;
    char *pinname;
+   char *libfile;
    char *test;
    char *s, *t;
    FILE *infptr, *outfptr;
@@ -277,7 +278,17 @@ int main (int argc, char *argv[])
 	    buf_out_pin = strdup(optarg);
 	    break;
          case 'p':
-	    Gatepath = strdup(optarg);
+	    /* Allow multiple files to be specified as space-separated	*/
+	    /* list, either by specifying all on one "-p" arguments	*/
+	    /* or by passing multiple "-p" arguments.			*/
+	    if (Gatepath == NULL) {
+		Gatepath = strdup(optarg);
+	    }
+	    else {
+		Gatepath = (char *)realloc(Gatepath, strlen(optarg) +
+			strlen(Gatepath) + 2);
+		sprintf(Gatepath, "%s %s", Gatepath, optarg);
+	    }
 	    break;
 	 case 'f':	// fanout only
 	    doLoadBalance = 0;
@@ -345,7 +356,12 @@ int main (int argc, char *argv[])
       fprintf(stderr, "blifFanout: No liberty file specified.\n");
       return 1;
    }
-   gatecount = read_gate_file(Gatepath);
+   libfile = strtok(Gatepath, " ");
+   gatecount = 0;
+   while (libfile != NULL) {
+      gatecount += read_gate_file(libfile);
+      libfile = strtok(NULL, " ");
+   }
 
    // Make sure we have a non-NULL separator.
    if (Separator == NULL) Separator = &default_sep;
@@ -727,7 +743,7 @@ int read_gate_file(char *gate_file_name)
 
 	gl->num_inputs = 0;
 	for (curpin = curcell->pins; curpin; curpin = curpin->next)
-	    if (curpin->type == INPUT)
+	    if (curpin->type == PIN_INPUT)
 		gl->num_inputs++;
 
 	/* The "MaxLatency" is empirically derived.  Since gl->delay	*/
@@ -1073,12 +1089,17 @@ void write_output(int doLoadBalance, FILE *infptr, FILE *outfptr)
 		  firstseen = 1;
 	       }
 	       gl = (struct Gatelist *)HashLookup(t, Gatehash);
-	       if (gl != NULL) {
-		  gateinputs = gl->num_inputs;
-		  needscorrecting = 0;
-		  pincount = 0;
-		  state = PINNAME;
+	       if (gl == NULL) {
+		  fprintf(stderr, "Fatal error:  Gate \"%s\" is used in source "
+			"but has no libery file definition.\n", t);
+		  fprintf(stderr, "Check if gate is designated \"dont_use\".\n");
+		  gateinputs = 0;
 	       }
+	       else
+		  gateinputs = gl->num_inputs;
+	       needscorrecting = 0;
+	       pincount = 0;
+	       state = PINNAME;
 	       break;
 	  
 	    case PINNAME:

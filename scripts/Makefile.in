@@ -15,6 +15,7 @@ REVISION = @REVISION@
 QFLOW_LIB_DIR = @QFLOW_LIB_DIR@
 QFLOW_BIN_DIR = @QFLOW_BIN_DIR@
 TCLSH_PATH = @TCLSH_PATH@
+ENV_PATH = @ENV_PATH@
 HAVE_PYTHON3 = @HAVE_PYTHON3@
 
 DEFAULTPARSER = @QFLOW_DEFAULT_PARSER@
@@ -54,38 +55,41 @@ qflow.sh:  qflow.sh.in
 	-e '/QFLOW_VERSION/s#QFLOW_VERSION#$(VERSION)#' \
 	qflow.sh.in > qflow.sh
 
+spi2xspice.py: spi2xspice.py.in
+	sed -e 's#ENV_PATH#$(ENV_PATH)#' $< > $@
+
 blif2cel.tcl: blif2cel.tcl.in
-	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' blif2cel.tcl.in > $@
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' $< > $@
 
 place2def.tcl: place2def.tcl.in
-	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' place2def.tcl.in > $@
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' $< > $@
 
-place2lef2.tcl: place2def2.tcl.in
-	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' place2lef2.tcl.in > $@
+place2lef2.tcl: place2lef2.tcl.in
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' $< > $@
 
 place2net2.tcl: place2net2.tcl.in
-	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' place2net2.tcl.in > $@
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' $< > $@
 
 ypostproc.tcl: ypostproc.tcl.in
-	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' ypostproc.tcl.in > $@
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' $< > $@
 
 ybuffer.tcl: ybuffer.tcl.in
-	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' ybuffer.tcl.in > $@
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' $< > $@
 
 decongest.tcl: decongest.tcl.in
-	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' decongest.tcl.in > $@
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' $< > $@
 
 powerbus.tcl: powerbus.tcl.in
-	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' powerbus.tcl.in > $@
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' $< > $@
 
 addspacers.tcl: addspacers.tcl.in
-	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' addspacers.tcl.in > $@
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' $< > $@
 
 getfillcell.tcl: getfillcell.tcl.in
-	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' getfillcell.tcl.in > $@
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' $< > $@
 
 blifanno.tcl: blifanno.tcl.in
-	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' blifanno.tcl.in > $@
+	sed -e 's#TCLSH_PATH#$(TCLSH_PATH)#' $< > $@
 
 install: $(TCL_SCRIPTS) $(PYTHON_SCRIPTS) $(SHELL_SCRIPTS) $(MAIN_SCRIPT)
 	@echo "Installing qflow TCL scripts"

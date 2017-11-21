@@ -435,6 +435,7 @@ read_liberty(char *libfile, char *pattern)
     char *libname = NULL;
     int section = INIT;
     LUTable *tables = NULL;
+    BUStype *buses = NULL;
     Cell *cells = NULL;
 
     double time_unit = 1.0;	// Time unit multiplier, to get ps
@@ -445,9 +446,11 @@ read_liberty(char *libfile, char *pattern)
     char *iptr;
 
     LUTable *newtable, *reftable, *scalar;
+    BUStype *newbus, *refbus;
     Cell *newcell, *lastcell;
     Pin *newpin, *lastpin;
     char *curfunc;
+    char *busformat = NULL;
 
     flib = fopen(libfile, "r");
     if (flib == NULL) {
@@ -687,6 +690,7 @@ read_liberty(char *libfile, char *pattern)
 		    if (strcmp(token, "{"))
 			fprintf(stderr, "Error: failed to find start of block\n");
 		    newcell->reftable = NULL;
+		    newcell->bustype = NULL;
 		    newcell->function = NULL;
 		    newcell->pins = NULL;
 		    newcell->area = 1.0;
@@ -781,6 +785,53 @@ read_liberty(char *libfile, char *pattern)
 		   }
 		   token = advancetoken(flib, ';');
 		}
+		else if (!strcasecmp(token, "bus_naming_style")) {
+		   token = advancetoken(flib, 0);
+		   if (token == NULL) break;
+		   if (!strcmp(token, ":")) {
+		      token = advancetoken(flib, 0);
+		      if (token == NULL) break;
+		   }
+		   if (!strcmp(token, "\"")) {
+		      token = advancetoken(flib, '\"');
+		      if (token == NULL) break;
+		   }
+		   busformat = strdup(token);
+		   token = advancetoken(flib, ';');
+		}
+		else if (!strcasecmp(token, "type")) {
+		    newbus = (BUStype *)malloc(sizeof(BUStype));
+		    newbus->from = 0;
+		    newbus->to = 0;
+		    newbus->next = buses;
+		    buses = newbus;
+
+		    token = advancetoken(flib, 0);
+		    if (strcmp(token, "("))
+			fprintf(stderr, "Input missing open parens\n");
+		    else
+			token = advancetoken(flib, ')');
+		    newbus->name = strdup(token);
+		    while (*token != '}') {
+			token = advancetoken(flib, 0);
+			if (!strcasecmp(token, "bit_from")) {
+			    token = advancetoken(flib, 0);
+			    token = advancetoken(flib, ';');
+			    sscanf(token, "%d", &newbus->from);
+			}
+			else if (!strcasecmp(token, "bit_to")) {
+			    token = advancetoken(flib, 0);
+			    token = advancetoken(flib, ';');
+			    sscanf(token, "%d", &newbus->to);
+			}
+			else if (!strcmp(token, "{")) {
+			    /* All entries are <name> : <value>.	*/
+			    /* Ignore unhandled tokens.			*/
+			    token = advancetoken(flib, 0);
+			    token = advancetoken(flib, ';');
+			}
+		    }
+		}
 		else {
 		    // For unhandled tokens, read in tokens.  If it is
 		    // a definition or function, read to end-of-line.  If
@@ -805,10 +856,15 @@ read_liberty(char *libfile, char *pattern)
 		    section = LIBBLOCK;			// End of cell def
 		}
 		else if (!strcasecmp(token, "dont_use")) {
-		    free(newcell->name);
-		    newcell->name = NULL;
+		    token = advancetoken(flib, 0);	// Colon
+		    token = advancetoken(flib, ';');	// To end-of-statement
+		    if (!strcasecmp(token, "true")) {
+			free(newcell->name);
+			newcell->name = NULL;
+		    }
 		}
-		else if (!strcasecmp(token, "pin")) {
+		else if (!strcasecmp(token, "bus") ||
+				!strcasecmp(token, "pin")) {
 		    token = advancetoken(flib, 0);	// Open parens
 		    if (!strcmp(token, "("))
 			token = advancetoken(flib, ')');	// Close parens
@@ -880,6 +936,20 @@ read_liberty(char *libfile, char *pattern)
 			    section = CELLDEF;
 		        else
 			    fprintf(stderr, "Expected end-of-statement.\n");
+		    }
+		}
+		else if (!strcasecmp(token, "bus_type")) {
+		    token = advancetoken(flib, 0);	// Colon
+		    token = advancetoken(flib, ';');
+		    /* Find the bus */
+		    for (refbus = buses; refbus; refbus = refbus->next)
+			if (!strcmp(refbus->name, token))
+			    break;
+		    if (refbus == NULL)
+			fprintf(stderr, "Failed to find a valid bus type \"%s\"\n",
+				token);
+		    else if (newcell->bustype == NULL) {
+			newcell->bustype = refbus;
 		    }
 		}
 		else if (!strcasecmp(token, "direction")) {
@@ -1228,12 +1298,23 @@ int
 get_pintype(Cell *curcell, char *pinname)
 {
     Pin *curpin;
+    char *buschar = NULL;
+
+    /* Is pin part of a bus?  If so, return the root pin */
+    if (curcell->bustype != NULL) {
+	/* Not checking bounds or syntax;  blif requires <...> */
+	buschar = strrchr(pinname, '<');
+	if (buschar != NULL) *buschar = '\0';
+    }
 
     for (curpin = curcell->pins; curpin; curpin = curpin->next) {
 	if (!strcmp(curpin->name, pinname)) {
+	    if (buschar != NULL) *buschar = '<';
 	    return curpin->type;
 	}
     }
+
+    if (buschar != NULL) *buschar = '<';
     return PIN_UNKNOWN;
 }
 

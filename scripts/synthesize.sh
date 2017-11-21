@@ -158,6 +158,27 @@ endif
 cat > ${modulename}.ys << EOF
 # Synthesis script for yosys created by qflow
 read_liberty -lib -ignore_miss_dir -setattr blackbox ${libertypath}
+EOF
+
+# Add all entries in variable "hard_macros".  "hard_macros" should be a
+# list of directories found in ${sourcedir}, each directory the module
+# name of a single module.  The directory contains several files for
+# each hard macro, including .lib, .lef, .spc, .v, and possibly others.
+
+if ( ${?hard_macros} ) then
+    foreach macro_path ( $hard_macros )
+        foreach file ( `ls ${sourcedir}/${macro_path}` )
+	    if ( ${file:e} == "lib" ) then
+		cat >> ${modulename}.ys << EOF
+read_liberty -lib -ignore_miss_dir -setattr blackbox ${sourcedir}/${macro_path}/${file}
+EOF
+		break
+	    endif
+	end
+    end
+endif
+
+cat >> ${modulename}.ys << EOF
 read_verilog ${svopt} ${sourcename}
 EOF
 
@@ -235,19 +256,29 @@ cat > ${modulename}.ys << EOF
 # Synthesis script for yosys created by qflow
 EOF
 
-# From yosys version 3.0.0+514, structural verilog using cells from the
-# the same standard cell set that is mapped by abc is supported.
-if (( ${major} == 0 && ${minor} == 3 && ${revision} == 0 && ${subrevision} >= 514) || \
-    ( ${major} == 0 && ${minor} == 3 && ${revision} > 0 ) || \
-    ( ${major} == 0 && ${minor} > 3 ) || \
-    ( ${major} > 0) ) then
-cat > ${modulename}.ys << EOF
+# Support for structural verilog---any cell can be called as long as
+# it has a liberty file entry to go along with it.  Standard cells
+# are supported automatically.  All other cells should be put in the
+# "hard_macro" variable.
+
+cat >> ${modulename}.ys << EOF
 read_liberty -lib -ignore_miss_dir -setattr blackbox ${libertypath}
 EOF
+
+if ( ${?hard_macros} ) then
+    foreach macro_path ( $hard_macros )
+        foreach file ( `ls ${sourcedir}/${macro_path}` )
+	    if ( ${file:e} == "lib" ) then
+		cat >> ${modulename}.ys << EOF
+read_liberty -lib -ignore_miss_dir -setattr blackbox ${sourcedir}/${macro_path}/${file}
+EOF
+		break
+	    endif
+	end
+    end
 endif
 
-cat > ${modulename}.ys << EOF
-read_liberty -lib -ignore_miss_dir -setattr blackbox ${libertypath}
+cat >> ${modulename}.ys << EOF
 read_verilog ${svopt} ${sourcename}
 EOF
 
@@ -549,16 +580,28 @@ else
 	 set bufoption="-b ${bufcell} -i ${bufpin_in} -o ${bufpin_out}"
       endif
 
+      # Add paths to liberty files for any hard macros
+      set libertyoption="-p ${libertypath}"
+      if ( ${?hard_macros} ) then
+	 foreach macro_path ( $hard_macros )
+	    foreach file ( `ls ${sourcedir}/${macro_path}` )
+	       if ( ${file:e} == "lib" ) then
+	           set libertyoption="${libertyoption} -p ${sourcedir}/${macro_path}/${file}
+	       endif
+	    end
+         end
+      endif
+
       echo "Running blifFanout (iterative)" |& tee -a ${synthlog}
       echo "Each iteration calls:" |& tee -a ${synthlog}
-      echo "blifFanout ${fanout_options} -I ${modulename}_nofanout -p ${libertypath} ${sepoption} ${bufoption} tmp.blif ${modulename}.blif" |& tee -a ${synthlog}
+      echo "blifFanout ${fanout_options} -I ${modulename}_nofanout ${libertyoption} ${sepoption} ${bufoption} tmp.blif ${modulename}.blif" |& tee -a ${synthlog}
       echo "" >> ${synthlog}
 
       set nchanged=1000
       while ($nchanged > 0)
          mv ${modulename}.blif tmp.blif
          set nchanged = `${bindir}/blifFanout ${fanout_options} \
-		-I ${modulename}_nofanout -p ${libertypath} ${sepoption} \
+		-I ${modulename}_nofanout ${libertyoption} ${sepoption} \
 		${bufoption} tmp.blif ${modulename}.blif |& tee -a ${synthlog} | \
 		grep "changed:" | cut -f5 -d' '`
 
@@ -657,7 +700,23 @@ else
        else
            set spiceopt="-l ${spicepath}"
        endif
-       ${scriptdir}/spi2xspice.py ${libertypath} ${modulename}.spc \
+
+       # Add paths to liberty files for any hard macros
+       set libertyoption="${libertypath}"
+       if ( ${?hard_macros} ) then
+	  foreach macro_path ( $hard_macros )
+	     foreach file ( `ls ${sourcedir}/${macro_path}` )
+	        if ( ${file:e} == "lib" ) then
+	           set libertyoption="${libertyoption} ${sourcedir}/${macro_path}/${file}
+		endif
+	     end
+	  end
+       endif
+
+       echo spi2xspice.py '"'${libertyoption}'"' ${modulename}.spc ${modulename}.xspice |& tee -a ${synthlog}
+       echo "" >> ${synthlog}
+
+       ${scriptdir}/spi2xspice.py "${libertyoption}" ${modulename}.spc \
 		${modulename}.xspice
 
        if ( !( -f ${modulename}.xspice || \

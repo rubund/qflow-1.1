@@ -45,6 +45,17 @@ typedef struct _lutable {
 
 /*--------------------------------------------------------------*/
 
+typedef struct _bustype *bustypeptr;
+
+typedef struct _bustype {
+    char *name;
+    int  from;		// Bus array first index
+    int  to;		// Bus array last index
+    bustypeptr next;
+} BUStype;
+
+/*--------------------------------------------------------------*/
+
 typedef struct _pin *pinptr;
 
 typedef struct _pin {
@@ -68,6 +79,7 @@ typedef struct _cell {
     double slope;
     double mintrans;
     LUTable *reftable;
+    BUStype *bustype;
     double *times;	// Local values for time indexes, if given
     double *caps;	// Local values for cap indexes, if given
     double *values;	// Matrix of all values

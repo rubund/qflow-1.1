@@ -326,6 +326,12 @@ if ( ! -f ${userfile} ) then
    # are aware what they may be changing.
    #------------------------------------------------------------------
 
+   if ( ${?hard_macros} ) then
+      echo \# set hard_macros = \"${hard_macros}\" >> ${userfile}
+   else
+      echo \# set hard_macros = >> ${userfile}
+   endif
+
    if ( ${?yosys_options} ) then
       echo \# set yosys_options = \"${yosys_options}\" >> ${userfile}
    else
