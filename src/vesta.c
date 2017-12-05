@@ -356,14 +356,17 @@ unsigned char cleanup;       /* Clean up net name syntax */
 char *
 advancetoken(FILE *flib, char delimiter)
 {
-    static char token[LIB_LINE_MAX];
+    static char *token = NULL;
     static char line[LIB_LINE_MAX];
     static char *linepos = NULL;
+    static int token_max_length = LIB_LINE_MAX - 5;
 
     char *lineptr = linepos;
     char *lptr, *tptr;
     char *result;
     int commentblock, concat, nest;
+
+    if (token == NULL) token = (char *)malloc(LIB_LINE_MAX);
 
     commentblock = 0;
     concat = 0;
@@ -444,6 +447,16 @@ advancetoken(FILE *flib, char delimiter)
                 else
                     break;
             }
+
+	    // Watch for overruns, and allocate more memory
+	    // for the token if needed.
+
+	    if ((tptr - token) > token_max_length) {
+		char *tsave = token;
+		token_max_length <<= 1;
+		token = (char *)realloc(token, token_max_length);
+		tptr += (token - tsave);
+	    }
 
             // Watch for nested delimiters!
             if (delimiter == '}' && *lineptr == '{') nest++;
