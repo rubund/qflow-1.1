@@ -32,7 +32,6 @@
 //
 // Written by Russell Freisenhahn
 // Added to qflow August 12, 2017
-// Added alternate SPEF output format December 6, 2017 (Tim Edwards)
 
 #include <errno.h>
 #include <stdio.h>
@@ -40,20 +39,12 @@
 #include <string.h>
 #include <unistd.h>
 #include <getopt.h>
-#include <time.h>
 
 #include "readliberty.h"	/* liberty file database */
 
 #define SRC     0x01    // node is a driver
 #define SNK     0x02    // node is a receiver
 #define INT     0x03    // node is internal to an interconnect
-
-#define FORMAT_VESTA 0
-#define FORMAT_SPEF  1
-
-#define VISIT_CONN 0
-#define VISIT_CAP  1
-#define VISIT_RES  2
 
 typedef struct _r *rptr;
 typedef struct _node *nodeptr;
@@ -295,77 +286,6 @@ void add_snk (snkptr *snk_list_ptr, snkptr snk) {
     }
 }
 
-/* Recursive routine to visit all nodes of a net */
-
-static int nid;
-
-void visit_nodes(
-	nodeptr	curr_node,
-	nodeptr	prev_node,
-	int mode,
-	FILE *outfile
-	) {
-
-    ritemptr curr_ritem;
-
-    switch (mode) {
-	case VISIT_CONN:
-	    if (curr_node->type == SNK) {
-		fprintf(outfile, "*I %s *L %g\n", curr_node->name,
-			curr_node->nodeCap);
-	    }
-	    else if (curr_node->type == SRC) {
-		char *gateend;
-		char *sepptr = strrchr(curr_node->name, '/');
-		if (sepptr != NULL) {
-		    fprintf(outfile, "*P %s ", curr_node->name);
-		    *sepptr = '\0';
-		    gateend = strrchr(curr_node->name, '_');
-		    *sepptr = '/';
-		    if (gateend != NULL) {
-			*gateend = '\0';
-			fprintf(outfile, "*D %s\n", curr_node->name);
-			*gateend = '_';
-		    }
-		}
-	    }
-	    break;
-	case VISIT_CAP:
-	    if (curr_node->type == INT) {
-		nid++;
-		fprintf(outfile, "%d %s %g\n", nid,
-			curr_node->name,
-			curr_node->nodeCap);
-	    }
-	    break;
-    }
-
-    curr_ritem = curr_node->rlist;
-
-    while (curr_ritem != NULL) {
-	switch (mode) {
-	    case VISIT_RES:
-		// NOTE:  Node pairs get visited twice in succession,
-		// so output only once per pair.
-		nid++;
-		if (nid % 2)
-		    fprintf(outfile, "%d %s %s %g\n", nid >> 1,
-				curr_ritem->r->node1->name,
-				curr_ritem->r->node2->name,
-				curr_ritem->r->rval);
-		break;
-	}
-        if ((curr_ritem->r->node1 != prev_node) &&
-			(curr_ritem->r->node1 != curr_node))
-	    visit_nodes(curr_ritem->r->node1, curr_node, mode, outfile);
-        if ((curr_ritem->r->node2 != prev_node) &&
-			(curr_ritem->r->node2 != curr_node))
-	    visit_nodes(curr_ritem->r->node2, curr_node, mode, outfile);
-
-        curr_ritem = curr_ritem->next;
-    }
-}
-
 void calculate_elmore_delay (
         nodeptr     curr_node,
         nodeptr     prev_node,
@@ -457,8 +377,6 @@ int main (int argc, char* argv[]) {
     Cell *cells, *newcell;
     Pin *newpin;
     char* libfilename;
-    char* design = NULL;
-    char* dotptr = NULL;
 
     nodeptr currnode = NULL;
     rptr    currR    = NULL;
@@ -474,7 +392,6 @@ int main (int argc, char* argv[]) {
     node_item_ptr drivers = NULL;
     node_item_ptr last_driver = NULL;
     int numDrivers = 0;
-    int format = FORMAT_VESTA;
 
     // list of all Rs for debugging and to easily free them at end
     ritemptr allrs = NULL;
@@ -517,8 +434,6 @@ int main (int argc, char* argv[]) {
 
             case 'r':
                 rcfile = fopen(optarg, "r");
-		design = strdup(optarg);
-		if ((dotptr = strrchr(design, '.')) != NULL) *dotptr = '\0';
 
                 if (!rcfile) {
                     fprintf(stderr, "ERROR: Unable to open input RC file `%s': %s\n", optarg, strerror(errno));
@@ -543,12 +458,6 @@ int main (int argc, char* argv[]) {
                 if (!outfile) {
                     fprintf(stderr, "ERROR: Unable to open outfile`%s': %s\n", optarg, strerror(errno));
                 }
-		else {
-		    dotptr = strrchr(optarg, '.');
-		    if (dotptr != NULL)
-			if (!strcmp(dotptr, ".spef"))
-			    format = FORMAT_SPEF;
-		}
                 break;
 
             case 'c':
@@ -606,50 +515,6 @@ int main (int argc, char* argv[]) {
 
     char **tokens;
     int num_toks = 0;
-
-    if (format == FORMAT_SPEF) {
-	char outstr[200];
-	time_t t;
-	struct tm *tmp;
-
-	/* Write SPEF file format output header */
-	t = time(NULL);
-	tmp = localtime(&t);
-	strftime(outstr, 200, "%H:%M:%S %A %B %d, %Y", tmp);
-
-	fprintf(outfile, "*SPEF \"IEEE 1481.1999\"\n");
-	fprintf(outfile, "*DATE \"%s\"\n", outstr);
-	fprintf(outfile, "*DESIGN \"%s\"\n", design);
-	fprintf(outfile, "*VENDOR \"%s\"\n", "unknown");
-	fprintf(outfile, "*PROGRAM \"%s\"\n", "qrouter");
-	fprintf(outfile, "*VERSION \"%s\"\n", "unknown");
-	fprintf(outfile, "*DELIMITER/\n");
-	fprintf(outfile, "*T_UNIT 1 PS\n");
-	fprintf(outfile, "*C_UNIT 1 FF\n");
-	fprintf(outfile, "*R_UNIT 1 OHM\n");
-	fprintf(outfile, "*L_UNIT 1 HENRY\n");
-	fprintf(outfile, "\n");
-	fprintf(outfile, "*PORTS\n");
-
-	/* Parse entire file once to get all port names, which are the	*/
-	/* entries ending with "/PIN".					*/
-
-	while ((bytesRead = getline(&line, &nbytes, rcfile)) > 0) {
-	    if (bytesRead > 2) {
-		tokens = tokenize_line(line, delims, &tokens, &num_toks);
-		for (t = 2; t < num_toks; t++) {
-		    if (!strncmp(tokens[t], "PIN/", 4)) {
-			fprintf(outfile, "*%s %c\n", tokens[t] + 4,
-					(t == 2) ? 'I' : 'O');
-		    }
-		}
-	    }
-	}
-	fprintf(outfile, "\n");
-
-	/* Go back to the beginning of the file */
-        rewind(rcfile);
-    }
 
     bytesRead = getline(&line, &nbytes, rcfile);
 
@@ -906,59 +771,32 @@ int main (int argc, char* argv[]) {
             currElm->src = last_driver->node;
             add_elmdly_item(&delays, currElm);
 
-	    if (format == FORMAT_VESTA) {
-                if (verbose > 3) {
-                    fprintf(stdout, "INFO: Calculate Elmore Delay for each SNK\n");
-                }
-                calculate_elmore_delay(
-                            last_driver->node,
-                            NULL,
-                            NULL,
-                            currElm,
-                            /* NULL, */
-                            1,
-                            0,
-                            verbose);
+            if (verbose > 3) {
+                fprintf(stdout, "INFO: Calculate Elmore Delay for each SNK\n");
+            }
+            calculate_elmore_delay(
+                                    last_driver->node,
+                                    NULL,
+                                    NULL,
+                                    currElm,
+                                    /*NULL,*/
+                                    1,
+                                    0,
+                                    verbose
+                                    );
 
-                if (verbose > 3)
-                    fprintf(stdout, "ELM: %s\t\t%s\t\t%f\n", currElm->name,
-				currElm->src->name, currElm->src->nodeCap +
-				currElm->src->totCapDownstream);
-                fprintf(outfile, "%s\n", currElm->name);
-                fprintf(outfile, "%s %f\n", currElm->src->name,
-				currElm->src->totCapDownstreamLessGates);
+            if (verbose > 3) fprintf(stdout, "ELM: %s\t\t%s\t\t%f\n", currElm->name, currElm->src->name, currElm->src->nodeCap + currElm->src->totCapDownstream);
+            fprintf(outfile, "%s\n", currElm->name);
+            fprintf(outfile, "%s %f\n", currElm->src->name, currElm->src->totCapDownstreamLessGates);
  
-                currSnk = currElm->snklist;
+            currSnk = currElm->snklist;
  
-                while(currSnk != NULL) {
-                    fprintf(outfile, "%s %f\n", currSnk->snknode->name, currSnk->delay);
-                    currSnk = currSnk->next;
-                }
+            while(currSnk != NULL) {
+                fprintf(outfile, "%s %f\n", currSnk->snknode->name, currSnk->delay);
+                currSnk = currSnk->next;
+            }
  
-                fprintf(outfile, "\n");
-	    }
-	    else {	/* (format == FORMAT_SPEF) */
-
-		/* Write SPEF file format output */
-		nid = 0;
-		fprintf(outfile, "*D_NET %s %g\n",
-			currElm->name, currElm->src->totCapDownstreamLessGates);
-
-		fprintf(outfile, "*CONN\n");
-		/* Visit drivers and receivers */
-		visit_nodes(last_driver->node, NULL, VISIT_CONN, outfile);
-
-		fprintf(outfile, "*CAP\n");
-		nid = 0;
-		/* Visit nodes of the net and output lumped parasitic caps */
-		visit_nodes(last_driver->node, NULL, VISIT_CAP, outfile);
-
-		fprintf(outfile, "*RES\n");
-		nid = 1;
-		/* Visit nodes of the net and output branch resistances */
-		visit_nodes(last_driver->node, NULL, VISIT_RES, outfile);
-
-	    }
+            fprintf(outfile, "\n");
         }
 
         bytesRead = getline(&line, &nbytes, rcfile);
@@ -968,7 +806,6 @@ int main (int argc, char* argv[]) {
     // Cleanup
 
     free(delays);
-    free(design);
 
     ritemptr tmp_ritem = allrs;
     rptr tmp_r = NULL;
