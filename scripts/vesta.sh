@@ -140,10 +140,17 @@ if ($dodelays == 1) then
        ${bindir}/rc2dly -r ${rootname}.rc -l ${libertypath} \
 		-d ${synthdir}/${rootname}.spef
 
+       # Run rc2dly again to get SDF format file
+       echo "Converting qrouter output to SDF delay format" |& tee -a ${synthlog}
+       echo "Running rc2dly -r ${rootname}.rc -l ${libertypath} -d ${rootname}.sdf" \
+		|& tee -a ${synthlog}
+       ${bindir}/rc2dly -r ${rootname}.rc -l ${libertypath} \
+		-d ${synthdir}/${rootname}.sdf
+
        cd ${synthdir}
 
        # Spot check for output file (NOTE:  Currently not checking if SPEF
-       # format file was created)
+       # or SDF format files were created)
        if ( !( -f ${rootname}.dly || \
 		( -M ${rootname}.dly < -M ${layoutdir}/${rootname}.rc ))) then
 	  echo "rc2dly failure:  No file ${rootname}.dly created." \

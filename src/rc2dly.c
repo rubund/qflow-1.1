@@ -50,6 +50,7 @@
 
 #define FORMAT_VESTA 0
 #define FORMAT_SPEF  1
+#define FORMAT_SDF   2
 
 #define VISIT_CONN 0
 #define VISIT_CAP  1
@@ -548,6 +549,8 @@ int main (int argc, char* argv[]) {
 		    if (dotptr != NULL)
 			if (!strcmp(dotptr, ".spef"))
 			    format = FORMAT_SPEF;
+			else if (!strcmp(dotptr, ".sdf"))
+			    format = FORMAT_SDF;
 		}
                 break;
 
@@ -649,6 +652,31 @@ int main (int argc, char* argv[]) {
 
 	/* Go back to the beginning of the file */
         rewind(rcfile);
+    }
+    else if (format == FORMAT_SDF) {
+	char outstr[200];
+	time_t t;
+	struct tm *tmp;
+
+	/* Write SDF file format output header */
+	t = time(NULL);
+	tmp = localtime(&t);
+	strftime(outstr, 200, "%H:%M:%S %A %B %d, %Y", tmp);
+
+	fprintf(outfile, "(DELAYFILE\n");
+	fprintf(outfile, "   (SDFVERSION \"3.0\")\n");
+	fprintf(outfile, "   (DESIGN \"%s\")\n", design);
+	fprintf(outfile, "   (DATE \"%s\")\n", outstr);
+	fprintf(outfile, "   (VENDOR \"%s\")\n", "unknown");
+	fprintf(outfile, "   (PROGRAM \"%s\")\n", "qrouter");
+	fprintf(outfile, "   (VERSION \"%s\")\n", "unknown");
+	fprintf(outfile, "   (DIVIDER /)\n");
+	fprintf(outfile, "   (TIMESCALE 1 ps)\n");
+	fprintf(outfile, "   (CELL\n");
+	fprintf(outfile, "      (CELLTYPE \"%s\")\n", design);
+	fprintf(outfile, "      (INSTANCE \"top\")\n");
+	fprintf(outfile, "      (DELAY\n");
+	fprintf(outfile, "         (ABSOLUTE\n");
     }
 
     bytesRead = getline(&line, &nbytes, rcfile);
@@ -937,7 +965,7 @@ int main (int argc, char* argv[]) {
  
                 fprintf(outfile, "\n");
 	    }
-	    else {	/* (format == FORMAT_SPEF) */
+	    else if (format == FORMAT_SPEF) {
 
 		/* Write SPEF file format output */
 		nid = 0;
@@ -959,9 +987,39 @@ int main (int argc, char* argv[]) {
 		visit_nodes(last_driver->node, NULL, VISIT_RES, outfile);
 
 	    }
+	    else {		/* (format == FORMAT_SDF) */
+                calculate_elmore_delay(
+                            last_driver->node,
+                            NULL,
+                            NULL,
+                            currElm,
+                            /* NULL, */
+                            1,
+                            0,
+                            verbose);
+
+                currSnk = currElm->snklist;
+ 
+                while(currSnk != NULL) {
+		    fprintf(outfile, "            (INTERCONNECT %s %s %g)\n",
+				currElm->src->name,
+				currSnk->snknode->name,
+				currSnk->delay);
+
+                    currSnk = currSnk->next;
+                }
+	    }
         }
 
         bytesRead = getline(&line, &nbytes, rcfile);
+    }
+
+    if (format == FORMAT_SDF) {
+	/* Close off all those stupid parentheses */
+	fprintf(outfile, "         )\n");
+	fprintf(outfile, "      )\n");
+	fprintf(outfile, "   )\n");
+	fprintf(outfile, ")\n");
     }
 
     fclose(outfile);
