@@ -168,7 +168,9 @@ proc parse_port {pinname macroname leffile ox oy} {
     global $macroname units
 
     while {[gets $leffile line] >= 0} {
-	if [regexp {[ \t]*LAYER[ \t]+(.+)[\t ]*;} $line lmatch layername] {
+	if [regexp {^[ \t]*#} $line lmatch] {
+	    # Comment line, ignore.
+	} elseif [regexp {[ \t]*LAYER[ \t]+(.+)[\t ]*;} $line lmatch layername] {
 	    if {![regexp {.*(\d).*} $layername lmatch layernum]} {set layernum 0}
 	    set ${macroname}(${pinname},layer) $layernum
 	} elseif [regexp {[ \t]*RECT[ \t]+(.+)[ \t]+(.+)[ \t]+(.+)[ \t]+(.+)[ \t]*;} \
@@ -208,7 +210,9 @@ proc parse_pin {pinname macroname leffile ox oy} {
     # puts "macroname: $macroname, pinname: $pinname"
 
     while {[gets $leffile line] >= 0} {
-	if [regexp {[ \t]*PORT} $line lmatch] {
+	if [regexp {^[ \t]*#} $line lmatch] {
+	    # Comment line, ignore.
+	} elseif [regexp {[ \t]*PORT} $line lmatch] {
 	    parse_port $pinname $macroname $leffile $ox $oy
 	} elseif [regexp {[ \t]*DIRECTION[ \t]+([^ \t]+)[ \t]*;} $line lmatch porttype] {
 	    # puts "Port type: $porttype"
@@ -232,7 +236,9 @@ proc parse_pin {pinname macroname leffile ox oy} {
 
 proc skip_section {leffile sectionname} {
     while {[gets $leffile line] >= 0} {
-	if [regexp {[ \t]*END[ \t]+(.+)[ \t]*$} $line lmatch sectiontest] {
+	if [regexp {^[ \t]*#} $line lmatch] {
+	    # Comment line, ignore.
+	} elseif [regexp {[ \t]*END[ \t]+(.+)[ \t]*$} $line lmatch sectiontest] {
 	    if {"$sectiontest" != "$sectionname"} {
 		puts -nonewline stderr "Unexpected END statement $line "
 		puts stderr "while reading section $sectionname"
@@ -255,27 +261,36 @@ proc parse_layer {leffile layername} {
     set type NONE
 
     while {[gets $leffile line] >= 0} {
-	regexp {[ \t]*TYPE[ \t]+(.+)[ \t]*;} $line lmatch type
-	regexp {[ \t]*DIRECTION[ \t]+(.+)[ \t]*;} $line lmatch direc
-	regexp {[ \t]*MAXWIDTH[ \t]+(.+)[ \t]*;} $line lmatch maxwidth
-	regexp {[ \t]*WIDTH[ \t]+(.+)[ \t]*;} $line lmatch width
-	regexp {[ \t]*SPACING[ \t]+(.+)[ \t]*;} $line lmatch space
-	set p2 [regexp {[ \t]*PITCH[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]*;} $line \
-		lmatch xpitch ypitch]
- 	if {$p2 == 1} {set haspitch2 true}
-	set p1 [regexp {[ \t]*PITCH[ \t]+([^ \t]+)[ \t]*;} $line lmatch pitch]
- 	if {$p1 == 1} {set haspitch1 true}
-	if [regexp {[ \t]*END[ \t]+(.+)[ \t]*$} $line lmatch layertest] {
-	    if {"$layertest" != "$layername"} {
-		puts -nonewline stderr "Unexpected END statement $line while "
-		puts stderr "reading layer $layername"
+	if [regexp {^[ \t]*#} $line lmatch] {
+	    # Comment line, ignore.
+	} else {
+	    regexp {[ \t]*TYPE[ \t]+([^ \t]+)[ \t]*;} $line lmatch type
+	    regexp {[ \t]*DIRECTION[ \t]+([^ \t]+)[ \t]*;} $line lmatch direc
+	    regexp {[ \t]*MAXWIDTH[ \t]+([^ \t]+)[ \t]*;} $line lmatch maxwidth
+	    regexp {[ \t]*WIDTH[ \t]+([^ \t]+)[ \t]*;} $line lmatch width
+	    regexp {[ \t]*SPACING[ \t]+([^ \t]+)[ \t]*;} $line lmatch space
+	    set p2 [regexp {[ \t]*PITCH[ \t]+([^ \t]+)[ \t]+([^ \t]+)[ \t]*;} $line \
+			lmatch xpitch ypitch]
+ 	    if {$p2 == 1} {set haspitch2 true}
+	    set p1 [regexp {[ \t]*PITCH[ \t]+([^ \t]+)[ \t]*;} $line lmatch pitch]
+ 	    if {$p1 == 1} {set haspitch1 true}
+	    if [regexp {[ \t]*END[ \t]+([^ \t]+)[ \t]*$} $line lmatch layertest] {
+		if {"$layertest" != "$layername"} {
+		    puts -nonewline stderr "Unexpected END statement $line while "
+		    puts stderr "reading layer $layername"
+		}
+		break
 	    }
-	    break
 	}
     }
 
-    # All we want to do here is determine the horizontal and vertical
-    # route pitches
+    # What we want to do here is determine the horizontal and vertical
+    # route pitch for the first vertical and horizontal route layers.
+    # What is *is* doing is to pick up the pitches from the first layer
+    # or layers that define them.  Needs some development.
+
+    if {$type != "ROUTING"} {return} 
+    if {$pitchx != 0 && $pitchy != 0} {return}
 
     if {$haspitch2 == true} {
 	set tpitch [expr int($units * $xpitch)]
@@ -319,7 +334,9 @@ proc parse_hard_macro {leffile macroname} {
     # puts stderr "Parsing hard macro $macroname:  Ports are:"
     puts stderr "Parsing hard macro $macroname"
     while {[gets $leffile line] >= 0} {
-	if [regexp {[ \t]*SYMMETRY[ \t]+(.+)[ \t]*;} $line lmatch symmetry] {
+	if [regexp {^[ \t]*#} $line lmatch] {
+	    # Comment line, ignore.
+	} elseif [regexp {[ \t]*SYMMETRY[ \t]+(.+)[ \t]*;} $line lmatch symmetry] {
 	    set ${macroname}(symmetry) $symmetry
 	} elseif [regexp {[ \t]*ORIGIN[ \t]+(.+)[ \t]+(.+)[ \t]*;} $line lmatch x y] {
 	    set x [expr {round($x * $units)}]
@@ -374,7 +391,9 @@ proc parse_macro {leffile macroname} {
     # puts stderr "Parsing macro $macroname:  Ports are:"
     puts stderr "Parsing macro $macroname"
     while {[gets $leffile line] >= 0} {
-	if [regexp {[ \t]*SYMMETRY[ \t]+(.+)[ \t]*;} $line lmatch symmetry] {
+	if [regexp {^[ \t]*#} $line lmatch] {
+	    # Comment line, ignore.
+	} elseif [regexp {[ \t]*SYMMETRY[ \t]+(.+)[ \t]*;} $line lmatch symmetry] {
 	    set ${macroname}(symmetry) $symmetry
 	} elseif [regexp {[ \t]*ORIGIN[ \t]+(.+)[ \t]+(.+)[ \t]*;} $line lmatch x y] {
 	    set x [expr {round($x * $units)}]
@@ -422,7 +441,9 @@ foreach flef $flefs {
     flush stdout
 
     while {[gets $flef line] >= 0} {
-	if [regexp {[ \t]*LAYER[ \t]+(.+)[ \t]*$} $line lmatch layername] {
+	if [regexp {^[ \t]*#} $line lmatch] {
+	    # Comment line, ignore.
+	} elseif [regexp {[ \t]*LAYER[ \t]+(.+)[ \t]*$} $line lmatch layername] {
 	    parse_layer $flef $layername
 	} elseif [regexp {[ \t]*MACRO[ \t]+(.+)[ \t]*$} $line lmatch macroname] {
 	    if {[lsearch $macrolist $macroname] >= 0} {
@@ -454,8 +475,6 @@ foreach flef $flefs {
 	    skip_section $flef PROPERTYDEFINITIONS
 	} elseif [regexp {[ \t]*END[ \t]+LIBRARY[ \t]*$} $line lmatch] {
 	    break
-	} elseif [regexp {^[ \t]*#} $line lmatch] {
-	    # Comment line, ignore.
 	} elseif ![regexp {^[ \t]*$} $line lmatch] {
 	    # Other things we don't care about
 	    set matches 0
@@ -490,7 +509,9 @@ foreach fhardmacro $fhardmacros {
     flush stdout
 
     while {[gets $fhardmacro line] >= 0} {
-	if [regexp {[ \t]*LAYER[ \t]+(.+)[ \t]*$} $line lmatch layername] {
+	if [regexp {^[ \t]*#} $line lmatch] {
+	    # Comment line, ignore.
+	} elseif [regexp {[ \t]*LAYER[ \t]+(.+)[ \t]*$} $line lmatch layername] {
 	    parse_layer $fhardmacro $layername
 	} elseif [regexp {[ \t]*MACRO[ \t]+(.+)[ \t]*$} $line lmatch macroname] {
 	    if {[lsearch $macrolist $macroname] >= 0} {
@@ -523,8 +544,6 @@ foreach fhardmacro $fhardmacros {
 	    skip_section $fhardmacro PROPERTYDEFINITIONS
 	} elseif [regexp {[ \t]*END[ \t]+LIBRARY[ \t]*$} $line lmatch] {
 	    break
-	} elseif [regexp {^[ \t]*#} $line lmatch] {
-	    # Comment line, ignore.
 	} elseif ![regexp {^[ \t]*$} $line lmatch] {
 	    # Other things we don't care about
 	    set matches 0
