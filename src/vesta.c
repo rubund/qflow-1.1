@@ -2665,26 +2665,18 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
                             if (strcmp(token, ";"))
                                 fprintf(stderr, "Failed to find end of value table\n");
 			}
-			else if (!strcasecmp(token, "ecsm_waveform")) {
-			    /* Not handled:  this takes the form of index_1 */
-			    /* key : value or index_2 key : value and	    */
-			    /* values key : value.			    */
-                            token = advancetoken(flib, 0);      // Open parens
-                            token = advancetoken(flib, ')');	// Close parens
-                            token = advancetoken(flib, '{');	// Open brace
-                            token = advancetoken(flib, '}');	// Close brace
+                        else if (strcmp(token, "{") && strcmp(token, "}")) {
+			    /* Other tokens:  Unhandled features */
+			    fprintf(stderr, "Unhandled feature %s at line %d\n",
+					token, fileCurrentLine);
+                            token = advancetoken(flib, 0);
+			    if (!strcmp(token, "(")) {		 // Open parens
+				token = advancetoken(flib, ')'); // Close parens
+				token = advancetoken(flib, 0);
+			    }
+			    if (!strcmp(token, "{"))	 // Open parens
+				token = advancetoken(flib, '}'); // Close brace
 			}
-			else if (!strcasecmp(token, "ecsm_capacitance")) {
-			    /* Not handled:  this takes the form of index_1 */
-			    /* key : value or index_2 key : value and	    */
-			    /* values key : value.			    */
-                            token = advancetoken(flib, 0);      // Open parens
-                            token = advancetoken(flib, ')');	// Close parens
-                            token = advancetoken(flib, '{');	// Open brace
-                            token = advancetoken(flib, '}');	// Close brace
-			}
-                        else if (strcmp(token, "{") && strcmp(token, "}"))
-                            fprintf(stderr, "Failed to find end of timing block\n");
                     }
                 }
                 else {
