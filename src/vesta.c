@@ -976,7 +976,7 @@ find_clock_source(connptr testlink, ddataptr *clocklist, btptr btrace, short dir
     short newdir;
     unsigned char result = 0;
 
-    /* Add this connection record to the backgrace */
+    /* Add this connection record to the backtrace */
 
     newclock = (btptr)malloc(sizeof(btdata));
     newclock->delay = 0.0;
@@ -985,7 +985,6 @@ find_clock_source(connptr testlink, ddataptr *clocklist, btptr btrace, short dir
     newclock->refcnt = 1;
     newclock->receiver = testlink;
     newclock->next = btrace;
-    btrace = newclock;
 
     /* Mark connection as visited */
     testlink->visited = mode;
@@ -1007,7 +1006,7 @@ find_clock_source(connptr testlink, ddataptr *clocklist, btptr btrace, short dir
 
     for (iinput = iupstream->in_connects; iinput; iinput = iinput->next) {
         newdir = calc_dir(iinput->refpin, dir);
-        result = find_clock_source(iinput, clocklist, btrace, newdir, mode);
+        result = find_clock_source(iinput, clocklist, newclock, newdir, mode);
 	if (result == (unsigned char)1) return result;
     }
     return (unsigned char)0;
@@ -1017,7 +1016,7 @@ makehead:
     /* in the list of backtraces.				*/
 
     newdataptr = (ddataptr)malloc(sizeof(delaydata));
-    newdataptr->backtrace = btrace;
+    newdataptr->backtrace = newclock;
     newdataptr->delay = 0.0;
     newdataptr->trans = 0.0;
     newdataptr->next = *clocklist;
@@ -1722,7 +1721,8 @@ int find_clock_to_term_paths(connlistptr clockedlist, ddataptr *masterlist, netp
 		    freebt = freeddata->backtrace;
 		    testconn = freebt->receiver;
 		    freeddata->backtrace = freeddata->backtrace->next;
-		    free(freebt);
+                    freebt->refcnt--;
+		    if (freebt->refcnt == 0) free(freebt);
 		    if (testconn->visited != (unsigned char)2)
 			break;
 		    testconn->visited = (unsigned char)0;
@@ -1753,7 +1753,8 @@ int find_clock_to_term_paths(connlistptr clockedlist, ddataptr *masterlist, netp
 		freebt = freeddata->backtrace;
 		testconn = freebt->receiver;
 		freeddata->backtrace = freeddata->backtrace->next;
-		free(freebt);
+                freebt->refcnt--;
+		if (freebt->refcnt == 0) free(freebt);
 		if (testconn->visited != (unsigned char)1)
 		    break;
 		testconn->visited = (unsigned char)0;
@@ -2665,8 +2666,25 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
                             if (strcmp(token, ";"))
                                 fprintf(stderr, "Failed to find end of value table\n");
 			}
+                        else if (!strcasecmp(token, "ecsm_waveform")) {
+			    /* Not handled:  this takes the form of index_1 */
+			    /* key : value or index_2 key : value and	    */
+			    /* values key : value.			    */
+			    token = advancetoken(flib, 0);	// Open parens
+			    token = advancetoken(flib, ')');	// Close parens
+			    token = advancetoken(flib, '{');	// Open brace
+			    token = advancetoken(flib, '}');	// Close brace
+			}
+                        else if (!strcasecmp(token, "ecsm_capacitance")) {
+			    /* Not handled:  this takes the form of index_1 */
+			    /* key : value or index_2 key : value and	    */
+			    /* values key : value.			    */
+			    token = advancetoken(flib, 0);	// Open parens
+			    token = advancetoken(flib, ')');	// Close parens
+			    token = advancetoken(flib, '{');	// Open brace
+			    token = advancetoken(flib, '}');	// Close brace
+			}
                         else if (strcmp(token, "{") && strcmp(token, "}")) {
-			    /* Other tokens:  Unhandled features */
 			    fprintf(stderr, "Unhandled feature %s at line %d\n",
 					token, fileCurrentLine);
                             token = advancetoken(flib, 0);
@@ -2674,7 +2692,7 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
 				token = advancetoken(flib, ')'); // Close parens
 				token = advancetoken(flib, 0);
 			    }
-			    if (!strcmp(token, "{"))	 // Open parens
+			    if (!strcmp(token, "{"))		 // Open brace
 				token = advancetoken(flib, '}'); // Close brace
 			}
                     }
