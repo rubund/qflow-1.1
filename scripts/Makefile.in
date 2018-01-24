@@ -115,6 +115,12 @@ clean:
 	$(RM) qflow.sh
 	$(RM) $(TCL_SCRIPTS)
 
+distclean:
+	$(RM) $(MAIN_SCRIPT)
+	$(RM) checkdirs.sh
+	$(RM) qflow.sh
+	$(RM) $(TCL_SCRIPTS)
+
 uninstall:
 	$(RM) -rf ${SCRIPTINSTALL}
 	$(RM) ${EXECINSTALL}/${MAIN_SCRIPT}

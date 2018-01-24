@@ -34,6 +34,11 @@ clean:
 	   (cd $$target ; $(MAKE) clean) ;\
 	done
 
+distclean:
+	@echo "Cleaning up built-in tech files"
+	for target in $(TECH_DIRS); do \
+	   (cd $$target ; $(MAKE) distclean) ;\
+	done
 
 uninstall:
 	@echo "Uninstalling built-in tech files

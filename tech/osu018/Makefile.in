@@ -37,5 +37,8 @@ install: ${TECH_FILES}
 clean:
 	$(RM) -f osu018.magicrc
 
+distclean:
+	$(RM) -f osu018.magicrc
+
 uninstall:
 
