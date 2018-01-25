@@ -103,6 +103,41 @@ else
    set lefpath=${techdir}/${leffile}
 endif
 
+
+# Determine version of yosys
+set versionstring = `${bindir}/yosys -V | cut -d' ' -f2`
+#set major = `echo $versionstring | cut -d. -f1`
+set major = 0
+set minor = `echo $versionstring | cut -d. -f2`
+
+# Sigh. . .  versioning doesn't follow any fixed standard
+set minortest = `echo $minor | cut -d+ -f2`
+set minor = `echo $minor | cut -d+ -f1`
+if ( ${minortest} == "" ) then
+
+   set revisionstring = `echo $versionstring | cut -d. -f3`
+   if ( ${revisionstring} == "" ) set revisionstring = 0
+   set revision = `echo $revisionstring | cut -d+ -f1`
+   set subrevision = `echo $revisionstring | cut -d+ -f2`
+   if ( ${subrevision} == "" ) set subrevision = 0
+
+else
+   set revision = 0
+   set subrevision = ${minortest}
+
+endif
+
+
+# Check if "yosys_options" specifies a script to use for yosys.
+if ( ! ${?yosys_options} ) then
+   set yosys_options = ""
+endif
+set usescript = `echo ${yosys_options} | grep -- -s | wc -l`
+
+
+# Only generate yosys script if none is specified in the yosys options
+if ( ${usescript} == 0 ) then
+
 #---------------------------------------------------------------------
 # Determine hierarchy by running yosys with a simple script to check
 # hierarchy.  Add files until yosys no longer reports an error.
@@ -230,28 +265,6 @@ set blif_opts = "${blif_opts} -buf ${bufcell} ${bufpin_in} ${bufpin_out}"
 # Set option for generating only the flattened top-level cell
 # set blif_opts = "${blif_opts} ${modulename}"
 
-# Determine version of yosys
-set versionstring = `${bindir}/yosys -V | cut -d' ' -f2`
-set major = `echo $versionstring | cut -d. -f1`
-set minor = `echo $versionstring | cut -d. -f2`
-
-# Sigh. . .  versioning doesn't follow any fixed standard
-set minortest = `echo $minor | cut -d+ -f2`
-set minor = `echo $minor | cut -d+ -f1`
-if ( ${minortest} == "" ) then
-
-   set revisionstring = `echo $versionstring | cut -d. -f3`
-   if ( ${revisionstring} == "" ) set revisionstring = 0
-   set revision = `echo $revisionstring | cut -d+ -f1`
-   set subrevision = `echo $revisionstring | cut -d+ -f2`
-   if ( ${subrevision} == "" ) set subrevision = 0
-
-else
-   set revision = 0
-   set subrevision = ${minortest}
-
-endif
-      
 cat > ${modulename}.ys << EOF
 # Synthesis script for yosys created by qflow
 EOF
@@ -406,17 +419,12 @@ write_blif ${blif_opts} ${modulename}_mapped.blif
 stat
 EOF
 
+endif # Generation of yosys script if ${usescript} == 0
+
+
 #---------------------------------------------------------------------
 # Yosys synthesis
 #---------------------------------------------------------------------
-
-if ( ! ${?yosys_options} ) then
-   set yosys_options = ""
-endif
-
-# Check if "yosys_options" specifies a script to use for yosys.
-# If not, call yosys with the default script.
-set usescript = `echo ${yosys_options} | grep -- -s | wc -l`
 
 # If there is a file ${modulename}_mapped.blif, move it to a temporary
 # place so we can see if yosys generates a new one or not.
@@ -426,6 +434,7 @@ if ( -f ${modulename}_mapped.blif ) then
 endif
 
 echo "Running yosys for verilog parsing and synthesis" |& tee -a ${synthlog}
+# If provided own script yosys call that, otherwise call yosys with generated script.
 if ( ${usescript} == 1 ) then
    echo "yosys ${yosys_options}" |& tee -a ${synthlog}
    eval ${bindir}/yosys ${yosys_options} |& tee -a ${synthlog}
@@ -586,7 +595,7 @@ else
 	 foreach macro_path ( $hard_macros )
 	    foreach file ( `ls ${sourcedir}/${macro_path}` )
 	       if ( ${file:e} == "lib" ) then
-	           set libertyoption="${libertyoption} -p ${sourcedir}/${macro_path}/${file}
+	           set libertyoption="${libertyoption} -p ${sourcedir}/${macro_path}/${file}"
 	       endif
 	    end
          end
@@ -707,7 +716,7 @@ else
 	  foreach macro_path ( $hard_macros )
 	     foreach file ( `ls ${sourcedir}/${macro_path}` )
 	        if ( ${file:e} == "lib" ) then
-	           set libertyoption="${libertyoption} ${sourcedir}/${macro_path}/${file}
+	           set libertyoption="${libertyoption} ${sourcedir}/${macro_path}/${file}"
 		endif
 	     end
 	  end
