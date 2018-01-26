@@ -3182,7 +3182,11 @@ delayRead(FILE *fdly, struct hashlist **Nethash)
 
     // fprintf(stdout, "delayRead\n");
 
-    token = advancetoken(fdly, 0);
+    /* NOTE:  Do not use 0 for delimiter, or else ':' is considered to	*/
+    /* be a standard delimiter, breaking up certain yosys-generated	*/
+    /* net names.							*/
+    
+    token = advancetoken(fdly, '\n');
 
     while (token != NULL) {
 
@@ -3286,7 +3290,7 @@ delayRead(FILE *fdly, struct hashlist **Nethash)
             // exit(-1);
         }
 
-        token = advancetoken(fdly, 0);
+        token = advancetoken(fdly, '\n');
     }
 }
 

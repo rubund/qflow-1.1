@@ -872,8 +872,13 @@ read_liberty(char *libfile, char *pattern)
 		    token = advancetoken(flib, 0);	// Colon
 		    token = advancetoken(flib, ';');	// To end-of-statement
 		    if (!strcasecmp(token, "true")) {
+			char *tmpname;
+			// Prefix name with "**" to mark it as a don't-use cell
+			tmpname = strdup(newcell->name);
 			free(newcell->name);
-			newcell->name = NULL;
+			newcell->name = (char *)malloc(strlen(tmpname) + 3);
+			sprintf(newcell->name, "**%s", tmpname);
+			free(tmpname);
 		    }
 		}
 		else if (!strcasecmp(token, "bus") ||
@@ -1344,14 +1349,30 @@ Cell *
 get_cell_by_name(Cell *cell, char *name)
 {
     Cell *currcell, *newcell;
+    char trymore = (char)0;
 
     for (currcell = cell; currcell; currcell = currcell->next) {
-	if (currcell->name == NULL) continue;  /* "don't use" cell */
         if (!strcasecmp(currcell->name, name)) {
             return currcell;
         }
+	// Quick check on don't-use cells
+	if (currcell->name[0] == '*' && tolower(currcell->name[2]) ==
+			tolower(name[0]))
+	    trymore = (char)1;
     }
-    fprintf(stderr, "Did not find standard cell \"%s\" in list of cells\n", name);
+    if (trymore == (char)1) {
+	for (currcell = cell; currcell; currcell = currcell->next) {
+	    if (*currcell->name == '*' && !strcasecmp(currcell->name + 2, name)) {
+		fprintf(stderr, "Warning: standard cell \"%s\" used but marked "
+			"as dont-use\n", name);
+		// Change cell so that it is no longer marked don't-use
+		strcpy(currcell->name, currcell->name + 2);
+		return currcell;
+	    }
+        }
+    }
+    else
+	fprintf(stderr, "Did not find standard cell \"%s\" in list of cells\n", name);
     return NULL;
 }
 
