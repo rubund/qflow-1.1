@@ -16,6 +16,7 @@
 /*              -p <value>      Clock period, in ps             */
 /*              -l <value>      Output load, in fF              */
 /*              -v <level>      set verbose mode                */
+/*              -D <level>      set debug mode                  */
 /*              -V              report version number           */
 /*		-n <number>	number of paths to print	*/
 /*		-L 		Long format (print paths)	*/
@@ -32,8 +33,21 @@
 /*      delay path, and the 20 paths with the smallest positive */
 /*      slack are output, following a statement indicated the   */
 /*      computed minimum clock period.                          */
+/*								*/
+/*	Debug level (developer diagnostics):			*/
+/*	    Not cumulative.  Each number does something unique.	*/
+/*		1:  Print delay file parsing information	*/
+/*		2:  Print liberty file parsing information	*/
+/*								*/
+/*	Verbose level (user diagnostics):			*/
+/*	    Cumulative.  The higher the number, the more	*/
+/* 	    output is generated.				*/
+/*		1: Report on total lines processed.		*/
+/*		2: Report on each path processed.		*/
+/*		3: Report on verilog source file		*/
+/*		4: Report on liberty file			*/
 /*--------------------------------------------------------------*/
-/*	(c) 2013-2017 Tim Edwards, Open Circuit Design		*/
+/*	(c) 2013-2018 Tim Edwards, Open Circuit Design		*/
 /*	Released under GPL as part of the qflow package		*/
 /*--------------------------------------------------------------*/
 
@@ -344,7 +358,8 @@ typedef struct _connlist {
 
 /* Global variables */
 
-unsigned char verbose;       /* Level of debug output generated */
+unsigned char verbose;       /* Level of user output generated */
+unsigned char debug;	     /* Level of debug output generated */
 unsigned char exhaustive;    /* Exhaustive search mode */
 unsigned char cleanup;       /* Clean up net name syntax */
 
@@ -1825,6 +1840,7 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
 
         switch (section) {
             case INIT:
+		if (debug == 2) fprintf(stdout, "INIT: %s\n", token);
                 if (!strcasecmp(token, "library")) {
                     token = advancetoken(flib, 0);
                     if (strcmp(token, "("))
@@ -1849,6 +1865,7 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
             case LIBBLOCK:
                 // Here we check for the main blocks, again not rigorously. . .
 
+		if (debug == 2) fprintf(stdout, "LIBBLOCK: %s\n", token);
                 if (!strcasecmp(token, "}")) {
                     fprintf(stdout, "End of library at line %d\n", fileCurrentLine);
                     section = INIT;                     // End of library block
@@ -2038,6 +2055,7 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
                     token = advancetoken(flib, 0);      // Open parens
                     if (!strcmp(token, "("))
                         token = advancetoken(flib, ')');        // Cellname
+		    if (debug == 2) fprintf(stdout, "   cell = %s\n", token);
                     newcell->name = strdup(token);
                     token = advancetoken(flib, 0);      // Find start of block
                     if (strcmp(token, "{"))
@@ -2153,6 +2171,7 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
 
             case CELLDEF:
 
+		if (debug == 2) fprintf(stdout, "CELLDEF: %s\n", token);
                 if (!strcmp(token, "}")) {
                     section = LIBBLOCK;                 // End of cell def
                 }
@@ -2162,6 +2181,7 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
                         token = advancetoken(flib, ')');        // Close parens
 
                     newpin = parse_pin(newcell, token, SENSE_NONE);
+		    if (debug == 2) fprintf(stdout, "   pin = %s\n", token);
 
                     token = advancetoken(flib, 0);      // Find start of block
                     if (strcmp(token, "{"))
@@ -2205,6 +2225,7 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
 
             case FLOPDEF:
 
+		if (debug == 2) fprintf(stdout, "FLOPDEF: %s\n", token);
                 if (!strcmp(token, "}")) {
                     section = CELLDEF;                  // End of flop def
                 }
@@ -2253,6 +2274,7 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
 
             case LATCHDEF:
 
+		if (debug == 2) fprintf(stdout, "LATCHDEF: %s\n", token);
                 if (!strcmp(token, "}")) {
                     section = CELLDEF;                  // End of flop def
                 }
@@ -2279,6 +2301,7 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
 
             case PINDEF:
 
+		if (debug == 2) fprintf(stdout, "PINDEF: %s\n", token);
                 if (!strcmp(token, "}")) {
                     section = CELLDEF;                  // End of pin def
                 }
@@ -2373,6 +2396,7 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
 
             case TIMING:
 
+		if (debug == 2) fprintf(stdout, "TIMING: %s\n", token);
                 if (!strcmp(token, "}")) {
                     section = PINDEF;                   // End of timing def
                 }
@@ -3180,7 +3204,8 @@ delayRead(FILE *fdly, struct hashlist **Nethash)
     int i;
     int numRxers;
 
-    // fprintf(stdout, "delayRead\n");
+    if (debug == 1)
+	fprintf(stdout, "delayRead\n");
 
     /* NOTE:  Do not use 0 for delimiter, or else ':' is considered to	*/
     /* be a standard delimiter, breaking up certain yosys-generated	*/
@@ -3233,10 +3258,13 @@ delayRead(FILE *fdly, struct hashlist **Nethash)
         fgets(c, 128, fdly);
 
         strtok_r(c, "/", &saveptr);
-        //fprintf(stdout, "\tDriver Inst: %s\n", saveptr);
+        if (debug == 1)
+            fprintf(stdout, "\tDriver Inst: %s\n", saveptr);
         strtok_r(NULL, " ", &saveptr);
-        //fprintf(stdout, "\tDriver Pin: %s\n", saveptr);
-        //fprintf(stdout, "\tTotC: %f\n", strtof(saveptr, NULL));
+        if (debug == 1) {
+            fprintf(stdout, "\tDriver Pin: %s\n", saveptr);
+            fprintf(stdout, "\tTotC: %f\n", strtof(saveptr, NULL));
+	}
 
 	if (c[1] == '\0') {
 	    fprintf(stderr, "ERROR: Driver not found for net %s\n", testnet->name);
@@ -3249,26 +3277,33 @@ delayRead(FILE *fdly, struct hashlist **Nethash)
         fgets(c, 128, fdly);
 
         while (c[0] != '\n') {
-            //if (debug > 0) fprintf(stdout, "\t%s\n", c);
+            if (debug == 1) fprintf(stdout, "\t%s\n", c);
 
             //separate receiver name and delay value
             strtok_r(c, " ", &saveptr);
-            //fprintf(stdout, "\tDelay: %s\n", saveptr);
-            //fprintf(stdout, "\tRxer Name: %s\n", c);
+	    if (debug == 1) {
+                fprintf(stdout, "\tDelay: %s\n", saveptr);
+                fprintf(stdout, "\tRxer Name: %s\n", c);
+	    }
             strtok_r(c, "/", &saveptr2);
-            //fprintf(stdout, "\tRxer Name: %s\n", c);
-            //fprintf(stdout, "\tRxer Name: %s\n", saveptr2);
-            //fprintf(stdout, "\tDelay: %f\n", strtof(saveptr, NULL));
+	    if (debug == 1) {
+                fprintf(stdout, "\tRxer Name: %s\n", c);
+                fprintf(stdout, "\tRxer Name: %s\n", saveptr2);
+                fprintf(stdout, "\tDelay: %f\n", strtof(saveptr, NULL));
+	    }
 
             for (i = 0; i < testnet->fanout; i++) {
 
                 testconn = testnet->receivers[i];
 
                 if (testnet->type == OUTTERM) {
-                    // fprintf(stdout, "\tNet connects to output and has no receiving instance pin\n");
+		    if (debug == 1)
+                        fprintf(stdout, "\tNet connects to output and has no "
+				"receiving instance pin\n");
                     testconn->icDelay = strtof(saveptr, NULL);
                 } else {
-                    // fprintf(stdout, "\trefinstname: %s\n", testconn->refinst->name);
+		    if (debug == 1)
+                        fprintf(stdout, "\trefinstname: %s\n", testconn->refinst->name);
 
                     if (!strcmp(testconn->refinst->name, c)) {
 
@@ -3276,7 +3311,8 @@ delayRead(FILE *fdly, struct hashlist **Nethash)
                         break;
                     }
                 }
-                //fprintf(stdout, "\tName: %s\n", c);
+		if (debug == 1)
+                    fprintf(stdout, "\tName: %s\n", c);
             }
 
             fgets(c, 128, fdly);
@@ -3287,7 +3323,6 @@ delayRead(FILE *fdly, struct hashlist **Nethash)
             fprintf(stderr, "ERROR: Net %s only had %d receivers in delay file, "
 			" but expected a fanout of %d\n", testnet->name,
 			numRxers, testnet->fanout);
-            // exit(-1);
         }
 
         token = advancetoken(fdly, '\n');
@@ -3477,6 +3512,11 @@ main(int objc, char *argv[])
        else if (!strcmp(argv[firstarg], "-v") || !strcmp(argv[firstarg], "--verbose")) {
           sscanf(argv[firstarg + 1], "%d", &ival);
           verbose = (unsigned char)ival;
+          firstarg += 2;
+       }
+       else if (!strcmp(argv[firstarg], "-D") || !strcmp(argv[firstarg], "--debug")) {
+          sscanf(argv[firstarg + 1], "%d", &ival);
+          debug = (unsigned char)ival;
           firstarg += 2;
        }
        else if (!strcmp(argv[firstarg], "-e") || !strcmp(argv[firstarg], "--exhaustive")) {
