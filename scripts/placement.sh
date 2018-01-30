@@ -445,7 +445,7 @@ if ($makedef == 1) then
          echo "via pattern ${via_pattern}" >> ${rootname}.cfg
       endif
       if (! ${?via_stacks} ) then
-         set via_stacks="none"
+         set via_stacks="all"
       endif
       echo "via stack ${via_stacks}" >> ${rootname}.cfg
       if ( ${?vddnet} ) then
@@ -470,8 +470,12 @@ if ($makedef == 1) then
       if ( ${?via_stacks} ) then
          if (${via_stacks} == "none") then
             echo "no stack" >> ${rootname}.cfg
-         else
-            echo "stack ${via_stacks}" >> ${rootname}.cfg
+	 else
+            if (${via_stacks} == "all") then
+               echo "stack ${route_layers}" >> ${rootname}.cfg
+	    else
+               echo "stack ${via_stacks}" >> ${rootname}.cfg
+	    endif
 	 endif
       endif
    endif
