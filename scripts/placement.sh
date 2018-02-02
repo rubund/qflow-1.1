@@ -82,6 +82,11 @@ if (-f project_vars.sh) then
    source project_vars.sh
 endif
 
+# Get power and ground bus names
+if (-f ${synthdir}/${rootname}_powerground) then
+   source ${synthdir}/${rootname}_powerground
+endif
+
 # Prepend techdir to leffile unless leffile begins with "/"
 set abspath=`echo ${leffile} | cut -c1`
 if ( "${abspath}" == "/" ) then
@@ -369,7 +374,7 @@ if ($makedef == 1) then
    # Add spacer cells to create a straight border on the right side
    #---------------------------------------------------------------------
 
-   if ( -f ${scriptdir}/addspacers.tcl ) then
+   if ( !(${?nospacers}) && (-f ${scriptdir}/addspacers.tcl) ) then
 
       if ( !( ${?addspacers_options} )) then
          set addspacers_options = ""
@@ -448,12 +453,8 @@ if ($makedef == 1) then
          set via_stacks="all"
       endif
       echo "via stack ${via_stacks}" >> ${rootname}.cfg
-      if ( ${?vddnet} ) then
-	 echo "vdd $vddnet" >> ${rootname}.cfg
-      endif
-      if ( ${?gndnet} ) then
-	 echo "gnd $gndnet" >> ${rootname}.cfg
-      endif
+      echo "vdd $vddnet" >> ${rootname}.cfg
+      echo "gnd $gndnet" >> ${rootname}.cfg
 
    else
       echo "# qrouter configuration for project ${rootname}" > ${rootname}.cfg

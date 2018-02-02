@@ -400,6 +400,12 @@ advancetoken(FILE *flib, char delimiter)
             else lineptr = NULL;
         }
 
+	// Sloppy liberty spec was supposed to have ';' terminating
+	// lines but it allows them to go missing.  Fix this by adding
+	// semicolons to statements missing them.
+
+	if (lineptr && *lineptr == '\n' && delimiter == ';') *lineptr = ';';
+
         if (lineptr == NULL || *lineptr == '\n' || *lineptr == '\0') {
             result = fgets(line, LIB_LINE_MAX, flib);
             fileCurrentLine++;
@@ -419,7 +425,7 @@ advancetoken(FILE *flib, char delimiter)
                     // only whitespace or newline between the backslash and the
                     // end of the string.
                     char *eptr = lptr + 1;
-                    while (isspace(*eptr)) eptr++;
+                    while (isblank(*eptr)) eptr++;
                     if (*eptr == '\0') {
                         result = fgets(lptr, LIB_LINE_MAX - (lptr - line), flib);
                         fileCurrentLine++;
@@ -437,7 +443,7 @@ advancetoken(FILE *flib, char delimiter)
 
         if (commentblock == 1) continue;
 
-        while (isspace(*lineptr)) lineptr++;
+        while (isblank(*lineptr)) lineptr++;
         if (concat == 0)
             tptr = token;
 
@@ -508,12 +514,12 @@ advancetoken(FILE *flib, char delimiter)
     }
     if (delimiter != 0) lineptr++;
 
-    while (isspace(*lineptr)) lineptr++;
+    while (isblank(*lineptr)) lineptr++;
     linepos = lineptr;
 
     // Final:  Remove trailing whitespace
     tptr = token + strlen(token) - 1;
-    while (isspace(*tptr)) {
+    while (isblank(*tptr)) {
         *tptr = '\0';
         tptr--;
     }
@@ -535,13 +541,13 @@ pinptr parse_pin(cellptr newcell, char *token, short sense_predef)
     // Advance to first legal pin name character
 
     pinname = token;
-    while (isspace(*pinname) || (*pinname == '\'') || (*pinname == '\"') ||
+    while (isblank(*pinname) || (*pinname == '\'') || (*pinname == '\"') ||
                 (*pinname == '!') || (*pinname == '(') || (*pinname == ')'))
         pinname++;
 
     sptr = pinname;
     while (*sptr != '\0') {
-        if (isspace(*sptr) || (*sptr == '\'') || (*sptr == '\"') ||
+        if (isblank(*sptr) || (*sptr == '\'') || (*sptr == '\"') ||
                 (*sptr == '!') || (*sptr == '(') || (*sptr == ')')) {
             *sptr = '\0';
             break;
@@ -2119,9 +2125,9 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
                    }
                    cap_unit = strtod(token, &metric);
                    if (*metric != '\0') {
-                      while (isspace(*metric)) metric++;
+                      while (isblank(*metric)) metric++;
                       if (*metric == ',') metric++;
-                      while ((*metric != '\0') && isspace(*metric)) metric++;
+                      while ((*metric != '\0') && isblank(*metric)) metric++;
                       if (!strcasecmp(metric, "af"))
                          cap_unit *= 1E-3;
                       else if (!strcasecmp(metric, "pf"))

@@ -56,6 +56,10 @@ advancetoken(FILE *flib, char delimiter)
 	    else lineptr = NULL;
 	}
 
+        // Semicolons are supposed to end lines but sloppy spec allows
+        // them to go missing
+        if (lineptr && *lineptr == '\n' && delimiter == ';') *lineptr = ';';
+
 	if (lineptr == NULL || *lineptr == '\n' || *lineptr == '\0') {
 	    result = fgets(line, LIB_LINE_MAX, flib);
 	    libCurrentLine++;
@@ -69,7 +73,7 @@ advancetoken(FILE *flib, char delimiter)
 		    // backslash and end-of-line, then don't treat as a
 		    // continuation character.
 		    char *eptr = lptr + 1;
-		    while (isspace(*eptr)) eptr++;
+		    while (isblank(*eptr)) eptr++;
 		    if (*eptr == '\0') {
 			result = fgets(lptr, LIB_LINE_MAX - (lptr - line), flib);
 			libCurrentLine++;
@@ -87,7 +91,7 @@ advancetoken(FILE *flib, char delimiter)
 
 	if (commentblock == 1) continue;
 
-	while (isspace(*lineptr)) lineptr++;
+	while (isblank(*lineptr)) lineptr++;
 	if (concat == 0)
 	    tptr = token;
 
@@ -158,12 +162,12 @@ advancetoken(FILE *flib, char delimiter)
     }
     if (delimiter != 0) lineptr++;
 
-    while (isspace(*lineptr)) lineptr++;
+    while (isblank(*lineptr)) lineptr++;
     linepos = lineptr;
 
     // Remove any trailing whitespace
     tptr = token + strlen(token) - 1;
-    while (isspace(*tptr)) {
+    while (isblank(*tptr)) {
 	*tptr = '\0';
 	tptr--;
     }
@@ -350,7 +354,7 @@ get_function(char *out_name, char *lib_func)
 
     while ((sptr = strchr(newfunc, '\'')) != NULL) {
 	fptr = sptr - 1;
-	while (isspace(*fptr)) fptr--;
+	while (isblank(*fptr)) fptr--;
 
 	if (*fptr == ')') {
 	    nest = 1;
@@ -363,7 +367,7 @@ get_function(char *out_name, char *lib_func)
 	}
 	else {
 	    while (*fptr != '!' && *fptr != '*' && *fptr != '+' &&
-		   !isspace(*fptr) && (fptr > newfunc) && *fptr != '('
+		   !isblank(*fptr) && (fptr > newfunc) && *fptr != '('
 		   && *fptr != ')')
 		fptr--;
 	    if (fptr > newfunc) fptr++;
@@ -766,9 +770,9 @@ read_liberty(char *libfile, char *pattern)
 		   }
 		   cap_unit = strtod(token, &metric);
 		   if (*metric != '\0') {
-		      while (isspace(*metric)) metric++;
+		      while (isblank(*metric)) metric++;
 		      if (*metric == ',') metric++;
-		      while ((*metric != '\0') && isspace(*metric)) metric++;
+		      while ((*metric != '\0') && isblank(*metric)) metric++;
 		      if (!strcasecmp(metric, "af"))
 			 cap_unit *= 1E-3;
 		      else if (!strcasecmp(metric, "pf"))

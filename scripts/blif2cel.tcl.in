@@ -238,7 +238,7 @@ proc skip_section {leffile sectionname} {
     while {[gets $leffile line] >= 0} {
 	if [regexp {^[ \t]*#} $line lmatch] {
 	    # Comment line, ignore.
-	} elseif [regexp {[ \t]*END[ \t]+(.+)[ \t]*$} $line lmatch sectiontest] {
+	} elseif [regexp {[ \t]*END[ \t]+([^ \t]+)[ \t]*$} $line lmatch sectiontest] {
 	    if {"$sectiontest" != "$sectionname"} {
 		puts -nonewline stderr "Unexpected END statement $line "
 		puts stderr "while reading section $sectionname"
@@ -425,7 +425,7 @@ proc parse_macro {leffile macroname} {
 	    # Ignore additional information from LEF version 5.6 syntax
 	    set pinname [lindex $pinname 0]
 	    parse_pin $pinname $macroname $leffile $ox $oy
-	} elseif [regexp {[ \t]*END[ \t]+(.+)[ \t]*$} $line lmatch macrotest] {
+	} elseif [regexp {[ \t]*END[ \t]+([^ \t]+)[ \t]*$} $line lmatch macrotest] {
 	    if {"$macrotest" == "$macroname"} {
 		break
 	    } else {
@@ -452,7 +452,7 @@ foreach flef $flefs {
 	    } else {
 		# This macro is not used. . . skip to end of macro
 		while {[gets $flef line] >= 0} {
-		    if [regexp {[ \t]*END[ \t]+(.+)[ \t]*$} $line lmatch macrotest] {
+		    if [regexp {[ \t]*END[ \t]+([^ \t]+)[ \t]*$} $line lmatch macrotest] {
 			if {"$macroname" == "$macrotest"} {
 			    break
 			}

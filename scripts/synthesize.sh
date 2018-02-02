@@ -464,11 +464,47 @@ else
    endif
 endif
 
+#---------------------------------------------------------------------
+# Get power and ground nets, and save them in a file in synthdir
+#---------------------------------------------------------------------
+
+# First set defaults so vddnet and gndnet are defined to something
+# if they are not set in the tech variables file.
+if !($?vddnet) then
+    set vddnet = "VDD"
+endif
+if !($?gndnet) then
+    set gndnet = "GND"
+endif
+
+echo "Running getpowerground to determine power and ground net names." |& tee -a ${synthlog}
+echo "getpowerground.tcl ${lefpath}" |& tee -a ${synthlog}
+set powerground = `${scriptdir}/getpowerground.tcl ${lefpath} | grep =`
+set testnet = `echo $powerground | cut -d' ' -f1`
+set testnettype = `echo $testnet | cut -d= -f1`
+set testnetname = `echo $testnet | cut -d= -f2`
+if ( "$testnetname" != "" ) then
+   set $testnettype = $testnetname
+endif
+set testnet = `echo $powerground | cut -d' ' -f2`
+set testnettype = `echo $testnet | cut -d= -f1`
+set testnetname = `echo $testnet | cut -d= -f2`
+if ( "$testnetname" != "" ) then
+   set $testnettype = $testnetname
+endif
+
+echo set vddnet=\"${vddnet}\" > ${synthdir}/${modulename}_powerground
+echo set gndnet=\"${gndnet}\" >> ${synthdir}/${modulename}_powerground
+
+#----------------------------------------------------------------------
+# Run ypostproc syntax post-processor
+#----------------------------------------------------------------------
+
 echo "Cleaning up output syntax" |& tee -a ${synthlog}
 echo "ypostproc.tcl ${modulename}_mapped.blif ${modulename} ${techdir}/${techname}.sh" \
 	|& tee -a ${synthlog}
 ${scriptdir}/ypostproc.tcl ${modulename}_mapped.blif ${modulename} \
-	${techdir}/${techname}.sh
+		${techdir}/${techname}.sh ${vddnet} ${gndnet}
 set errcond = ${status}
 if ( $errcond != 0 ) then
    echo "ypostproc failure.  See file ${synthlog} for error messages." \
@@ -564,13 +600,8 @@ else
 #---------------------------------------------------------------------
 
    rm -f ${modulename}_nofanout
-   touch ${modulename}_nofanout
-   if ($?gndnet) then
-      echo $gndnet >> ${modulename}_nofanout
-   endif
-   if ($?vddnet) then
-      echo $vddnet >> ${modulename}_nofanout
-   endif
+   echo $gndnet > ${modulename}_nofanout
+   echo $vddnet >> ${modulename}_nofanout
 
    if (! $?fanout_options) then
       set fanout_options=""

@@ -92,6 +92,7 @@ rm -f ${origname}_tmp.blif
 rm -f ${rootname}_orig.blif
 rm -f ${rootname}_anno.blif
 rm -f ${rootname}_nofanout
+rm -f ${rootname}_powerground
 rm -f tmp.blif
 
 #----------------------------------------------------------

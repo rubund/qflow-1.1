@@ -57,6 +57,11 @@ if (-f project_vars.sh) then
    source project_vars.sh
 endif
 
+# Get power and ground bus names
+if (-f ${synthdir}/${rootname}_powerground) then
+   source ${synthdir}/${rootname}_powerground
+endif
+
 # "-nog" (no graphics) has no graphics or console.  "-noc"
 # (no console) has graphics but no console.  Console must
 # always be disabled or else the script cannot capture the

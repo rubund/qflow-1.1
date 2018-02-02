@@ -18,7 +18,7 @@
 
 if {$argc < 3} {
    puts stderr \
-	"Usage:  ypostproc.tcl mapped_blif_file root_modname variables_file"
+	"Usage:  ypostproc.tcl mapped_blif_file root_modname variables_file [vddnet gndnet]"
    exit 1
 }
 
@@ -63,6 +63,19 @@ while {[gets $vfd line] >= 0} {
    set tcmd [string map {= \ } $line]
    eval $tcmd
 }
+
+# Get vddnet and gndnet from arguments, if given;  otherwise
+# pick up from variables file, and failing that, give them
+# default names.
+
+if {$argc == 5} {
+   set vddnet [lindex $argv 3]
+   set gndnet [lindex $argv 4]
+} else {
+   if [catch {set vddnet}] {set vddnet VDD}
+   if [catch {set gndnet}] {set gndnet GND}
+}
+
 
 #-------------------------------------------------------------
 # Yosys first pass of the blif file

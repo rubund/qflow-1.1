@@ -56,7 +56,7 @@ if {$argc == 3} {
 
 proc skip_section {leffile sectionname} {
    while {[gets $leffile line] >= 0} {
-      if [regexp {[ \t]*END[ \t]+(.+)[ \t]*$} $line lmatch sectiontest] {
+      if [regexp {[ \t]*END[ \t]+([^ \t]+)[ \t]*$} $line lmatch sectiontest] {
          if {"$sectiontest" != "$sectionname"} {
             puts -nonewline stderr "Unexpected END statement $line "
             puts stderr "while reading section $sectionname"
@@ -76,7 +76,7 @@ proc parse_nets {deffile nets} {
    upvar $nets rdict
    set ignore 0
    while {[gets $deffile line] >= 0} {
-      if [regexp {[ \t]*END[ \t]+(.+)[ \t\n]*$} $line lmatch sectiontest] {
+      if [regexp {[ \t]*END[ \t]+([^ \t]+)[ \t\n]*$} $line lmatch sectiontest] {
          if {"$sectiontest" == "NETS"} {
 	    break
 	 } else {

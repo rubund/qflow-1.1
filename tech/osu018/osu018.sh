@@ -59,9 +59,6 @@ set tiehipin_out=""	;# Output pin name of tiehi cell, if it exists
 set tielo=""		;# Cell to connect to ground, if one exists
 set tielopin_out=""	;# Output pin name of tielo cell, if it exists
 
-set gndnet=gnd		;# Name used for ground pins in standard cells
-set vddnet=vdd		;# Name used for power pins in standard cells
-
 set separator=""		;# Separator between gate names and drive strengths
 set techfile=SCN4M_SUBM.20	;# magic techfile
 set magicrc=osu018.magicrc	;# magic startup script
