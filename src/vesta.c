@@ -96,6 +96,8 @@ int fileCurrentLine;
 #define MINIMUM_TIME    0
 #define MAXIMUM_TIME    1
 
+#define INITVAL		-1.0E50		/* Value to detect uninitialized delay */
+
 // Multiple-use definition
 #define UNKNOWN         -1
 
@@ -1000,21 +1002,22 @@ find_clock_source(connptr testlink, ddataptr *clocklist, btptr btrace, short dir
     /* Add this connection record to the backtrace */
 
     newclock = (btptr)malloc(sizeof(btdata));
-    newclock->delay = 0.0;
+    newclock->delay = -1.0E50;	/* Initialization constant */
     newclock->trans = 0.0;
     newclock->dir = dir;
-    newclock->refcnt = 1;
+    newclock->refcnt = 0;
     newclock->receiver = testlink;
     newclock->next = btrace;
+    if (btrace) btrace->refcnt++;
 
-    /* Mark connection as visited */
-    testlink->visited = mode;
-    
     /* On mode 2, stop when a node marked 1 is reached. */
     if ((mode == (unsigned char)2) && (testlink->visited == (unsigned char)1)) {
 	result = (unsigned char)1;
 	goto makehead;
     }
+
+    /* Mark connection as visited */
+    testlink->visited = mode;
 
     clknet = testlink->refnet;
     driver = clknet->driver;
@@ -1038,6 +1041,7 @@ makehead:
 
     newdataptr = (ddataptr)malloc(sizeof(delaydata));
     newdataptr->backtrace = newclock;
+    if (newclock) newclock->refcnt++;
     newdataptr->delay = 0.0;
     newdataptr->trans = 0.0;
     newdataptr->next = *clocklist;
@@ -1085,7 +1089,7 @@ find_clock_delay(int dir, double delay, double trans,
 
     if (minmax == MAXIMUM_TIME) {
         /* Is delay greater than that already recorded?  If so, replace it */
-        if (delay > backtrace->delay) {
+        if ((delay > backtrace->delay) || (backtrace->delay == INITVAL)) {
             backtrace->delay = delay;
             backtrace->trans = trans;
             backtrace->dir = dir;
@@ -1093,7 +1097,7 @@ find_clock_delay(int dir, double delay, double trans,
     }
     else {
         /* Is delay less than that already recorded?  If so, replace it */
-        if (delay < backtrace->delay) {
+        if ((delay < backtrace->delay) || (backtrace->delay == INITVAL)) {
             backtrace->delay = delay;
             backtrace->trans = trans;
             backtrace->dir = dir;
@@ -1114,11 +1118,13 @@ find_clock_delay(int dir, double delay, double trans,
 
         outdir = calc_dir(testpin, dir);
         if (outdir & RISING) {
-            newdelayr = delay + calc_prop_delay(trans, receiver, RISING, minmax);
+            newdelayr = backtrace->delay +
+			calc_prop_delay(trans, receiver, RISING, minmax);
             newtransr = calc_transition(trans, receiver, RISING, minmax);
         }
         if (outdir & FALLING) {
-            newdelayf = delay + calc_prop_delay(trans, receiver, FALLING, minmax);
+            newdelayf = backtrace->delay +
+			calc_prop_delay(trans, receiver, FALLING, minmax);
             newtransf = calc_transition(trans, receiver, FALLING, minmax);
         }
 
@@ -1206,8 +1212,9 @@ int find_path_delay(int dir, double delay, double trans, connptr receiver,
     newbtdata->delay = delay + newbtdata->receiver->icDelay;
     newbtdata->trans = trans;
     newbtdata->dir = dir;
-    newbtdata->refcnt = 1;
+    newbtdata->refcnt = 0;
     newbtdata->next = backtrace;
+    if (backtrace) backtrace->refcnt++;
 
     // Stop when we hit a module output pin or any flop/latch input.
     // We must allow the routine to pass through the 1st register clock (on the first
@@ -1268,13 +1275,11 @@ int find_path_delay(int dir, double delay, double trans, connptr receiver,
                         freebt = testddata->backtrace;
                         testddata->backtrace = testddata->backtrace->next;
                         freebt->refcnt--;
-                        if (freebt->refcnt <= 0) free(freebt);
+                        if (freebt->refcnt == 0) free(freebt);
+			else break;
                     }
                     testddata->backtrace = newbtdata;
-
-                    /* Increment the refcounts along the backtrace */
-                    for (testbt = newbtdata; testbt; testbt = testbt->next)
-                        testbt->refcnt++;
+		    if (newbtdata) newbtdata->refcnt++;
                 }
             }
             else
@@ -1292,21 +1297,16 @@ int find_path_delay(int dir, double delay, double trans, connptr receiver,
             newddata->delay = 0.0;
             newddata->trans = 0.0;
             newddata->backtrace = newbtdata;
+	    if (newbtdata) newbtdata->refcnt++;
             newddata->next = *delaylist;
             *delaylist = newddata;
 
             /* Mark the receiver as having been visited */
             receiver->tag = *delaylist;
-
-            /* Increment the refcounts along the backtrace */
-            for (testbt = newbtdata; testbt; testbt = testbt->next)
-                testbt->refcnt++;
         }
-
     }
 
     receiver->metric = delay;
-    newbtdata->refcnt--;
     if (newbtdata->refcnt <= 0) free(newbtdata);
     return numpaths;
 }
@@ -1331,11 +1331,7 @@ find_clock_transition(ddataptr clocklist, connptr testlink, short dir,
     btptr  backtrace;
     double tdriver, ddelay;
 
-    if (minmax == MAXIMUM_TIME)
-        ddelay = -1.0;
-    else
-        ddelay = 1E50;
-
+    ddelay = 0.0;
     for (testclock = clocklist; testclock; testclock = testclock->next) {
         backtrace = testclock->backtrace;
         tdriver = 0.0;          // to-do:  set to default input transition time
@@ -1595,14 +1591,23 @@ int find_clock_to_term_paths(connlistptr clockedlist, ddataptr *masterlist, netp
 			(unsigned char)2);
 
                 if (result == (unsigned char)0) {
-                    // Warn about asynchronous clock sources
-                    if (verbose > 1) {
-                        fflush(stdout);
-                        fprintf(stderr, "Independent clock nets \"%s\" and \"%s\""
-                                " drive related gates!\n",
-                                testconn->refnet->name, thisconn->refnet->name);
-                    }
-                    clk_invert = -1;
+
+		    // If clocklist is NULL then this is an input and there is
+		    // no way to compute relative to a common clock, because
+		    // there is no common clock.
+
+		    if (clocklist != NULL) {
+
+			// Warn about asynchronous clock sources
+			if (verbose > 1) {
+			    fflush(stdout);
+			    fprintf(stderr, "Independent clock nets \"%s\" and \"%s\""
+					" drive related gates!\n",
+					testconn->refnet->name,
+					thisconn->refnet->name);
+			}
+			clk_invert = -1;
+		    }
                 }
                 else {
 		    // Find clock arrival times from common clock point.  Note that
@@ -1744,6 +1749,7 @@ int find_clock_to_term_paths(connlistptr clockedlist, ddataptr *masterlist, netp
 		    freeddata->backtrace = freeddata->backtrace->next;
                     freebt->refcnt--;
 		    if (freebt->refcnt == 0) free(freebt);
+		    else break;
 		    if (testconn->visited != (unsigned char)2)
 			break;
 		    testconn->visited = (unsigned char)0;
@@ -1776,6 +1782,7 @@ int find_clock_to_term_paths(connlistptr clockedlist, ddataptr *masterlist, netp
 		freeddata->backtrace = freeddata->backtrace->next;
                 freebt->refcnt--;
 		if (freebt->refcnt == 0) free(freebt);
+		else break;
 		if (testconn->visited != (unsigned char)1)
 		    break;
 		testconn->visited = (unsigned char)0;
@@ -2661,13 +2668,13 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
                                     for (i = 0; i < reftable->size1; i++) {
                                         for (j = 0; j < locsize2; j++) {
                                             while (*iptr == ' ' || *iptr == '\"' ||
-                                                        *iptr == ',')
+                                                        *iptr == ',' || *iptr == '\\')
                                                 iptr++;
                                             sscanf(iptr, "%lg", &gval);
                                             *(tableptr->values + j * reftable->size1
                                                         + i) = gval * time_unit;
                                             while (*iptr != ' ' && *iptr != '\"' &&
-                                                        *iptr != ',')
+                                                        *iptr != ',' || *iptr == '\\')
                                                 iptr++;
                                         }
                                     }
@@ -2679,13 +2686,13 @@ libertyRead(FILE *flib, lutable **tablelist, cell **celllist)
                                     for (j = 0; j < locsize2; j++) {
                                         for (i = 0; i < reftable->size1; i++) {
                                             while (*iptr == ' ' || *iptr == '\"' ||
-                                                        *iptr == ',')
+                                                        *iptr == ',' || *iptr == '\\')
                                                 iptr++;
                                             sscanf(iptr, "%lg", &gval);
                                             *(tableptr->values + j * reftable->size1
                                                         + i) = gval * time_unit;
                                             while (*iptr != ' ' && *iptr != '\"' &&
-                                                        *iptr != ',')
+                                                        *iptr != ',' || *iptr == '\\')
                                                 iptr++;
                                         }
                                     }
@@ -3864,6 +3871,7 @@ main(int objc, char *argv[])
             freeddata->backtrace = freeddata->backtrace->next;
             freebt->refcnt--;
             if (freebt->refcnt == 0) free(freebt);
+	    else break;
         }
         free(freeddata);
     }
@@ -3975,6 +3983,7 @@ main(int objc, char *argv[])
             freeddata->backtrace = freeddata->backtrace->next;
             freebt->refcnt--;
             if (freebt->refcnt == 0) free(freebt);
+	    else break;
         }
         free(freeddata);
     }
@@ -4077,6 +4086,7 @@ main(int objc, char *argv[])
             freeddata->backtrace = freeddata->backtrace->next;
             freebt->refcnt--;
             if (freebt->refcnt == 0) free(freebt);
+	    else break;
         }
         free(freeddata);
     }
@@ -4183,6 +4193,7 @@ main(int objc, char *argv[])
             freeddata->backtrace = freeddata->backtrace->next;
             freebt->refcnt--;
             if (freebt->refcnt == 0) free(freebt);
+	    else break;
         }
         free(freeddata);
     }

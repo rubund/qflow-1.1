@@ -1156,13 +1156,13 @@ read_liberty(char *libfile, char *pattern)
 				    for (i = 0; i < reftable->tsize; i++) {
 					for (j = 0; j < reftable->csize; j++) {
 					    while (*iptr == ' ' || *iptr == '\"' ||
-							*iptr == ',')
+							*iptr == ',' || *iptr == '\\')
 						iptr++;
 					    sscanf(iptr, "%lg", &gval);
 					    *(newcell->values + j * reftable->tsize
 							+ i) = gval * time_unit;
 					    while (*iptr != ' ' && *iptr != '\"' &&
-							*iptr != ',')
+							*iptr != ',' || *iptr == '\\')
 						iptr++;
 					}
 				    }
