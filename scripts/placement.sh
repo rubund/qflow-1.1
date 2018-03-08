@@ -342,12 +342,17 @@ if ($makedef == 1) then
 
    # Run place2def to turn the GrayWolf output into a DEF file
 
-   if ( ${?route_layers} ) then
-      echo "Running place2def to translate graywolf output to DEF format." \
+   if ( !( ${?place2def_options} )) then
+      set place2def_options = ""
+   endif
+
+   echo "Running place2def to translate graywolf output to DEF format." \
 		|& tee -a ${synthlog}
-      echo "place2def.tcl $rootname $usefillcell ${route_layers}" |& tee -a ${synthlog}
+   if ( ${?route_layers} ) then
+      echo "place2def.tcl $rootname $usefillcell ${route_layers} ${place2def_options}" \
+		|& tee -a ${synthlog}
       ${scriptdir}/place2def.tcl $rootname $usefillcell ${route_layers} \
-		 >>& ${synthlog}
+		${place2def_options} >>& ${synthlog}
       set errcond = $status
       if ( ${errcond} != 0 ) then
 	 echo "place2def.tcl failed with exit status ${errcond}" |& tee -a ${synthlog}
@@ -356,7 +361,10 @@ if ($makedef == 1) then
 	 exit 1
       endif
    else
-      ${scriptdir}/place2def.tcl $rootname $usefillcell >>& ${synthlog}
+      echo "place2def.tcl $rootname $usefillcell ${place2def_options}" \
+		|& tee -a ${synthlog}
+      ${scriptdir}/place2def.tcl $rootname $usefillcell ${place2def_options} \
+		>>& ${synthlog}
    endif
 
    #---------------------------------------------------------------------

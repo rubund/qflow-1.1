@@ -20,7 +20,7 @@
 
 if {$argc < 2} {
    puts -nonewline stdout "Usage:  place2def <project_name> "
-   puts stdout "<fill_cell> \[<num_layers>\]"
+   puts stdout "<fill_cell> \[<num_layers>\] \[scale=<n>\]"
    exit 0
 }
 
@@ -32,9 +32,29 @@ puts stdout "Running place2def.tcl"
 set topname [lindex $argv 0]
 set fill_cell [lindex $argv 1]
 
+# For backwards compatibility, an additional (optional) argument that
+# is just an integer is the number of layers.  Otherwise, all arguments
+# after the fill cell should be in the form <key>=<value> and are
+# parsed accordingly.
+
 set numlayers 0
-if {$argc > 2} {
-   set numlayers [lindex $argv 2]
+set scale 1
+
+while {$argc > 2} {
+   incr argc -1
+   set testopt [lindex $argv $argc]
+   set eptr [string first = $testopt]
+   if {$eptr > 0} {
+      set key [string range $testopt 0 $eptr-1]
+      set value [string range $testopt $eptr+1 end]
+      switch $key {
+	 layers {set numlayers $value}
+	 scale {set scale $value}
+	 - {puts stdout "Unknown place2def.tcl option \"$key\", ignoring."}
+      }
+   } else {
+      set numlayers $testopt
+   }
 }
 
 set pl1name ${topname}.pl1
@@ -197,9 +217,10 @@ if {[expr $nanopitch % 10] != 0} {
     puts stdout "DEF database: nanometers"
     puts $fdef "UNITS DISTANCE MICRONS 1000 ;"
 } else {
-    set multiplier 1
+    set multiplier $scale
+    set centiscale [expr {100 * $scale}]
     puts stdout "DEF database: centimicrons"
-    puts $fdef "UNITS DISTANCE MICRONS 100 ;"
+    puts $fdef "UNITS DISTANCE MICRONS $centiscale ;"
 }
 puts $fdef ""
 
