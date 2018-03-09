@@ -820,6 +820,7 @@ int main (int argc, char* argv[]) {
                     // nothing to do on a comma
                     t += 1;
                 } else {
+		    char *uptr;
                     // located a receiver
                     // Some of the receiver nodes are not endpoints of a branch,
                     // but are branch points themselves. This complicates how
@@ -862,8 +863,21 @@ int main (int argc, char* argv[]) {
                     // the input pin capacitance to a std cell or the user-specified
                     // capacitance of a module-level pin
                     char *cellIndex = strsep(&tokens[t], "/");
-                    char *cellName = strsep(&cellIndex, "_");
                     char *pinName = tokens[t];
+                    char *cellName;
+
+		    // (Fixed:  Do not use strsep, as cellname may have underscores
+		    // in the name in addition to the one that delimits the index.)
+		    uptr = strrchr(cellIndex, '_');
+		    if (uptr != NULL) {
+		       *uptr = '\0';
+		       cellName = cellIndex;
+		       cellIndex = uptr + 1;
+		    }
+		    else {
+		       cellName = cellIndex;	/* Should not happen */
+		       cellIndex = NULL;
+		    }
 
                     if (!strcmp(cellName, "PIN")) {
                         currnode->nodeCap = modulePinCapacitance;
