@@ -52,7 +52,7 @@
 # to it.
 
 if ($#argv != 1 && $#argv != 2) then
-   echo Usage:  checkdirs.sh <technology_name> <project_name>
+   echo "Usage:  checkdirs.sh <technology_name> <project_name>"
    exit 1
 endif
 

@@ -78,6 +78,7 @@ typedef struct _node {
     char*       name;
     int         type;
     ritemptr    rlist;
+    ritemptr    rlist_end;	/* To avoid having to find the list end */
     double      nodeCap;
     double      totCapDownstream;
     double      totCapDownstreamLessGates;
@@ -171,6 +172,11 @@ nodeptr create_node (char *name, int type, double nodeCap) {
     strcpy(new_node->name, name);
     new_node->type = type;
     new_node->nodeCap = nodeCap;
+    new_node->rlist = NULL;
+    new_node->rlist_end = NULL;
+    new_node->totCapDownstream = 0.0;
+    new_node->totCapDownstreamLessGates = 0.0;
+    new_node->visited = 0;
 
     return new_node;
 }
@@ -206,7 +212,7 @@ void add_node_item (node_item_ptr *node_item_list_ptr, nodeptr n, node_item_ptr 
     }
 }
 
-void add_ritem (ritemptr *ritem_list_ptr, rptr r) {
+void add_ritem (ritemptr *ritem_list_ptr, rptr r, ritemptr *ritem_last_ptr) {
     ritemptr next = calloc(1, sizeof(ritem));
     next->r = r;
 
@@ -215,6 +221,11 @@ void add_ritem (ritemptr *ritem_list_ptr, rptr r) {
 
         *ritem_list_ptr = next;
 
+    } else if (*ritem_last_ptr != NULL) {
+	ritemptr i;
+	i = *ritem_last_ptr;
+	i->next = next;
+	*ritem_last_ptr = next;
     } else {
 
     // list has some items, we need to find the end
@@ -223,6 +234,7 @@ void add_ritem (ritemptr *ritem_list_ptr, rptr r) {
         for (i = *ritem_list_ptr; i->next != NULL; i = i->next);
 
         i->next = next;
+	*ritem_last_ptr = next;
     }
 }
 
@@ -479,6 +491,7 @@ int main (int argc, char* argv[]) {
 
     // list of all Rs for debugging and to easily free them at end
     ritemptr allrs = NULL;
+    ritemptr allrs_end = NULL;
 
     elmdly_item_ptr delays = NULL;
 
@@ -791,9 +804,9 @@ int main (int argc, char* argv[]) {
                     currR->node2 = currnode;
                     currR->rval = atof(tokens[t+1]);
                     // add resistor to each node's resistor list and the global list
-                    add_ritem(&currNodeStack->node->rlist, currR);
-                    add_ritem(&currnode->rlist, currR);
-                    add_ritem(&allrs, currR);
+                    add_ritem(&currNodeStack->node->rlist, currR, &currNodeStack->node->rlist_end);
+                    add_ritem(&currnode->rlist, currR, &currnode->rlist_end);
+                    add_ritem(&allrs, currR, &allrs_end);
 
                     // push the most recent node onto the nodestack
                     add_node_item(&currNodeStack, currnode, &currNodeStack);
@@ -855,9 +868,9 @@ int main (int argc, char* argv[]) {
                     currR->node2 = currnode;
                     currR->rval = 0;
                     // add resistor to each node's resistor list and the global list
-                    add_ritem(&currNodeStack->node->rlist, currR);
-                    add_ritem(&currnode->rlist, currR);
-                    add_ritem(&allrs, currR);
+                    add_ritem(&currNodeStack->node->rlist, currR, &currNodeStack->node->rlist_end);
+                    add_ritem(&currnode->rlist, currR, &currnode->rlist_end);
+                    add_ritem(&allrs, currR, &allrs_end);
 
                     // Add the receiver contributed capacitance which is either
                     // the input pin capacitance to a std cell or the user-specified

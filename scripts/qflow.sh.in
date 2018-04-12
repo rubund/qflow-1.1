@@ -193,6 +193,10 @@ else
 endif
 
 source QFLOW_SCRIPT_DIR/checkdirs.sh ${tech} ${project}
+if ($status == 1) then
+   echo ""
+   exit 1
+endif
 
 set nvsrc = `ls ${sourcedir}/*.v | grep -v match | wc -l`
 set nsvsrc = `ls ${sourcedir}/*.sv | wc -l`
