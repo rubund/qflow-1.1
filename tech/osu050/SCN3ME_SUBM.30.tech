@@ -275,6 +275,7 @@ cifoutput
 
 style  lambda=0.30(p)
  scalefactor  30 15
+ options calma-permissive-labels
 
  layer CWN nwell,rnw
  bloat-or pdiff,rpd,pdc/a,pfet * 180

@@ -15,11 +15,14 @@ QFLOW_QROUTER_PATH = @QFLOW_QROUTER_PATH@
 QFLOW_ABC_PATH = @QFLOW_ABC_PATH@
 QFLOW_ODIN_PATH = @QFLOW_ODIN_PATH@
 QFLOW_MAGIC_PATH = @QFLOW_MAGIC_PATH@
+QFLOW_NETGEN_PATH = @QFLOW_NETGEN_PATH@
 QFLOW_YOSYS_PATH = @QFLOW_YOSYS_PATH@
 
 HAVE_ABC = @HAVE_ABC@
 HAVE_YOSYS = @HAVE_YOSYS@
 HAVE_ODIN_II = @HAVE_ODIN_II@
+HAVE_MAGIC = @HAVE_MAGIC@
+HAVE_NETGEN = @HAVE_NETGEN@
 
 OBJECTS = blif2BSpice.o blif2Verilog.o blifFanout.o vesta.o spice2delay.o rc2dly.o
 HASHLIB = hash.o
@@ -62,7 +65,12 @@ install: $(TARGETS)
 	@if test "${HAVE_ABC}" = "1"; then \
 	(cd $(DESTDIR)${BININSTALL};  $(RM) -f abc;  ln -s $(QFLOW_ABC_PATH) abc); \
 	fi
-	(cd $(DESTDIR)${BININSTALL};  $(RM) -f magic;  ln -s $(QFLOW_MAGIC_PATH) magic)
+	@if test "${HAVE_MAGIC}" = "1"; then \
+	(cd $(DESTDIR)${BININSTALL};  $(RM) -f magic;  ln -s $(QFLOW_MAGIC_PATH) magic); \
+	fi
+	@if test "${HAVE_NETGEN}" = "1"; then \
+	(cd $(DESTDIR)${BININSTALL};  $(RM) -f netgen;  ln -s $(QFLOW_NETGEN_PATH) netgen); \
+	fi
 	@if test "${HAVE_YOSYS}" = "1"; then \
 	(cd $(DESTDIR)${BININSTALL};  $(RM) -f yosys;  ln -s $(QFLOW_YOSYS_PATH) yosys); \
 	(cd $(DESTDIR)${BININSTALL};  $(RM) -f yosys-abc;  ln -s $(QFLOW_YOSYS_PATH)-abc yosys-abc); \

@@ -30,7 +30,6 @@ AC_CHECK_PROG(AUTOCONF, autoconf, autoconf, :)
 AC_CHECK_PROG(CP, cp, cp, :)
 AC_CHECK_PROG(RM, rm, rm, :)
 AC_CHECK_PROG(HAVE_PYTHON3, python3, yes, no)
-AC_CHECK_PROG(HAVE_PYTHON, python, yes, no)
 
 AC_LANG_C
 AC_HEADER_STDC
@@ -58,10 +57,10 @@ AC_ARG_WITH(tclsh,
    AC_PATH_PROG(TCLSH_PATH, tclsh, tclsh, )])
 AC_DEFINE_UNQUOTED(TCLSH_PATH, "$TCLSH_PATH")
 
-dnl Path to Magic 8.0
+dnl Path to Magic 8.X
 
 AC_ARG_WITH(magic,
-[  --with-magic=DIR		path to magic-8.0], [
+[  --with-magic=DIR		path to magic-8.X], [
    if test -d "$withval"; then
       QFLOW_MAGIC_DIR=$withval
    elif test -f "$withval"; then
@@ -74,6 +73,23 @@ AC_ARG_WITH(magic,
 ], [
    AC_PATH_PROG(QFLOW_MAGIC_PATH, magic, , )])
 AC_DEFINE_UNQUOTED(QFLOW_MAGIC_PATH, "$QFLOW_MAGIC_PATH")
+
+dnl Path to Netgen
+
+AC_ARG_WITH(netgen,
+[  --with-netgen=DIR		path to netgen], [
+   if test -d "$withval"; then
+      QFLOW_NETGEN_DIR=$withval
+   elif test -f "$withval"; then
+      # Path includes "/netgen";  remove it
+      QFLOW_NETGEN_DIR=${withval%/netgen}
+   else
+      QFLOW_NETGEN_DIR=${PATH}
+   fi
+   AC_PATH_PROG(QFLOW_NETGEN_PATH, netgen, , $QFLOW_NETGEN_DIR)
+], [
+   AC_PATH_PROG(QFLOW_NETGEN_PATH, netgen, , )])
+AC_DEFINE_UNQUOTED(QFLOW_NETGEN_PATH, "$QFLOW_NETGEN_PATH")
 
 dnl Path to Qrouter
 
@@ -151,13 +167,13 @@ dnl AC_SUBST(QFLOW_YOSYS_PATH)
 dnl AC_SUBST(QFLOW_GRAYWOLF_PATH)
 dnl AC_SUBST(QFLOW_QROUTER_PATH)
 dnl AC_SUBST(QFLOW_MAGIC_PATH)
+dnl AC_SUBST(QFLOW_NETGEN_PATH)
 
 AC_SUBST(QFLOW_BIN_DIR)
 AC_SUBST(QFLOW_LIB_DIR)
 
 AC_SUBST(TCLSH_PATH)
 AC_SUBST(HAVE_PYTHON3)
-AC_SUBST(HAVE_PYTHON)
 
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
@@ -171,6 +187,22 @@ else
 fi
 
 AC_SUBST(HAVE_YOSYS)
+
+if test "x${ac_cv_path_QFLOW_MAGIC_PATH}" == "x"; then
+   HAVE_MAGIC=0
+else
+   HAVE_MAGIC=1
+fi
+
+AC_SUBST(HAVE_MAGIC)
+
+if test "x${ac_cv_path_QFLOW_NETGEN_PATH}" == "x"; then
+   HAVE_NETGEN=0
+else
+   HAVE_NETGEN=1
+fi
+
+AC_SUBST(HAVE_NETGEN)
 
 AC_OUTPUT(Makefile scripts/Makefile src/Makefile tech/Makefile tech/osu050/Makefile tech/osu035/Makefile tech/osu018/Makefile tech/gscl45nm/Makefile)
 
@@ -198,17 +230,19 @@ else
 fi
 
 if test "x${ac_cv_path_QFLOW_MAGIC_PATH}" == "x"; then
-   echo "WARNING: Magic 8.0 not found.  Use --with-magic=<DIR>"
+   echo "WARNING: Magic 8.X layout tool not found.  Use --with-magic=<DIR>"
 else
    echo "Using Magic layout tool at: ${ac_cv_path_QFLOW_MAGIC_PATH}"
 fi
 
-if test "x${HAVE_PYTHON3}" == "x"; then
-   echo "No python3 on system, will not install spi2xspice.py"
+if test "x${ac_cv_path_QFLOW_NETGEN_PATH}" == "x"; then
+   echo "WARNING: Netgen LVS tool not found.  Use --with-netgen=<DIR>"
+else
+   echo "Using Netgen LVS tool at: ${ac_cv_path_QFLOW_NETGEN_PATH}"
 fi
 
-if test "x${HAVE_PYTHON}" == "x"; then
-   echo "No python on system, will not install rc2vestaCleanse.py"
+if test "x${HAVE_PYTHON3}" == "x"; then
+   echo "No python3 on system, will not install qflow GUI or spi2xspice.py"
 fi
 
 echo "----------------------------------------------------"

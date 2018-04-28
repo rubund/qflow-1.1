@@ -14,7 +14,7 @@ QFLOW_LIB_DIR = @QFLOW_LIB_DIR@
 TECH_FILES = osu018.par osu018_stdcells.lef osu018.sh
 TECH_FILES += osu018_stdcells.sp osu018.magicrc osu018.prm
 TECH_FILES += SCN6M_SUBM.10.tech osu018_stdcells.lib
-TECH_FILES += osu018_stdcells.v
+TECH_FILES += osu018_stdcells.v osu018_setup.tcl osu018_stdcells.gds2
 
 TECHINSTALL = ${QFLOW_LIB_DIR}/tech
 

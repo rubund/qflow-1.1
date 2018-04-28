@@ -62,7 +62,7 @@ set tielopin_out=""	;# Output pin name of tielo cell, if it exists
 set separator=""		;# Separator between gate names and drive strengths
 set techfile=SCN4M_SUBM.20	;# magic techfile
 set magicrc=osu035.magicrc	;# magic startup script
-set gdsfile=osu035_stdcells.gds	;# GDS database of standard cells
+set gdsfile=osu035_stdcells.gds2	;# GDS database of standard cells
 
 # Option defaults
 set fanout_options="-l 200 -c 30"   ;# blifFanout target maximum latency

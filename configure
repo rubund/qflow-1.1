@@ -586,6 +586,8 @@ ac_unique_file="VERSION"
 ac_unique_file="Makefile.in"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+HAVE_NETGEN
+HAVE_MAGIC
 HAVE_YOSYS
 STDLIBS
 LD
@@ -594,12 +596,12 @@ QFLOW_BIN_DIR
 QFLOW_YOSYS_PATH
 QFLOW_GRAYWOLF_PATH
 QFLOW_QROUTER_PATH
+QFLOW_NETGEN_PATH
 QFLOW_MAGIC_PATH
 TCLSH_PATH
 ENV_PATH
 EGREP
 GREP
-HAVE_PYTHON
 HAVE_PYTHON3
 RM
 CP
@@ -669,6 +671,7 @@ ac_user_opts='
 enable_option_checking
 with_tclsh
 with_magic
+with_netgen
 with_qrouter
 with_graywolf
 with_yosys
@@ -1300,7 +1303,8 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-tclsh=DIR		path to tclsh
-  --with-magic=DIR		path to magic-8.0
+  --with-magic=DIR		path to magic-8.X
+  --with-netgen=DIR		path to netgen
   --with-qrouter=DIR		path to qrouter
   --with-graywolf=DIR		path to graywolf
   --with-yosys=DIR		path to yosys
@@ -3426,44 +3430,6 @@ $as_echo "no" >&6; }
 fi
 
 
-# Extract the first word of "python", so it can be a program name with args.
-set dummy python; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_prog_HAVE_PYTHON+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if test -n "$HAVE_PYTHON"; then
-  ac_cv_prog_HAVE_PYTHON="$HAVE_PYTHON" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_HAVE_PYTHON="yes"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_prog_HAVE_PYTHON" && ac_cv_prog_HAVE_PYTHON="no"
-fi
-fi
-HAVE_PYTHON=$ac_cv_prog_HAVE_PYTHON
-if test -n "$HAVE_PYTHON"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $HAVE_PYTHON" >&5
-$as_echo "$HAVE_PYTHON" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
 
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
@@ -3982,6 +3948,109 @@ _ACEOF
 
 
 
+# Check whether --with-netgen was given.
+if test "${with_netgen+set}" = set; then :
+  withval=$with_netgen;
+   if test -d "$withval"; then
+      QFLOW_NETGEN_DIR=$withval
+   elif test -f "$withval"; then
+      # Path includes "/netgen";  remove it
+      QFLOW_NETGEN_DIR=${withval%/netgen}
+   else
+      QFLOW_NETGEN_DIR=${PATH}
+   fi
+   # Extract the first word of "netgen", so it can be a program name with args.
+set dummy netgen; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_QFLOW_NETGEN_PATH+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $QFLOW_NETGEN_PATH in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_QFLOW_NETGEN_PATH="$QFLOW_NETGEN_PATH" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $QFLOW_NETGEN_DIR
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_QFLOW_NETGEN_PATH="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+QFLOW_NETGEN_PATH=$ac_cv_path_QFLOW_NETGEN_PATH
+if test -n "$QFLOW_NETGEN_PATH"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $QFLOW_NETGEN_PATH" >&5
+$as_echo "$QFLOW_NETGEN_PATH" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+
+else
+
+   # Extract the first word of "netgen", so it can be a program name with args.
+set dummy netgen; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_QFLOW_NETGEN_PATH+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $QFLOW_NETGEN_PATH in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_QFLOW_NETGEN_PATH="$QFLOW_NETGEN_PATH" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_QFLOW_NETGEN_PATH="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+QFLOW_NETGEN_PATH=$ac_cv_path_QFLOW_NETGEN_PATH
+if test -n "$QFLOW_NETGEN_PATH"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $QFLOW_NETGEN_PATH" >&5
+$as_echo "$QFLOW_NETGEN_PATH" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+
+cat >>confdefs.h <<_ACEOF
+#define QFLOW_NETGEN_PATH "$QFLOW_NETGEN_PATH"
+_ACEOF
+
+
+
+
 # Check whether --with-qrouter was given.
 if test "${with_qrouter+set}" = set; then :
   withval=$with_qrouter;
@@ -4332,11 +4401,26 @@ fi
 
 
 
-
 if test "x${ac_cv_path_QFLOW_YOSYS_PATH}" == "x"; then
    HAVE_YOSYS=0
 else
    HAVE_YOSYS=1
+fi
+
+
+
+if test "x${ac_cv_path_QFLOW_MAGIC_PATH}" == "x"; then
+   HAVE_MAGIC=0
+else
+   HAVE_MAGIC=1
+fi
+
+
+
+if test "x${ac_cv_path_QFLOW_NETGEN_PATH}" == "x"; then
+   HAVE_NETGEN=0
+else
+   HAVE_NETGEN=1
 fi
 
 
@@ -5536,17 +5620,19 @@ else
 fi
 
 if test "x${ac_cv_path_QFLOW_MAGIC_PATH}" == "x"; then
-   echo "WARNING: Magic 8.0 not found.  Use --with-magic=<DIR>"
+   echo "WARNING: Magic 8.X layout tool not found.  Use --with-magic=<DIR>"
 else
    echo "Using Magic layout tool at: ${ac_cv_path_QFLOW_MAGIC_PATH}"
 fi
 
-if test "x${HAVE_PYTHON3}" == "x"; then
-   echo "No python3 on system, will not install spi2xspice.py"
+if test "x${ac_cv_path_QFLOW_NETGEN_PATH}" == "x"; then
+   echo "WARNING: Netgen LVS tool not found.  Use --with-netgen=<DIR>"
+else
+   echo "Using Netgen LVS tool at: ${ac_cv_path_QFLOW_NETGEN_PATH}"
 fi
 
-if test "x${HAVE_PYTHON}" == "x"; then
-   echo "No python on system, will not install rc2vestaCleanse.py"
+if test "x${HAVE_PYTHON3}" == "x"; then
+   echo "No python3 on system, will not install qflow GUI or spi2xspice.py"
 fi
 
 echo "----------------------------------------------------"

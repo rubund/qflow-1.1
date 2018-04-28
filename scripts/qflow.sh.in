@@ -39,6 +39,7 @@ set vsource=""
 
 # Don't do anything unless told to on the command line
 set actions=0
+set dogui=0
 set dohelp=0
 set doversion=0
 set dosynth=0
@@ -74,6 +75,10 @@ while ($#argv > 0)
 	 set doversion=1
 	 shift
 	 breaksw
+      case gui:
+         set dogui=1
+         shift
+         breaksw
       case synth:
       case synthesize:
 	 set dosynth=1
@@ -143,6 +148,22 @@ while ($#argv > 0)
    endsw
 end
 
+if ($dogui == 1) then
+    # Run interactive GUI interface instead of this script.
+    if ( -f QFLOW_SCRIPT_DIR/qflow_manager.py ) then
+        if ( $has_tech == 0 ) then
+	    exec QFLOW_SCRIPT_DIR/qflow_manager.py $tech $modulename
+	else
+	    exec QFLOW_SCRIPT_DIR/qflow_manager.py None $modulename
+        endif
+	# exec should not return. . .
+	exit 0
+    else
+	echo "GUI manager not installed.  Requires python3"
+	set dohelp = 1
+    endif
+endif
+
 if ($modulename == "") then
    set dohelp=1
 endif
@@ -169,6 +190,8 @@ if ($dohelp == 1 || $#argv != 0) then
    echo "            build			Run scripts synthesize to route"
    echo "            all			Run scripts synthesize to display"
    echo ""
+   echo "            gui			Run the qflow interactive GUI"
+   echo ""
    echo "Options:    -T, --tech <name>		Use technology <name>"
    echo "            -p, --project <name>	Project root directory is <name>"
    if ($dohelp == 1) then
@@ -194,7 +217,8 @@ endif
 
 source QFLOW_SCRIPT_DIR/checkdirs.sh ${tech} ${project}
 if ($status == 1) then
-   echo ""
+   echo "Failure to verify working directories."
+   echo "Check QFLOW_PROJECT_ROOT environment variable."
    exit 1
 endif
 
