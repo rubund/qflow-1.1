@@ -490,9 +490,17 @@ class QflowManager(ttk.Frame):
         window = self.toppane.settings.drc_settings
         window.title = ttk.Label(window, text = 'DRC Settings', style = 'title.TLabel')
         window.title.pack(side = 'top')
-        window.message = ttk.Label(window, style = 'normal.TLabel',
-	 	text = '(there are no user-configurable settings for DRC)')
-        window.message.pack(side = 'top')
+
+        window.gdsview = ttk.Frame(window)
+        window.gdsview.pack(side = 'top', fill = 'x')
+        window.gdsview.title = ttk.Label(window.gdsview, style = 'normal.TLabel',
+		text = 'Use GDS view of standard cells:')
+        window.gdsview.title.pack(side = 'left')
+        self.gdsview = tkinter.BooleanVar(window.gdsview)
+        self.gdsview.set(0)
+
+        window.gdsview.check = ttk.Checkbutton(window.gdsview, variable = self.gdsview)
+        window.gdsview.check.pack(side = 'left')
 
         self.toppane.settings.gds_settings = ttk.Frame(self.toppane.settings)
         window = self.toppane.settings.gds_settings
@@ -2629,11 +2637,20 @@ class QflowManager(ttk.Frame):
 		stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr=subprocess.PIPE,
 		cwd = mag_path, universal_newlines = True)
 
-        # Pick up LEF files from the project .cfg file
-        leffiles = self.get_project_leffiles()
+        if self.gdsview.get() == 0:
+            # Pick up LEF files from the project .cfg file and read
+            # in the standard cell abstract views.
+            leffiles = self.get_project_leffiles()
 
-        for leffile in leffiles:
-            drcproc.stdin.write("lef read " + leffile + "\n")
+            for leffile in leffiles:
+                drcproc.stdin.write("lef read " + leffile + "\n")
+        else:
+            # Use the GDS view of the standard cells
+            gdsfile = self.get_project_gdsfile()
+            drcproc.stdin.write("gds readonly true\n")
+            drcproc.stdin.write("gds rescale false\n")
+            drcproc.stdin.write("gds read " + gdsfile + "\n")
+
         drcproc.stdin.write("load " + self.project + "\n")
 
         drcproc.stdin.write("drc on\n")
