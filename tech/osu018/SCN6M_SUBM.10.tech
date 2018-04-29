@@ -1,10 +1,10 @@
 tech
- format 29
+  format 29
  scmos
 end
 
 version
- version 2016a
+ version 2001a
  description "SCMOS: Submit as technology.lambda: SCN6M_SUBM.10 [to process: TSMC18]"
 end
 
@@ -34,119 +34,119 @@ planes
 end
 
 types
-  well  nwell,nw
-  active  nwr
-  well  pwell,pw
-  implant  n_field_implant,nfi
-  implant  p_field_implant,pfi
-  select  nselect,ns
-  select  pselect,ps
-  active  ntransistor,nfet
-  active  ptransistor,pfet
-  active  diffusion,diff
-  active  transistor,fet
-  active  ndiffusion,ndif,green
-  active  pdiffusion,pdif,brown
-  active  ndcontact,ndc
-  active  pdcontact,pdc
-  active  psubstratepdiff,pohmicdiff,pod,ppdiff,ppd,psd
-  active  nsubstratendiff,nohmicdiff,nod,nndiff,nnd,nsd
-  active  psubstratepcontact,pohmiccontact,poc,pwcontact,pwc,psc
-  active  nsubstratencontact,nohmiccontact,noc,nwcontact,nwc,nsc
-  active  nwsd
-  active  nwsc
-  active  polysilicon,red,poly,p
-  active  polycontact,pcontact,polycut,pc
-  active  polypplus,pp
-  active  polynplus,pn
-  active  polyppluscontact,ppcontact,ppc
-  active  polynpluscontact,pncontact,pnc
-  contact  genericcontact,gcontact,gc
-  metal1  metal1,m1,blue
-  metal1  pseudo_rmetal1,prm1
-  metal1  rmetal1,rm1
-  metal1  fillm1,fm1
-  metal1  m2contact,m2cut,m2c,via1,v1,via
-  metal2  metal2,m2,purple
-  metal2  pseudo_rmetal2,prm2
-  metal2  rmetal2,rm2
-  metal2  fillm2,fm2
-  via1  gv1
-  metal2  m3contact,m3cut,m3c,via2,v2
-  metal3  metal3,m3,cyan
-  metal3  pseudo_rmetal3,prm3
-  metal3  rmetal3,rm3
-  metal3  fillm3,fm3
-  via2    gv2
-  metal3  m4contact,m4cut,m4c,via3,v3
-  metal4  metal4,m4,yellow
-  metal4  pseudo_rmetal4,prm4
-  metal4  rmetal4,rm4
-  metal4  fillm4,fm4
-  via3    gv3
-  metal4  m5contact,m5cut,m5c,via4,v4
-  metal5  metal5,m5
-  metal5  pseudo_rmetal5,prm5
-  metal5  rmetal5,rm5
-  metal5  fillm5,fm5
-  via4    gv4
-  metal5  m6contact,m6cut,m6c,via5,v5
-  metal6  metal6,m6
-  metal6  pseudo_rmetal6,prm6
-  metal6  rmetal6,rm6
-  metal6  fillm6,fm6
-  via5    gv5
-  metal6  pad
-  metal6  micontact,micut,mic,viai,vi
-  metali  metali,mim,mi
-  mi  pseudo_rmetali,prmi
+  well nwell,nw
+  active nwr
+  well pwell,pw
+  implant n_field_implant,nfi
+  implant p_field_implant,pfi
+  select nselect,ns
+  select pselect,ps
+  active ntransistor,nfet
+  active ptransistor,pfet
+  active diffusion,diff
+  active transistor,fet
+  active ndiffusion,ndif,green
+  active pdiffusion,pdif,brown
+  active ndcontact,ndc
+  active pdcontact,pdc
+  active psubstratepdiff,pohmicdiff,pod,ppdiff,ppd,psd
+  active nsubstratendiff,nohmicdiff,nod,nndiff,nnd,nsd
+  active psubstratepcontact,pohmiccontact,poc,pwcontact,pwc,psc
+  active nsubstratencontact,nohmiccontact,noc,nwcontact,nwc,nsc
+  active nwsd
+  active nwsc
+  active polysilicon,red,poly,p
+  active polycontact,pcontact,polycut,pc
+  active polypplus,pp
+  active polynplus,pn
+  active polyppluscontact,ppcontact,ppc
+  active polynpluscontact,pncontact,pnc
+  contact genericcontact,gcontact,gc
+  metal1 metal1,m1,blue
+  metal1 pseudo_rmetal1,prm1
+  metal1 rmetal1,rm1
+  metal1 fillm1,fm1
+  metal1 m2contact,m2cut,m2c,via1,v1
+  metal2 metal2,m2,purple
+  metal2 pseudo_rmetal2,prm2
+  metal2 rmetal2,rm2
+  metal2 fillm2,fm2
+  via1 gv1
+  metal2 m3contact,m3cut,m3c,via2,v2
+  metal3 metal3,m3,cyan
+  metal3 pseudo_rmetal3,prm3
+  metal3 rmetal3,rm3
+  metal3 fillm3,fm3
+  via2 gv2
+  metal3 m4contact,m4cut,m4c,via3,v3
+  metal4 metal4,m4,yellow
+  metal4 pseudo_rmetal4,prm4
+  metal4 rmetal4,rm4
+  metal4 fillm4,fm4
+  via3 gv3
+  metal4 m5contact,m5cut,m5c,via4,v4
+  metal5 metal5,m5
+  metal5 pseudo_rmetal5,prm5
+  metal5 rmetal5,rm5
+  metal5 fillm5,fm5
+  via4 gv4
+  metal5 m6contact,m6cut,m6c,via5,v5
+  metal6 metal6,m6
+  metal6 pseudo_rmetal6,prm6
+  metal6 rmetal6,rm6
+  metal6 fillm6,fm6
+  via5 gv5
+  metal6 pad
+  metal6 micontact,micut,mic,viai,vi
+  metali metali,mim,mi
+  mi pseudo_rmetali,prmi
   mi rmi
-  viai    gvi
-  oxide  glass
-  active  silicide_block,sb
-  active  poly_resist,pres
-  active  pseudo_rpoly,prp
-  active  rpoly,rp
-  active  pseudo_rndiffusion,prnd
-  active  rndiffusion,rndiff,rnd
-  active  pseudo_rpdiffusion,prpd
-  active  rpdiffusion,rpdiff,rpd
-  active  pseudo_rnwell,prnwell,prnw
-  active  rnwell,rnw
-  active  pseudo_nwr,pnwr
-  implant  filln,fn
-  fill  filla,fa
-  fill  fillb,fb
-  active  fillp,fp
-  active  fillapm,fapm
-  active  activen_resist,anres
-  active  activep_resist,apres
-  xp  xp
-  xp  m1p
-  xp  m2p
-  xp  m3p
-  xp  m4p
-  xp  m5p
-  xp  m6p
-  comment  comment
-  comment  bb
+  viai gvi
+  oxide glass
+  active silicide_block,sb
+  active poly_resist,pres
+  active pseudo_rpoly,prp
+  active rpoly,rp
+  active pseudo_rndiffusion,prnd
+  active rndiffusion,rndiff,rnd
+  active pseudo_rpdiffusion,prpd
+  active rpdiffusion,rpdiff,rpd
+  active pseudo_rnwell,prnwell,prnw
+  active rnwell,rnw
+  active pseudo_nwr,pnwr
+  implant filln,fn
+  fill filla,fa
+  fill fillb,fb
+  active fillp,fp
+  active fillapm,fapm
+  active activen_resist,anres
+  active activep_resist,apres
+  xp xp
+  xp m1p
+  xp m2p
+  xp m3p
+  xp m4p
+  xp m5p
+  xp m6p
+  comment comment
+  comment bb
 end
 
 contact
-  pc  poly  metal1
-  ppc  pp  metal1
-  pnc  pn  metal1
-  ndc  ndiff  metal1
-  pdc  pdiff  metal1
-  nsc  nsd  metal1
-  nwsc  nwsd  metal1
-  psc  psd  metal1
-  m2c  metal1  metal2
-  m3c  metal2  metal3
-  m4c  metal3  metal4
-  m5c  metal4  metal5
-  m6c  metal5  metal6
-  mic  metal6  metali
+  pc poly metal1
+  ppc pp metal1
+  pnc pn metal1
+  ndc ndiff metal1
+  pdc pdiff metal1
+  nsc nsd metal1
+  nwsc nwsd metal1
+  psc psd metal1
+  m2c metal1 metal2
+  m3c metal2 metal3
+  m4c metal3 metal4
+  m5c metal4 metal5
+  m6c metal5 metal6
+  mic metal6 metali
   stackable pc m2c pm12contact,pm12c
   stackable ppc m2c ppm12contact,ppm12c
   stackable pnc m2c pnm12contact,pnm12c
@@ -165,12 +165,8 @@ styles
  styletype  mos
   nwr  54
   pnwr  53
-  nwsd  3
-  nwsd  54
-  nwsc  3
-  nwsc  20
-  nwsc  32
-  nwsc  54
+  nwsd  3 54
+  nwsc  3 20 32 54
   nwell  12
   pwell  13
   nfi  53
@@ -178,213 +174,86 @@ styles
   nselect  43
   pselect  44
   diff  25
-  tran  2
-  tran  4
+  tran  2 4
   ndiff  2
   pdiff  4
   nsd  3
   psd  5
-  nfet  6
-  nfet  7
-  pfet  8
-  pfet  9
-  ndc  2
-  ndc  20
-  ndc  32
-  pdc  4
-  pdc  20
-  pdc  32
-  nsc  3
-  nsc  20
-  nsc  32
-  psc  5
-  psc  20
-  psc  32
+  nfet  6 7
+  pfet  8 9
+  ndc  2 20 32
+  pdc  4 20 32
+  nsc  3 20 32
+  psc  5 20 32
   poly  1
-  pp  1
-  pp  44
-  pn  1
-  pn  43
-  pcontact  1
-  pcontact  20
-  pcontact  32
+  pp  1 44
+  pn  1 43
+  pcontact  1 20 32
   gc  32
   metal1  20
-  rm1  20
-  rm1  48
+  rm1  20 48
   prm1  48
-  m1p  20
-  m1p  34
-  fm1  20
-  fm1  34
-  fp  1
-  fp  34
+  m1p  20 34
+  fm1  20 34
+  fp  1 34
   fa  32
-  fb  45
-  fb  34
-  fn  45
-  fn  34
-  fapm  1
-  fapm  20
-  fapm  21
-  fapm  34
+  fb  45 34
+  fn  45 34
+  fapm  1 20 21 34
   gv1  55
-  m2contact  20
-  m2contact  21
-  m2contact  55
-  pm12contact  1
-  pm12contact  20
-  pm12contact  21
-  pm12contact  32
-  pm12contact  55
-  ppm12contact  1
-  ppm12contact  20
-  ppm12contact  21
-  ppm12contact  32
-  ppm12contact  55
-  ppm12contact  44
-  pnm12contact  1
-  pnm12contact  20
-  pnm12contact  21
-  pnm12contact  32
-  pnm12contact  55
-  pnm12contact  43
-  ndm12c  2
-  ndm12c  20
-  ndm12c  21
-  ndm12c  32
-  ndm12c  55
-  nsm12c  3
-  nsm12c  20
-  nsm12c  21
-  nsm12c  32
-  nsm12c  55
-  nwsm12c  3
-  nwsm12c  20
-  nwsm12c  21
-  nwsm12c  32
-  nwsm12c  55
-  nwsm12c  54
-  pdm12c  4
-  pdm12c  20
-  pdm12c  21
-  pdm12c  32
-  pdm12c  55
-  psm12c  5
-  psm12c  20
-  psm12c  21
-  psm12c  32
-  psm12c  55
+  m2contact  20 21 55
   metal2  21
-  rm2  21
-  rm2  48
+  rm2  21 48
   prm2  48
-  m2p  21
-  m2p  34
-  fm2  21
-  fm2  34
+  m2p  21 34
+  fm2  21 34
   gv2  56
-  m3contact  21
-  m3contact  22
-  m3contact  56
-  m123c  20
-  m123c  21
-  m123c  22
-  m123c  55
-  m123c  56
+  m3contact  21 22 56
   metal3  22
-  rm3  22
-  rm3  48
+  rm3  22 48
   prm3  48
-  m3p  22
-  m3p  34
-  fm3  22
-  fm3  34
+  m3p  22 34
+  fm3  22 34
   gv3  57
-  m4contact  22
-  m4contact  23
-  m4contact  57
-  m234contact  21
-  m234contact  22
-  m234contact  23
-  m234contact  56
-  m234contact  57
+  m4contact  22 23 57
   metal4  23
-  rm4  23
-  rm4  48
+  rm4  23 48
   prm4  48
-  m4p  23
-  m4p  34
-  fm4  23
-  fm4  34
+  m4p  23 34
+  fm4  23 34
   gv4  58
-  m5contact  23
-  m5contact  24
-  m5contact  58
-  m345contact  21
-  m345contact  22
-  m345contact  23
-  m345contact  24
-  m345contact  57
-  m345contact  58
+  m5contact  23 24 58
   metal5  24
-  rm5  24
-  rm5  48
-  m5p  24
-  m5p  34
-  fm5  24
-  fm5  34
+  rm5  24 48
+  m5p  24 34
+  fm5  24 34
   prm5  48
   gv5  60
-  m6contact  24
-  m6contact  26
-  m6contact  60
-  m456contact  23
-  m456contact  24
-  m456contact  26
-  m456contact  58
-  m456contact  60
+  m6contact  24 26 60
   metal6  26
-  rm6  26
-  rm6  48
-  m6p  26
-  m6p  34
-  fm6  26
-  fm6  34
+  rm6  26 48
+  m6p  26 34
+  fm6  26 34
   prm6  48
   gvi  61
-  micontact  26
-  micontact  27
-  micontact  61
+  micontact  26 27 61
   mi  27
-  rmi  27
-  rmi  48
+  rmi  27 48
   prmi  48
-  pad  22
-  pad  23
-  pad  34
-  pad  38
+  pad  22 23 34 38
   glass  34
-  xp  25
-  xp  34
+  xp  25 34
   sb  10
-  pres  47
-  pres  48
-  rp  47
-  rp  48
+  pres  47 48
+  rp  47 48
   prp  48
-  anres  2
-  anres  48
-  rnd  2
-  rnd  48
+  anres  2 48
+  rnd  2 48
   prnd  48
-  apres  4
-  apres  53
-  rpd  4
-  rpd  53
+  apres  4 53
+  rpd  4 53
   prpd  53
-  rnw  12
-  rnw  53
+  rnw  12 53
   prnw  54
   comment  45
   bb  32
@@ -467,24 +336,24 @@ compose
 end
 
 connect
-  nwell,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,nsd,nwsd  nwell,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,nsd,nwsd
-  pwell,psc/a,psm12c/a,psd  pwell,psc/a,psm12c/a,psd
-  m1,fm1,fapm,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,pdm12c/m1,ndm12c/m1,psm12c/m1,nsm12c/m1,pm12c/m1,m123c/m1,nwsm12c/m1  m1,fm1,fapm,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,pdm12c/m1,ndm12c/m1,psm12c/m1,nsm12c/m1,pm12c/m1,m123c/m1,nwsm12c/m1
-  m2,fm2,fapm,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m123c/m2,m234c/m2,m3c/m2,m123c/m2,m234c/m2  m2,fm2,fapm,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m123c/m2,m234c/m2,m3c/m2,m123c/m2,m234c/m2
-  m3,fm3,fapm,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m234c/m3,m345c/m3,m4c/m3,m234c/m3,m345c/m3  m3,fm3,fapm,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m234c/m3,m345c/m3,m4c/m3,m234c/m3,m345c/m3
-  m4,fm4,fapm,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m345c/m4,m456c/m4,m5c/m4,m345c/m4,m456c/m4  m4,fm4,fapm,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m345c/m4,m456c/m4,m5c/m4,m345c/m4,m456c/m4
-  m5,fm5,fapm,m5c/m5,m345c/m5,m456c/m5,m6c/m5,m456c/m5,m6c/m5,m456c/m5  m5,fm5,fapm,m5c/m5,m345c/m5,m456c/m5,m6c/m5,m456c/m5,m6c/m5,m456c/m5
-  m6,fm6,fapm,m6c/m6,m456c/m6,mic/m6  m6,fm6,fapm,m6c/m6,m456c/m6,mic/m6
+  nwell,nsc/a,nwsc/a,nsd,nwsd  nwell,nsc/a,nwsc/a,nsd,nwsd
+  pwell,psc/a,psd  pwell,psc/a,psd
+  m1,fm1,fapm,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1  m1,fm1,fapm,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1
+  m2,fm2,fapm,m2c/m2,m3c/m2,m3c/m2  m2,fm2,fapm,m2c/m2,m3c/m2,m3c/m2
+  m3,fm3,fapm,m3c/m3,m4c/m3,m4c/m3  m3,fm3,fapm,m3c/m3,m4c/m3,m4c/m3
+  m4,fm4,fapm,m4c/m4,m5c/m4,m5c/m4  m4,fm4,fapm,m4c/m4,m5c/m4,m5c/m4
+  m5,fm5,fapm,m5c/m5,m6c/m5,m6c/m5  m5,fm5,fapm,m5c/m5,m6c/m5,m6c/m5
+  m6,fm6,fapm,m6c/m6,mic/m6  m6,fm6,fapm,m6c/m6,mic/m6
   mi,mic/mi  mi,mic/mi
-  ndiff,nsd,nwsd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdiff,psd,pdc/a,pdm12c/a,psc/a,psm12c/a  ndiff,nsd,nwsd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdiff,psd,pdc/a,pdm12c/a,psc/a,psm12c/a
-  poly,fp,pp,pn,nfet,pfet,fet,fapm,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a  poly,fp,pp,pn,nfet,pfet,fet,fapm,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a
-  gc  poly,fp,pp,pn,ndiff,pdiff,nsd,nwsd,psd,m1,fm1,fapm,m2c/m1,pdm12c/m1,ndm12c/m1,psm12c/m1,nsm12c/m1,pm12c/m1,m123c/m1,nwsm12c/m1
-  gv1  m1,fm1,fapm,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2,fm2,fapm,m3c/m2,m123c/m2,m234c/m2
-  gv2  m2,fm2,fapm,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m123c/m2,m234c/m2,m3,fm3,fapm,m4c/m3,m234c/m3,m345c/m3
-  gv3  m3,fm3,fapm,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m234c/m3,m345c/m3,m4,fm4,fapm,m5c/m4,m345c/m4,m456c/m4
-  gv4  m4,fm4,fapm,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m345c/m4,m456c/m4,m5,fm5,fapm,m6c/m5,m456c/m5
-  gv5  m5,fm5,fapm,m5c/m5,m345c/m5,m456c/m5,m6c/m5,m456c/m5,m6,fm6,fapm
-  gvi  m6,fm6,fapm,m6c/m6,m456c/m6,mic/m6,mi
+  ndiff,nsd,nwsd,ndc/a,nsc/a,nwsc/a,pdiff,psd,pdc/a,psc/a  ndiff,nsd,nwsd,ndc/a,nsc/a,nwsc/a,pdiff,psd,pdc/a,psc/a
+  poly,fp,pp,pn,nfet,pfet,fet,fapm,pc/a,ppc/a,pnc/a  poly,fp,pp,pn,nfet,pfet,fet,fapm,pc/a,ppc/a,pnc/a
+  gc  poly,fp,pp,pn,ndiff,pdiff,nsd,nwsd,psd,m1,fm1,fapm,m2c/m1
+  gv1  m1,fm1,fapm,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2,fm2,fapm,m3c/m2
+  gv2  m2,fm2,fapm,m2c/m2,m3c/m2,m3,fm3,fapm,m4c/m3
+  gv3  m3,fm3,fapm,m3c/m3,m4c/m3,m4,fm4,fapm,m5c/m4
+  gv4  m4,fm4,fapm,m4c/m4,m5c/m4,m5,fm5,fapm,m6c/m5
+  gv5  m5,fm5,fapm,m5c/m5,m6c/m5,m6,fm6,fapm
+  gvi  m6,fm6,fapm,m6c/m6,mic/m6,mi
   pad  m1,fm1,m2,fm2,m3,fm3,m4,fm4,m5,fm5,m6,fm6
   rm1  prm1
   rm2  prm2
@@ -980,7 +849,7 @@ style fapm-boxes
 
 # this output style creates fill boxes automatically (to meet minimum
 # density requirements for poly and metal layers) 5 microns outside of
-# drawn layout IF: 1. you have a flattened version of your chip,
+# drawn layout IF: 1. you have a flattened version of your chip
 # 2. over which you paint the special fill layer 'fa', preferably with
 # a size that is a multiple of 20 + n * (20 + 4), 3. set 'cif
 # ostype fapm-boxes' and cif out to a file (this actually creates the
@@ -995,9 +864,9 @@ style fapm-boxes
 
  templayer CRIT fapm,fn,diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a,pfet,pfet,fet,poly,pp,pn,pres,rp,nfet,pfet,fet,pc/a,ppc/a,pnc/a
  or fm1,m1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1
- or fm2,m2,rm2,m2c/m2,m3c/m2
+ or fm2,m2,rm2,m2c/m2,m3c/m2,m3c/m2
  or fm3,m3,rm3,m3c/m3,m4c/m3,m4c/m3
- or fm4,m4,rm4,m4c/m4,m5c/m4
+ or fm4,m4,rm4,m4c/m4,m5c/m4,m5c/m4
  or fm5,m5,rm5,m5c/m5,m6c/m5,m6c/m5
  or fm6,m6,rm6,m6c/m6,mic/m6
  or glass,pad
@@ -1023,7 +892,7 @@ style fapm-stripes
 
  templayer CRIT fapm,fn,diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a,pfet,pfet,fet,poly,pp,pn,pres,rp,nfet,pfet,fet,pc/a,ppc/a,pnc/a
  or fm1,m1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1
- or fm2,m2,rm2,m2c/m2,m3c/m2
+ or fm2,m2,rm2,m2c/m2,m3c/m2,m3c/m2
  or fm3,m3,rm3,m3c/m3,m4c/m3,m4c/m3
  or fm4,m4,rm4,m4c/m4,m5c/m4,m5c/m4
  or fm5,m5,rm5,m5c/m5,m6c/m5,m6c/m5
@@ -1376,8 +1245,8 @@ style  lambda=0.10(cp)
  labels m3p
  calma 83 0
 
- layer CM4 m4,rm4,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m345c/m4,m456c/m4,m5c/m4,m345c/m4,m456c/m4
- labels m4,rm4,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m345c/m4,m456c/m4,m5c/m4,m345c/m4,m456c/m4
+ layer CM4 m4,rm4,m4c/m4,m5c/m4,m5c/m4
+ labels m4,rm4,m4c/m4,m5c/m4,m5c/m4
  calma 31 0
 
  layer CMQP m4p
@@ -1391,8 +1260,8 @@ style  lambda=0.10(cp)
  labels fm4
  calma 31 0
 
- layer CM5 m5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5,m456c/m5,m6c/m5,m456c/m5
- labels m5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5,m456c/m5,m6c/m5,m456c/m5
+ layer CM5 m5,rm5,m5c/m5,m6c/m5,m6c/m5
+ labels m5,rm5,m5c/m5,m6c/m5,m6c/m5
  calma 33 0
 
  layer CMPP m5p
@@ -1406,8 +1275,8 @@ style  lambda=0.10(cp)
  labels fm5
  calma 33 0
 
- layer CM6 m6,rm6,m6c/m6,m456c/m6,mic/m6
- labels m6,rm6,m6c/m6,m456c/m6,mic/m6
+ layer CM6 m6,rm6,m6c/m6,mic/m6
+ labels m6,rm6,m6c/m6,mic/m6
  calma 37 0
 
  layer CM6P m6p
@@ -1492,7 +1361,7 @@ style  lambda=0.10(c)
  scalefactor  10 5
 
  layer CWN nwell,rnw,nwr,nwsd,nwsc
- bloat-or pdiff,apres,rpd,pdc/apfet * 60
+ bloat-or pdiff,apres,rpd,pdc/a,pfet * 60
  bloat-or nsd,nsc/a * 30
  bloat-or nfi * 40
  grow 30
@@ -1589,8 +1458,8 @@ style  lambda=0.10(c)
  layer CSP FSP
  calma 44 0
 
- layer CAA diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a,pfet,fet
- labels diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a,pfet,fet
+ layer CAA diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a,pfet,pfet,fet
+ labels diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a,pfet,pfet,fet
  calma 43 0
 
  layer CCC nwsc/m1
@@ -1715,12 +1584,12 @@ style  lambda=0.10(c)
  layer CM1 pad
  calma 49 0
 
- layer CM1 m1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,pdm12c/m1,ndm12c/m1,psm12c/m1,nsm12c/m1,pm12c/m1,m123c/m1,nwsm12c/m1
- labels m1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,pdm12c/m1,ndm12c/m1,psm12c/m1,nsm12c/m1,pm12c/m1,m123c/m1,nwsm12c/m1
+ layer CM1 m1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1
+ labels m1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1
  calma 49 0
 
- layer CM2 m2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m123c/m2,m234c/m2,m3c/m2,m123c/m2,m234c/m2
- labels m2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m123c/m2,m234c/m2,m3c/m2,m123c/m2,m234c/m2
+ layer CM2 m2,rm2,m2c/m2,m3c/m2,m3c/m2
+ labels m2,rm2,m2c/m2,m3c/m2,m3c/m2
  calma 51 0
 
  layer CMFP m1p
@@ -1798,16 +1667,16 @@ style  lambda=0.10(c)
  labels fm3
  calma 62 0
 
- layer CM3 m3,rm3,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m234c/m3,m345c/m3,m4c/m3,m234c/m3,m345c/m3
- labels m3,rm3,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m234c/m3,m345c/m3,m4c/m3,m234c/m3,m345c/m3
+ layer CM3 m3,rm3,m3c/m3,m4c/m3,m4c/m3
+ labels m3,rm3,m3c/m3,m4c/m3,m4c/m3
  calma 62 0
 
  layer CMTP m3p
  labels m3p
  calma 83 0
 
- layer CM4 m4,rm4,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m345c/m4,m456c/m4,m5c/m4,m345c/m4,m456c/m4
- labels m4,rm4,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m345c/m4,m456c/m4,m5c/m4,m345c/m4,m456c/m4
+ layer CM4 m4,rm4,m4c/m4,m5c/m4,m5c/m4
+ labels m4,rm4,m4c/m4,m5c/m4,m5c/m4
  calma 31 0
 
  layer CMQP m4p
@@ -1821,8 +1690,8 @@ style  lambda=0.10(c)
  labels fm4
  calma 31 0
 
- layer CM5 m5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5,m456c/m5,m6c/m5,m456c/m5
- labels m5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5,m456c/m5,m6c/m5,m456c/m5
+ layer CM5 m5,rm5,m5c/m5,m6c/m5,m6c/m5
+ labels m5,rm5,m5c/m5,m6c/m5,m6c/m5
  calma 33 0
 
  layer CMPP m5p
@@ -1836,8 +1705,8 @@ style  lambda=0.10(c)
  labels fm5
  calma 33 0
 
- layer CM6 m6,rm6,m6c/m6,m456c/m6,mic/m6
- labels m6,rm6,m6c/m6,m456c/m6,mic/m6
+ layer CM6 m6,rm6,m6c/m6,mic/m6
+ labels m6,rm6,m6c/m6,mic/m6
  calma 37 0
 
  layer CM6P m6p
@@ -1922,8 +1791,8 @@ style  lambda=0.10()
  scalefactor  10 5
 
  layer CWN nwell,rnw,nwr,nwsd,nwsc
- bloat-or pdiff,apres,rpd,pdc/a,pdm12c/a,pfet * 60
- bloat-or nsd,nsc/a,nsm12c/a * 30
+ bloat-or pdiff,apres,rpd,pdc/a,pfet * 60
+ bloat-or nsd,nsc/a * 30
  bloat-or nfi * 40
  grow 30
  shrink 30
@@ -1977,19 +1846,19 @@ style  lambda=0.10()
 
 #diffusion auto-nselect (will have priority)
  templayer XDN
- bloat-or ndiff,anres,rnd,ndc/a,ndm12c/a * 20 psd,psc/a,psm12c/a 0
+ bloat-or ndiff,anres,rnd,ndc/a * 20 psd,psc/a 0
  bloat-or pn * 10 pp 0
  or TNS
 
 #diffusion auto-pselect (will have priority)
  templayer XDP
- bloat-or pdiff,apres,rpd,pdc/a,pdm12c/a * 20 nsd,nsc/a,nsm12c/a 0
+ bloat-or pdiff,apres,rpd,pdc/a * 20 nsd,nsc/a 0
  bloat-or pp * 10 pn 0
  or TPS
 
 #final pselect 
  templayer FSP
- bloat-or pdiff,apres,rpd,pfet,psd,pdc/a,pdm12c/a,psc/a,psm12c/a,pfet * 20 ndiff,anres,rnd,ndc/a,ndm12c/a,nsd,nsc/a,nsm12c/a,nfet 0
+ bloat-or pdiff,apres,rpd,pfet,psd,pdc/a,psc/a,pfet * 20 ndiff,anres,rnd,ndc/a,nsd,nsc/a,nfet 0
  or XDP
 #give diff nselect priority
  and-not XDN
@@ -2001,7 +1870,7 @@ style  lambda=0.10()
 
 #final nselect
  templayer FSN
- bloat-or ndiff,anres,rnd,nfet,nsd,nwsd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,nfet * 20 pdiff,apres,rpd,pdc/a,pdm12c/a,psd,psc/a,psm12c/a,pfet 0
+ bloat-or ndiff,anres,rnd,nfet,nsd,nwsd,ndc/a,nsc/a,nwsc/a,nfet * 20 pdiff,apres,rpd,pdc/a,psd,psc/a,pfet 0
  and-not nwr
  or XDN
 #never conflict with final pselect
@@ -2019,27 +1888,27 @@ style  lambda=0.10()
  layer CSP FSP
  calma 44 0
 
- layer CAA diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a,pfet,pfet,fet
- labels diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a,pfet,pfet,fet
+ layer CAA diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a,pfet,pfet,fet
+ labels diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a,pfet,pfet,fet
  calma 43 0
 
- layer CCA nwsc/m1,nwsm12c/m1
+ layer CCA nwsc/m1
  squares 20 20 30
  calma 48 0
 
- layer CCA ndc/m1,ndm12c/m1,nsc/m1,nsm12c/m1
+ layer CCA ndc/m1,nsc/m1
  squares 10 20 30
  calma 48 0
 
- layer CCA pdc/m1,pdm12c/m1,psc/m1,psm12c/m1
+ layer CCA pdc/m1,psc/m1
  squares 10 20 30
  calma 48 0
 
- layer CPG poly,pp,pn,pres,rp,nfet,pfet,fet,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a
- labels poly,pp,pn,pres,rp,nfet,pfet,fet,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a
+ layer CPG poly,pp,pn,pres,rp,nfet,pfet,fet,pc/a,ppc/a,pnc/a
+ labels poly,pp,pn,pres,rp,nfet,pfet,fet,pc/a,ppc/a,pnc/a
  calma 46 0
 
- layer CCP pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1
+ layer CCP pc/m1,ppc/m1,pnc/m1
  squares 10 20 30
  calma 47 0
 
@@ -2047,7 +1916,7 @@ style  lambda=0.10()
  squares 0 20 30
  calma 25 0
 
- layer CV1 m2c/m1,pdm12c/m1,ndm12c/m1,psm12c/m1,nsm12c/m1,pm12c/m1,m123c/m1,nwsm12c/m1
+ layer CV1 m2c/m1
  squares 10 20 30
  calma 50 0
 
@@ -2055,7 +1924,7 @@ style  lambda=0.10()
  squares 0 20 30
  calma 50 0
 
- layer CV2 m3c/m2,m123c/m2,m234c/m2
+ layer CV2 m3c/m2
  squares 10 20 30
  calma 61 0
 
@@ -2063,7 +1932,7 @@ style  lambda=0.10()
  squares 0 20 30
  calma 61 0
 
- layer CV3 m4c/m3,m234c/m3,m345c/m3
+ layer CV3 m4c/m3
  squares 10 20 30
  calma 30 0
 
@@ -2071,7 +1940,7 @@ style  lambda=0.10()
  squares 0 20 30
  calma 30 0
 
- layer CV4 m5c/m4,m345c/m4,m456c/m4
+ layer CV4 m5c/m4
  squares 10 20 30
  calma 32 0
 
@@ -2079,7 +1948,7 @@ style  lambda=0.10()
  squares 0 20 30
  calma 32 0
 
- layer CV5 m6c/m5,m456c/m5
+ layer CV5 m6c/m5
  squares 10 30 40
  calma 36 0
 
@@ -2145,12 +2014,12 @@ style  lambda=0.10()
  layer CM1 pad
  calma 49 0
 
- layer CM1 m1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,pdm12c/m1,ndm12c/m1,psm12c/m1,nsm12c/m1,pm12c/m1,m123c/m1,nwsm12c/m1
- labels m1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,pdm12c/m1,ndm12c/m1,psm12c/m1,nsm12c/m1,pm12c/m1,m123c/m1,nwsm12c/m1
+ layer CM1 m1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1
+ labels m1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1
  calma 49 0
 
- layer CM2 m2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m123c/m2,m234c/m2,m3c/m2,m123c/m2,m234c/m2
- labels m2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m123c/m2,m234c/m2,m3c/m2,m123c/m2,m234c/m2
+ layer CM2 m2,rm2,m2c/m2,m3c/m2,m3c/m2
+ labels m2,rm2,m2c/m2,m3c/m2,m3c/m2
  calma 51 0
 
  layer CMFP m1p
@@ -2228,16 +2097,16 @@ style  lambda=0.10()
  labels fm3
  calma 62 0
 
- layer CM3 m3,rm3,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m234c/m3,m345c/m3,m4c/m3,m234c/m3,m345c/m3
- labels m3,rm3,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m234c/m3,m345c/m3,m4c/m3,m234c/m3,m345c/m3
+ layer CM3 m3,rm3,m3c/m3,m4c/m3,m4c/m3
+ labels m3,rm3,m3c/m3,m4c/m3,m4c/m3
  calma 62 0
 
  layer CMTP m3p
  labels m3p
  calma 83 0
 
- layer CM4 m4,rm4,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m345c/m4,m456c/m4,m5c/m4,m345c/m4,m456c/m4
- labels m4,rm4,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m345c/m4,m456c/m4,m5c/m4,m345c/m4,m456c/m4
+ layer CM4 m4,rm4,m4c/m4,m5c/m4,m5c/m4
+ labels m4,rm4,m4c/m4,m5c/m4,m5c/m4
  calma 31 0
 
  layer CMQP m4p
@@ -2251,8 +2120,8 @@ style  lambda=0.10()
  labels fm4
  calma 31 0
 
- layer CM5 m5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5,m456c/m5,m6c/m5,m456c/m5
- labels m5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5,m456c/m5,m6c/m5,m456c/m5
+ layer CM5 m5,rm5,m5c/m5,m6c/m5,m6c/m5
+ labels m5,rm5,m5c/m5,m6c/m5,m6c/m5
  calma 33 0
 
  layer CMPP m5p
@@ -2266,8 +2135,8 @@ style  lambda=0.10()
  labels fm5
  calma 33 0
 
- layer CM6 m6,rm6,m6c/m6,m456c/m6,mic/m6
- labels m6,rm6,m6c/m6,m456c/m6,mic/m6
+ layer CM6 m6,rm6,m6c/m6,mic/m6
+ labels m6,rm6,m6c/m6,mic/m6
  calma 37 0
 
  layer CM6P m6p
@@ -2578,10 +2447,9 @@ style  lambda=0.10(p)
  layer ndc CAA
  and CSN
  and CCA
- and-not CV1
  and-not CWNR
  and-not CTA
- 
+
  and-not CWN
  and CM1
  grow 10
@@ -2592,10 +2460,9 @@ style  lambda=0.10(p)
  layer ndc CAA
  and CSN
  and CCC
- and-not CV1
  and-not CWNR
  and-not CTA
- 
+
  and-not CWN
  and CM1
  grow 10
@@ -2606,10 +2473,9 @@ style  lambda=0.10(p)
  layer nsc CAA
  and CSN
  and CCA
- and-not CV1
  and-not CWNR
  and-not CTA
- 
+
  and CWN
  and CM1
  grow 10
@@ -2620,10 +2486,9 @@ style  lambda=0.10(p)
  layer nsc CAA
  and CSN
  and CCC
- and-not CV1
  and-not CWNR
  and-not CTA
- 
+
  and CWN
  and CM1
  grow 10
@@ -2633,12 +2498,11 @@ style  lambda=0.10(p)
 
  layer nwsc CAA
  and CSN
- and-not CV1
  and CWNR
  shrink 110
  and-not CTA
  and CCA
- 
+
  and CWN
  and CM1
  grow 20
@@ -2648,12 +2512,11 @@ style  lambda=0.10(p)
 
  layer nwsc CAA
  and CSN
- and-not CV1
  and CWNR
  shrink 105
  and-not CTA
  and CCC
- 
+
  and CWN
  and CM1
  grow 20
@@ -2664,9 +2527,8 @@ style  lambda=0.10(p)
  layer pdc CAA
  and CSP
  and CCA
- and-not CV1
  and-not CTA
- 
+
  and-not CPS
  and CWN
  and CM1
@@ -2678,9 +2540,8 @@ style  lambda=0.10(p)
  layer pdc CAA
  and CSP
  and CCC
- and-not CV1
  and-not CTA
- 
+
  and-not CPS
  and CWN
  and CM1
@@ -2692,9 +2553,8 @@ style  lambda=0.10(p)
  layer psc CAA
  and CSP
  and CCA
- and-not CV1
  and-not CTA
- 
+
  and-not CPS
  and-not CWN
  and CM1
@@ -2706,10 +2566,9 @@ style  lambda=0.10(p)
  layer psc CAA
  and CSP
  and CCC
- and-not CV1
  and-not CWNR
  and-not CTA
- 
+
  and-not CPS
  and-not CWN
  and CM1
@@ -2721,348 +2580,14 @@ style  lambda=0.10(p)
  layer ndc CAA
  and CSN
  and CCA
- and CV1
- and CV2
- and-not CV3
  and-not CWNR
  and-not CTA
- 
  and-not CWN
  and CM1
  grow 10
  grow 5
  shrink 5
  calma CCA 48 *
-
- layer ndc CAA
- and CSN
- and CCC
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer nsc CAA
- and CSN
- and CCA
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer nsc CAA
- and CSN
- and CCC
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer nwsc CAA
- and CSN
- and CV1
- and CV2
- and-not CV3
- and CWNR
- shrink 110
- and-not CTA
- and CCA
- 
- and CWN
- and CM1
- grow 20
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer nwsc CAA
- and CSN
- and CV1
- and CV2
- and-not CV3
- and CWNR
- shrink 105
- and-not CTA
- and CCC
- 
- and CWN
- and CM1
- grow 20
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer pdc CAA
- and CSP
- and CCA
- and CV1
- and CV2
- and-not CV3
- and-not CTA
- 
- and-not CPS
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer pdc CAA
- and CSP
- and CCC
- and CV1
- and CV2
- and-not CV3
- and-not CTA
- 
- and-not CPS
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer psc CAA
- and CSP
- and CCA
- and CV1
- and CV2
- and-not CV3
- and-not CTA
- 
- and-not CPS
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer psc CAA
- and CSP
- and CCC
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and-not CPS
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer ndc CAA
- and CSN
- and CCA
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer ndc CAA
- and CSN
- and CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer nsc CAA
- and CSN
- and CCA
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer nsc CAA
- and CSN
- and CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer nwsc CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and CWNR
- shrink 110
- and-not CTA
- and CCA
- 
- and CWN
- and CM1
- grow 20
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer nwsc CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and CWNR
- shrink 105
- and-not CTA
- and CCC
- 
- and CWN
- and CM1
- grow 20
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer pdc CAA
- and CSP
- and CCA
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CTA
- 
- and-not CPS
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer pdc CAA
- and CSP
- and CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CTA
- 
- and-not CPS
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer psc CAA
- and CSP
- and CCA
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CTA
- 
- and-not CPS
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer psc CAA
- and CSP
- and CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
- and-not CPS
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
 
  layer poly CPG
  and-not CRE
@@ -3083,7 +2608,6 @@ style  lambda=0.10(p)
  calma CRG 67 *
 
  layer pc CCP
- and-not CV1
  and CPG
  and-not CPC
  and-not CEL
@@ -3095,67 +2619,6 @@ style  lambda=0.10(p)
  calma CCP 47 *
 
  layer pc CCC
- and-not CV1
- and CPG
- and-not CPC
- and-not CEL
- and-not CAA
- grow 10
- and CM1
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer pc CCP
- and CV1
- and CV2
- and-not CV3
- and CPG
- and-not CPC
- and-not CEL
- and-not CAA
- grow 10
- and CM1
- grow 5
- shrink 5
- calma CCP 47 *
-
- layer pc CCC
- and CV1
- and CV2
- and-not CV3
- and CPG
- and-not CPC
- and-not CEL
- and-not CAA
- grow 10
- and CM1
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer pc CCP
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and CPG
- and-not CPC
- and-not CEL
- and-not CAA
- grow 10
- and CM1
- grow 5
- shrink 5
- calma CCP 47 *
-
- layer pc CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
  and CPG
  and-not CPC
  and-not CEL
@@ -3272,121 +2735,10 @@ style  lambda=0.10(p)
  calma CV5 36 *
 
  layer m2c CV1
- and-not CV2
- and-not CCC
- and-not CCP
- and-not CCA
  and-not XP
  grow 10
  and CM2
  and CM1
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer m2c CV1
- and CV2
- and CV3
- and-not CV4
- and-not CCC
- and-not CCP
- and-not CCA
- and-not XP
- grow 10
- and CM2
- and CM1
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer m2c CV1
- and CV5
- and CV4
- and CV3
- and CV2
- and-not CCC
- and-not CCP
- and-not CCA
- and-not XP
- grow 10
- and CM2
- and CM1
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and-not CV2
- and CCP
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and-not CV2
- and CCC
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and CV2
- and CV3
- and-not CV4
- and CCP
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and CV2
- and CV3
- and-not CV4
- and CCC
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and CCP
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and CCC
- grow 10
- and CM2
- and CM1
- and CPG
  grow 5
  shrink 5
  calma CV1 50 *
@@ -3437,520 +2789,35 @@ style  lambda=0.10(p)
  labels CMSP
  calma CMSP 82 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and-not CV2
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and-not CV2
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and-not CV2
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and-not CV2
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and-not CV2
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and-not CV2
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and-not CV2
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and-not CV2
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and-not CV2
- and CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and-not CV2
- and CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
  layer fp 100
  calma 100 100 *
@@ -3983,51 +2850,10 @@ style  lambda=0.10(p)
  calma 110 110 *
 
  layer m3c CV2
- and-not CV3
- and-not CV1
  and-not XP
  grow 10
  and CM3
  and CM2
- grow 5
- shrink 5
- calma CV2 61 *
-
- layer m3c CV2
- and CV3
- and CV4
- and-not CV5
- and-not CV1
- and-not XP
- grow 10
- and CM3
- and CM2
- grow 5
- shrink 5
- calma CV2 61 *
-
- layer m123c CV2
- and-not CV3
- and CV1
- and-not XP
- grow 10
- and CM3
- and CM2
- and CM1
- grow 5
- shrink 5
- calma CV2 61 *
-
- layer m123c CV2
- and CV3
- and CV4
- and-not CV5
- and CV1
- and-not XP
- grow 10
- and CM3
- and CM2
- and CM1
  grow 5
  shrink 5
  calma CV2 61 *
@@ -4055,30 +2881,7 @@ style  lambda=0.10(p)
  labels CMTP
  calma CMTP 83 *
 
- layer m234c CV3
- and-not CV4
- and CV2
- and-not XP
- grow 10
- and CM4
- and CM3
- and CM2
- grow 10
- shrink 10
- calma CV3 30 *
 
- layer m234c CV3
- and CV4
- and CV5
- and CV2
- and-not XP
- grow 10
- and CM4
- and CM3
- and CM2
- grow 10
- shrink 10
- calma CV3 30 *
 
  layer m4 CM4
  and-not CRM
@@ -4104,8 +2907,6 @@ style  lambda=0.10(p)
  calma CMQP 84 *
 
  layer m4c CV3
- and-not CV4
- and-not CV2
  and-not XP
  grow 10
  and CM4
@@ -4113,31 +2914,6 @@ style  lambda=0.10(p)
  grow 10
  shrink 10
  calma CV3 30 *
-
- layer m4c CV3
- and CV4
- and CV5
- and-not CV2
- and-not XP
- grow 10
- and CM4
- and CM3
- grow 10
- shrink 10
- calma CV3 30 *
-
- layer m345c CV4
- 
- and CV3
- and-not CV5
- and-not XP
- grow 10
- and CM5
- and CM4
- and CM3
- grow 10
- shrink 10
- calma CV4 32 *
 
  layer m5 CM5
  and-not CRM
@@ -4163,9 +2939,6 @@ style  lambda=0.10(p)
  calma CMPP 85 *
 
  layer m5c CV4
- 
- and-not CV5
- and-not CV3
  and-not XP
  grow 10
  and CM5
@@ -4173,21 +2946,6 @@ style  lambda=0.10(p)
  grow 10
  shrink 10
  calma CV4 32 *
-
- layer m456c CV5
- grow 5
- and-not CTM
- shrink 10
- and CV4
- grow 10
- and-not XP
- grow 10
- and CM6
- and CM5
- and CM4
- grow 10
- shrink 10
- calma CV5 36 *
 
  layer m6 CM6
  and-not CRM
@@ -4215,9 +2973,6 @@ style  lambda=0.10(p)
  layer m6c CV5
  grow 5
  and-not CTM
- shrink 10
- and-not CV4
- grow 10
  and-not XP
  grow 10
  and CM6
@@ -4313,7 +3068,6 @@ style  lambda=0.10(p)
 
  calma CTA 60 *
 
-#CRE/CRM
  calma CRW 65 *
  calma CRG 67 *
  calma CRD 66 *
@@ -4556,10 +3310,9 @@ style  lambda=0.10(s)
  layer ndc CAA
  and CSN
  and CCA
- and-not CV1
  and-not CWNR
  and-not CTA
- 
+
  and-not CWN
  and CM1
  grow 10
@@ -4570,10 +3323,9 @@ style  lambda=0.10(s)
  layer ndc CAA
  and CSN
  and CCC
- and-not CV1
  and-not CWNR
  and-not CTA
- 
+
  and-not CWN
  and CM1
  grow 10
@@ -4584,10 +3336,9 @@ style  lambda=0.10(s)
  layer nsc CAA
  and CSN
  and CCA
- and-not CV1
  and-not CWNR
  and-not CTA
- 
+
  and CWN
  and CM1
  grow 10
@@ -4598,10 +3349,9 @@ style  lambda=0.10(s)
  layer nsc CAA
  and CSN
  and CCC
- and-not CV1
  and-not CWNR
  and-not CTA
- 
+
  and CWN
  and CM1
  grow 10
@@ -4611,12 +3361,11 @@ style  lambda=0.10(s)
 
  layer nwsc CAA
  and CSN
- and-not CV1
  and CWNR
  shrink 110
  and-not CTA
  and CCA
- 
+
  and CWN
  and CM1
  grow 20
@@ -4626,12 +3375,11 @@ style  lambda=0.10(s)
 
  layer nwsc CAA
  and CSN
- and-not CV1
  and CWNR
  shrink 105
  and-not CTA
  and CCC
- 
+
  and CWN
  and CM1
  grow 20
@@ -4642,9 +3390,8 @@ style  lambda=0.10(s)
  layer pdc CAA
  and CSP
  and CCA
- and-not CV1
  and-not CTA
- 
+
  and-not CPS
  and CWN
  and CM1
@@ -4656,9 +3403,8 @@ style  lambda=0.10(s)
  layer pdc CAA
  and CSP
  and CCC
- and-not CV1
  and-not CTA
- 
+
  and-not CPS
  and CWN
  and CM1
@@ -4670,9 +3416,8 @@ style  lambda=0.10(s)
  layer psc CAA
  and CSP
  and CCA
- and-not CV1
  and-not CTA
- 
+
  and-not CPS
  and-not CWN
  and CM1
@@ -4684,356 +3429,9 @@ style  lambda=0.10(s)
  layer psc CAA
  and CSP
  and CCC
- and-not CV1
  and-not CWNR
  and-not CTA
- 
- and-not CPS
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
 
- layer ndc CAA
- and CSN
- and CCA
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer ndc CAA
- and CSN
- and CCC
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer nsc CAA
- and CSN
- and CCA
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer nsc CAA
- and CSN
- and CCC
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer nwsc CAA
- and CSN
- and CV1
- and CV2
- and-not CV3
- and CWNR
- shrink 110
- and-not CTA
- and CCA
- 
- and CWN
- and CM1
- grow 20
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer nwsc CAA
- and CSN
- and CV1
- and CV2
- and-not CV3
- and CWNR
- shrink 105
- and-not CTA
- and CCC
- 
- and CWN
- and CM1
- grow 20
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer pdc CAA
- and CSP
- and CCA
- and CV1
- and CV2
- and-not CV3
- and-not CTA
- 
- and-not CPS
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer pdc CAA
- and CSP
- and CCC
- and CV1
- and CV2
- and-not CV3
- and-not CTA
- 
- and-not CPS
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer psc CAA
- and CSP
- and CCA
- and CV1
- and CV2
- and-not CV3
- and-not CTA
- 
- and-not CPS
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer psc CAA
- and CSP
- and CCC
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and-not CPS
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer ndc CAA
- and CSN
- and CCA
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer ndc CAA
- and CSN
- and CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer nsc CAA
- and CSN
- and CCA
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer nsc CAA
- and CSN
- and CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer nwsc CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and CWNR
- shrink 110
- and-not CTA
- and CCA
- 
- and CWN
- and CM1
- grow 20
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer nwsc CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and CWNR
- shrink 105
- and-not CTA
- and CCC
- 
- and CWN
- and CM1
- grow 20
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer pdc CAA
- and CSP
- and CCA
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CTA
- 
- and-not CPS
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer pdc CAA
- and CSP
- and CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CTA
- 
- and-not CPS
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer psc CAA
- and CSP
- and CCA
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CTA
- 
- and-not CPS
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer psc CAA
- and CSP
- and CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
  and-not CPS
  and-not CWN
  and CM1
@@ -5061,7 +3459,6 @@ style  lambda=0.10(s)
  calma CRG 67 *
 
  layer pc CCP
- and-not CV1
  and CPG
  and-not CPC
  and-not CEL
@@ -5073,67 +3470,6 @@ style  lambda=0.10(s)
  calma CCP 47 *
 
  layer pc CCC
- and-not CV1
- and CPG
- and-not CPC
- and-not CEL
- and-not CAA
- grow 10
- and CM1
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer pc CCP
- and CV1
- and CV2
- and-not CV3
- and CPG
- and-not CPC
- and-not CEL
- and-not CAA
- grow 10
- and CM1
- grow 5
- shrink 5
- calma CCP 47 *
-
- layer pc CCC
- and CV1
- and CV2
- and-not CV3
- and CPG
- and-not CPC
- and-not CEL
- and-not CAA
- grow 10
- and CM1
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer pc CCP
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and CPG
- and-not CPC
- and-not CEL
- and-not CAA
- grow 10
- and CM1
- grow 5
- shrink 5
- calma CCP 47 *
-
- layer pc CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
  and CPG
  and-not CPC
  and-not CEL
@@ -5250,7 +3586,6 @@ style  lambda=0.10(s)
  calma CV5 36 *
 
  layer m2c CV1
- and-not CV2
  and-not CCC
  and-not CCP
  and-not CCA
@@ -5262,112 +3597,7 @@ style  lambda=0.10(s)
  shrink 5
  calma CV1 50 *
 
- layer m2c CV1
- and CV2
- and CV3
- and-not CV4
- and-not CCC
- and-not CCP
- and-not CCA
- and-not XP
- grow 10
- and CM2
- and CM1
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer m2c CV1
- and CV5
- and CV4
- and CV3
- and CV2
- and-not CCC
- and-not CCP
- and-not CCA
- and-not XP
- grow 10
- and CM2
- and CM1
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and-not CV2
- and CCP
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and-not CV2
- and CCC
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and CV2
- and CV3
- and-not CV4
- and CCP
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and CV2
- and CV3
- and-not CV4
- and CCC
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and CCP
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and CCC
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
 
  layer m1 CM1
  and-not CRM
@@ -5415,520 +3645,35 @@ style  lambda=0.10(s)
  labels CMSP
  calma CMSP 82 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and-not CV2
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and-not CV2
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and-not CV2
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and-not CV2
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and-not CV2
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and-not CV2
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and-not CV2
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and-not CV2
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and-not CV2
- and CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and-not CV2
- and CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
  layer fp 100
  calma 100 100 *
@@ -5961,51 +3706,10 @@ style  lambda=0.10(s)
  calma 110 110 *
 
  layer m3c CV2
- and-not CV3
- and-not CV1
  and-not XP
  grow 10
  and CM3
  and CM2
- grow 5
- shrink 5
- calma CV2 61 *
-
- layer m3c CV2
- and CV3
- and CV4
- and-not CV5
- and-not CV1
- and-not XP
- grow 10
- and CM3
- and CM2
- grow 5
- shrink 5
- calma CV2 61 *
-
- layer m123c CV2
- and-not CV3
- and CV1
- and-not XP
- grow 10
- and CM3
- and CM2
- and CM1
- grow 5
- shrink 5
- calma CV2 61 *
-
- layer m123c CV2
- and CV3
- and CV4
- and-not CV5
- and CV1
- and-not XP
- grow 10
- and CM3
- and CM2
- and CM1
  grow 5
  shrink 5
  calma CV2 61 *
@@ -6033,30 +3737,7 @@ style  lambda=0.10(s)
  labels CMTP
  calma CMTP 83 *
 
- layer m234c CV3
- and-not CV4
- and CV2
- and-not XP
- grow 10
- and CM4
- and CM3
- and CM2
- grow 10
- shrink 10
- calma CV3 30 *
 
- layer m234c CV3
- and CV4
- and CV5
- and CV2
- and-not XP
- grow 10
- and CM4
- and CM3
- and CM2
- grow 10
- shrink 10
- calma CV3 30 *
 
  layer m4 CM4
  and-not CRM
@@ -6082,8 +3763,6 @@ style  lambda=0.10(s)
  calma CMQP 84 *
 
  layer m4c CV3
- and-not CV4
- and-not CV2
  and-not XP
  grow 10
  and CM4
@@ -6092,30 +3771,6 @@ style  lambda=0.10(s)
  shrink 10
  calma CV3 30 *
 
- layer m4c CV3
- and CV4
- and CV5
- and-not CV2
- and-not XP
- grow 10
- and CM4
- and CM3
- grow 10
- shrink 10
- calma CV3 30 *
-
- layer m345c CV4
- 
- and CV3
- and-not CV5
- and-not XP
- grow 10
- and CM5
- and CM4
- and CM3
- grow 10
- shrink 10
- calma CV4 32 *
 
  layer m5 CM5
  and-not CRM
@@ -6141,9 +3796,6 @@ style  lambda=0.10(s)
  calma CMPP 85 *
 
  layer m5c CV4
- 
- and-not CV5
- and-not CV3
  and-not XP
  grow 10
  and CM5
@@ -6151,21 +3803,6 @@ style  lambda=0.10(s)
  grow 10
  shrink 10
  calma CV4 32 *
-
- layer m456c CV5
- grow 5
- and-not CTM
- shrink 10
- and CV4
- grow 10
- and-not XP
- grow 10
- and CM6
- and CM5
- and CM4
- grow 10
- shrink 10
- calma CV5 36 *
 
  layer m6 CM6
  and-not CRM
@@ -6193,9 +3830,6 @@ style  lambda=0.10(s)
  layer m6c CV5
  grow 5
  and-not CTM
- shrink 10
- and-not CV4
- grow 10
  and-not XP
  grow 10
  and CM6
@@ -6291,7 +3925,6 @@ style  lambda=0.10(s)
 
  calma CTA 60 *
 
-#CRE/CRM
  calma CRW 65 *
  calma CRG 67 *
  calma CRD 66 *
@@ -6535,10 +4168,9 @@ style  lambda=0.10(ps)
  layer ndc CAA
  and CSN
  and CCA
- and-not CV1
  and-not CWNR
  and-not CTA
- 
+
  and-not CWN
  and CM1
  grow 10
@@ -6549,10 +4181,9 @@ style  lambda=0.10(ps)
  layer ndc CAA
  and CSN
  and CCC
- and-not CV1
  and-not CWNR
  and-not CTA
- 
+
  and-not CWN
  and CM1
  grow 10
@@ -6563,10 +4194,9 @@ style  lambda=0.10(ps)
  layer nsc CAA
  and CSN
  and CCA
- and-not CV1
  and-not CWNR
  and-not CTA
- 
+
  and CWN
  and CM1
  grow 10
@@ -6577,10 +4207,9 @@ style  lambda=0.10(ps)
  layer nsc CAA
  and CSN
  and CCC
- and-not CV1
  and-not CWNR
  and-not CTA
- 
+
  and CWN
  and CM1
  grow 10
@@ -6590,12 +4219,11 @@ style  lambda=0.10(ps)
 
  layer nwsc CAA
  and CSN
- and-not CV1
  and CWNR
  shrink 110
  and-not CTA
  and CCA
- 
+
  and CWN
  and CM1
  grow 20
@@ -6605,12 +4233,11 @@ style  lambda=0.10(ps)
 
  layer nwsc CAA
  and CSN
- and-not CV1
  and CWNR
  shrink 105
  and-not CTA
  and CCC
- 
+
  and CWN
  and CM1
  grow 20
@@ -6621,9 +4248,8 @@ style  lambda=0.10(ps)
  layer pdc CAA
  and CSP
  and CCA
- and-not CV1
  and-not CTA
- 
+
  and-not CPS
  and CWN
  and CM1
@@ -6635,9 +4261,8 @@ style  lambda=0.10(ps)
  layer pdc CAA
  and CSP
  and CCC
- and-not CV1
  and-not CTA
- 
+
  and-not CPS
  and CWN
  and CM1
@@ -6649,9 +4274,8 @@ style  lambda=0.10(ps)
  layer psc CAA
  and CSP
  and CCA
- and-not CV1
  and-not CTA
- 
+
  and-not CPS
  and-not CWN
  and CM1
@@ -6663,356 +4287,9 @@ style  lambda=0.10(ps)
  layer psc CAA
  and CSP
  and CCC
- and-not CV1
  and-not CWNR
  and-not CTA
- 
- and-not CPS
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
 
- layer ndc CAA
- and CSN
- and CCA
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer ndc CAA
- and CSN
- and CCC
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer nsc CAA
- and CSN
- and CCA
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer nsc CAA
- and CSN
- and CCC
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer nwsc CAA
- and CSN
- and CV1
- and CV2
- and-not CV3
- and CWNR
- shrink 110
- and-not CTA
- and CCA
- 
- and CWN
- and CM1
- grow 20
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer nwsc CAA
- and CSN
- and CV1
- and CV2
- and-not CV3
- and CWNR
- shrink 105
- and-not CTA
- and CCC
- 
- and CWN
- and CM1
- grow 20
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer pdc CAA
- and CSP
- and CCA
- and CV1
- and CV2
- and-not CV3
- and-not CTA
- 
- and-not CPS
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer pdc CAA
- and CSP
- and CCC
- and CV1
- and CV2
- and-not CV3
- and-not CTA
- 
- and-not CPS
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer psc CAA
- and CSP
- and CCA
- and CV1
- and CV2
- and-not CV3
- and-not CTA
- 
- and-not CPS
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer psc CAA
- and CSP
- and CCC
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and-not CPS
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer ndc CAA
- and CSN
- and CCA
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer ndc CAA
- and CSN
- and CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer nsc CAA
- and CSN
- and CCA
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer nsc CAA
- and CSN
- and CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer nwsc CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and CWNR
- shrink 110
- and-not CTA
- and CCA
- 
- and CWN
- and CM1
- grow 20
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer nwsc CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and CWNR
- shrink 105
- and-not CTA
- and CCC
- 
- and CWN
- and CM1
- grow 20
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer pdc CAA
- and CSP
- and CCA
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CTA
- 
- and-not CPS
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer pdc CAA
- and CSP
- and CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CTA
- 
- and-not CPS
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer psc CAA
- and CSP
- and CCA
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CTA
- 
- and-not CPS
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer psc CAA
- and CSP
- and CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
  and-not CPS
  and-not CWN
  and CM1
@@ -7040,7 +4317,6 @@ style  lambda=0.10(ps)
  calma CRG 67 *
 
  layer pc CCP
- and-not CV1
  and CPG
  and-not CPC
  and-not CEL
@@ -7052,67 +4328,6 @@ style  lambda=0.10(ps)
  calma CCP 47 *
 
  layer pc CCC
- and-not CV1
- and CPG
- and-not CPC
- and-not CEL
- and-not CAA
- grow 10
- and CM1
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer pc CCP
- and CV1
- and CV2
- and-not CV3
- and CPG
- and-not CPC
- and-not CEL
- and-not CAA
- grow 10
- and CM1
- grow 5
- shrink 5
- calma CCP 47 *
-
- layer pc CCC
- and CV1
- and CV2
- and-not CV3
- and CPG
- and-not CPC
- and-not CEL
- and-not CAA
- grow 10
- and CM1
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer pc CCP
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and CPG
- and-not CPC
- and-not CEL
- and-not CAA
- grow 10
- and CM1
- grow 5
- shrink 5
- calma CCP 47 *
-
- layer pc CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
  and CPG
  and-not CPC
  and-not CEL
@@ -7229,10 +4444,6 @@ style  lambda=0.10(ps)
  calma CV5 36 *
 
  layer m2c CV1
- and-not CV2
- and-not CCC
- and-not CCP
- and-not CCA
  and-not XP
  grow 10
  and CM2
@@ -7241,112 +4452,7 @@ style  lambda=0.10(ps)
  shrink 5
  calma CV1 50 *
 
- layer m2c CV1
- and CV2
- and CV3
- and-not CV4
- and-not CCC
- and-not CCP
- and-not CCA
- and-not XP
- grow 10
- and CM2
- and CM1
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer m2c CV1
- and CV5
- and CV4
- and CV3
- and CV2
- and-not CCC
- and-not CCP
- and-not CCA
- and-not XP
- grow 10
- and CM2
- and CM1
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and-not CV2
- and CCP
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and-not CV2
- and CCC
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and CV2
- and CV3
- and-not CV4
- and CCP
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and CV2
- and CV3
- and-not CV4
- and CCC
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and CCP
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and CCC
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
 
  layer m1 CM1
  and-not CRM
@@ -7394,520 +4500,35 @@ style  lambda=0.10(ps)
  labels CMSP
  calma CMSP 82 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and-not CV2
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and-not CV2
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and-not CV2
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and-not CV2
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and-not CV2
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and-not CV2
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and-not CV2
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and-not CV2
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and-not CV2
- and CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and-not CV2
- and CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
  layer fp 100
  calma 100 100 *
@@ -7940,51 +4561,10 @@ style  lambda=0.10(ps)
  calma 110 110 *
 
  layer m3c CV2
- and-not CV3
- and-not CV1
  and-not XP
  grow 10
  and CM3
  and CM2
- grow 5
- shrink 5
- calma CV2 61 *
-
- layer m3c CV2
- and CV3
- and CV4
- and-not CV5
- and-not CV1
- and-not XP
- grow 10
- and CM3
- and CM2
- grow 5
- shrink 5
- calma CV2 61 *
-
- layer m123c CV2
- and-not CV3
- and CV1
- and-not XP
- grow 10
- and CM3
- and CM2
- and CM1
- grow 5
- shrink 5
- calma CV2 61 *
-
- layer m123c CV2
- and CV3
- and CV4
- and-not CV5
- and CV1
- and-not XP
- grow 10
- and CM3
- and CM2
- and CM1
  grow 5
  shrink 5
  calma CV2 61 *
@@ -8012,30 +4592,7 @@ style  lambda=0.10(ps)
  labels CMTP
  calma CMTP 83 *
 
- layer m234c CV3
- and-not CV4
- and CV2
- and-not XP
- grow 10
- and CM4
- and CM3
- and CM2
- grow 10
- shrink 10
- calma CV3 30 *
 
- layer m234c CV3
- and CV4
- and CV5
- and CV2
- and-not XP
- grow 10
- and CM4
- and CM3
- and CM2
- grow 10
- shrink 10
- calma CV3 30 *
 
  layer m4 CM4
  and-not CRM
@@ -8061,8 +4618,6 @@ style  lambda=0.10(ps)
  calma CMQP 84 *
 
  layer m4c CV3
- and-not CV4
- and-not CV2
  and-not XP
  grow 10
  and CM4
@@ -8070,31 +4625,6 @@ style  lambda=0.10(ps)
  grow 10
  shrink 10
  calma CV3 30 *
-
- layer m4c CV3
- and CV4
- and CV5
- and-not CV2
- and-not XP
- grow 10
- and CM4
- and CM3
- grow 10
- shrink 10
- calma CV3 30 *
-
- layer m345c CV4
- 
- and CV3
- and-not CV5
- and-not XP
- grow 10
- and CM5
- and CM4
- and CM3
- grow 10
- shrink 10
- calma CV4 32 *
 
  layer m5 CM5
  and-not CRM
@@ -8120,9 +4650,6 @@ style  lambda=0.10(ps)
  calma CMPP 85 *
 
  layer m5c CV4
- 
- and-not CV5
- and-not CV3
  and-not XP
  grow 10
  and CM5
@@ -8130,21 +4657,6 @@ style  lambda=0.10(ps)
  grow 10
  shrink 10
  calma CV4 32 *
-
- layer m456c CV5
- grow 5
- and-not CTM
- shrink 10
- and CV4
- grow 10
- and-not XP
- grow 10
- and CM6
- and CM5
- and CM4
- grow 10
- shrink 10
- calma CV5 36 *
 
  layer m6 CM6
  and-not CRM
@@ -8172,9 +4684,6 @@ style  lambda=0.10(ps)
  layer m6c CV5
  grow 5
  and-not CTM
- shrink 10
- and-not CV4
- grow 10
  and-not XP
  grow 10
  and CM6
@@ -8270,7 +4779,6 @@ style  lambda=0.10(ps)
 
  calma CTA 60 *
 
-#CRE/CRM
  calma CRW 65 *
  calma CRG 67 *
  calma CRD 66 *
@@ -8511,10 +5019,9 @@ style  lambda=0.10()
  layer ndc CAA
  and CSN
  and CCA
- and-not CV1
  and-not CWNR
  and-not CTA
- 
+
  and-not CWN
  and CM1
  grow 10
@@ -8525,10 +5032,9 @@ style  lambda=0.10()
  layer ndc CAA
  and CSN
  and CCC
- and-not CV1
  and-not CWNR
  and-not CTA
- 
+
  and-not CWN
  and CM1
  grow 10
@@ -8539,10 +5045,9 @@ style  lambda=0.10()
  layer nsc CAA
  and CSN
  and CCA
- and-not CV1
  and-not CWNR
  and-not CTA
- 
+
  and CWN
  and CM1
  grow 10
@@ -8553,10 +5058,9 @@ style  lambda=0.10()
  layer nsc CAA
  and CSN
  and CCC
- and-not CV1
  and-not CWNR
  and-not CTA
- 
+
  and CWN
  and CM1
  grow 10
@@ -8566,12 +5070,11 @@ style  lambda=0.10()
 
  layer nwsc CAA
  and CSN
- and-not CV1
  and CWNR
  shrink 110
  and-not CTA
  and CCA
- 
+
  and CWN
  and CM1
  grow 20
@@ -8581,12 +5084,11 @@ style  lambda=0.10()
 
  layer nwsc CAA
  and CSN
- and-not CV1
  and CWNR
  shrink 105
  and-not CTA
  and CCC
- 
+
  and CWN
  and CM1
  grow 20
@@ -8597,9 +5099,8 @@ style  lambda=0.10()
  layer pdc CAA
  and CSP
  and CCA
- and-not CV1
  and-not CTA
- 
+
  and-not CPS
  and CWN
  and CM1
@@ -8611,9 +5112,8 @@ style  lambda=0.10()
  layer pdc CAA
  and CSP
  and CCC
- and-not CV1
  and-not CTA
- 
+
  and-not CPS
  and CWN
  and CM1
@@ -8625,9 +5125,8 @@ style  lambda=0.10()
  layer psc CAA
  and CSP
  and CCA
- and-not CV1
  and-not CTA
- 
+
  and-not CPS
  and-not CWN
  and CM1
@@ -8639,356 +5138,9 @@ style  lambda=0.10()
  layer psc CAA
  and CSP
  and CCC
- and-not CV1
  and-not CWNR
  and-not CTA
- 
- and-not CPS
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
 
- layer ndc CAA
- and CSN
- and CCA
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer ndc CAA
- and CSN
- and CCC
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer nsc CAA
- and CSN
- and CCA
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer nsc CAA
- and CSN
- and CCC
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer nwsc CAA
- and CSN
- and CV1
- and CV2
- and-not CV3
- and CWNR
- shrink 110
- and-not CTA
- and CCA
- 
- and CWN
- and CM1
- grow 20
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer nwsc CAA
- and CSN
- and CV1
- and CV2
- and-not CV3
- and CWNR
- shrink 105
- and-not CTA
- and CCC
- 
- and CWN
- and CM1
- grow 20
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer pdc CAA
- and CSP
- and CCA
- and CV1
- and CV2
- and-not CV3
- and-not CTA
- 
- and-not CPS
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer pdc CAA
- and CSP
- and CCC
- and CV1
- and CV2
- and-not CV3
- and-not CTA
- 
- and-not CPS
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer psc CAA
- and CSP
- and CCA
- and CV1
- and CV2
- and-not CV3
- and-not CTA
- 
- and-not CPS
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer psc CAA
- and CSP
- and CCC
- and CV1
- and CV2
- and-not CV3
- and-not CWNR
- and-not CTA
- 
- and-not CPS
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer ndc CAA
- and CSN
- and CCA
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer ndc CAA
- and CSN
- and CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer nsc CAA
- and CSN
- and CCA
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer nsc CAA
- and CSN
- and CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer nwsc CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and CWNR
- shrink 110
- and-not CTA
- and CCA
- 
- and CWN
- and CM1
- grow 20
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer nwsc CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and CWNR
- shrink 105
- and-not CTA
- and CCC
- 
- and CWN
- and CM1
- grow 20
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer pdc CAA
- and CSP
- and CCA
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CTA
- 
- and-not CPS
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer pdc CAA
- and CSP
- and CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CTA
- 
- and-not CPS
- and CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer psc CAA
- and CSP
- and CCA
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CTA
- 
- and-not CPS
- and-not CWN
- and CM1
- grow 10
- grow 5
- shrink 5
- calma CCA 48 *
-
- layer psc CAA
- and CSP
- and CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and-not CWNR
- and-not CTA
- 
  and-not CPS
  and-not CWN
  and CM1
@@ -9016,7 +5168,6 @@ style  lambda=0.10()
  calma CRG 67 *
 
  layer pc CCP
- and-not CV1
  and CPG
  and-not CPC
  and-not CEL
@@ -9028,67 +5179,6 @@ style  lambda=0.10()
  calma CCP 47 *
 
  layer pc CCC
- and-not CV1
- and CPG
- and-not CPC
- and-not CEL
- and-not CAA
- grow 10
- and CM1
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer pc CCP
- and CV1
- and CV2
- and-not CV3
- and CPG
- and-not CPC
- and-not CEL
- and-not CAA
- grow 10
- and CM1
- grow 5
- shrink 5
- calma CCP 47 *
-
- layer pc CCC
- and CV1
- and CV2
- and-not CV3
- and CPG
- and-not CPC
- and-not CEL
- and-not CAA
- grow 10
- and CM1
- grow 5
- shrink 5
- calma CCC 25 *
-
- layer pc CCP
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
- and CPG
- and-not CPC
- and-not CEL
- and-not CAA
- grow 10
- and CM1
- grow 5
- shrink 5
- calma CCP 47 *
-
- layer pc CCC
- and CV1
- and CV2
- and CV3
- and CV4
- and-not CV5
  and CPG
  and-not CPC
  and-not CEL
@@ -9205,121 +5295,10 @@ style  lambda=0.10()
  calma CV5 36 *
 
  layer m2c CV1
- and-not CV2
- and-not CCC
- and-not CCP
- and-not CCA
  and-not XP
  grow 10
  and CM2
  and CM1
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer m2c CV1
- and CV2
- and CV3
- and-not CV4
- and-not CCC
- and-not CCP
- and-not CCA
- and-not XP
- grow 10
- and CM2
- and CM1
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer m2c CV1
- and CV5
- and CV4
- and CV3
- and CV2
- and-not CCC
- and-not CCP
- and-not CCA
- and-not XP
- grow 10
- and CM2
- and CM1
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and-not CV2
- and CCP
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and-not CV2
- and CCC
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and CV2
- and CV3
- and-not CV4
- and CCP
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and CV2
- and CV3
- and-not CV4
- and CCC
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and CCP
- grow 10
- and CM2
- and CM1
- and CPG
- grow 5
- shrink 5
- calma CV1 50 *
-
- layer pm12c CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and CCC
- grow 10
- and CM2
- and CM1
- and CPG
  grow 5
  shrink 5
  calma CV1 50 *
@@ -9370,520 +5349,35 @@ style  lambda=0.10()
  labels CMSP
  calma CMSP 82 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and-not CV2
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and-not CV2
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and-not CV2
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and-not CV2
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and-not CV2
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and-not CV2
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and-not CV2
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and-not CV2
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and-not CV2
- and CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and-not CV2
- and CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and-not CV4
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and-not CV4
- and CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer ndm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer pdm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer psm12c CAA
- and CSP
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and-not CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and CWNR
- and-not CTA
- and CCA
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
- layer nwsm12c CAA
- and CSN
- and CV1
- and CV2
- and CV3
- and CV4
- and CV5
- and CWNR
- and-not CTA
- and CCC
- grow 10
- and CM1
- and CM2
- 
- and CWN
- grow 5
- shrink 5
- calma CV1 50 *
 
  layer fp 100
  calma 100 100 *
@@ -9916,8 +5410,6 @@ style  lambda=0.10()
  calma 110 110 *
 
  layer m3c CV2
- and-not CV3
- and-not CV1
  and-not XP
  grow 10
  and CM3
@@ -9926,44 +5418,6 @@ style  lambda=0.10()
  shrink 5
  calma CV2 61 *
 
- layer m3c CV2
- and CV3
- and CV4
- and-not CV5
- and-not CV1
- and-not XP
- grow 10
- and CM3
- and CM2
- grow 5
- shrink 5
- calma CV2 61 *
-
- layer m123c CV2
- and-not CV3
- and CV1
- and-not XP
- grow 10
- and CM3
- and CM2
- and CM1
- grow 5
- shrink 5
- calma CV2 61 *
-
- layer m123c CV2
- and CV3
- and CV4
- and-not CV5
- and CV1
- and-not XP
- grow 10
- and CM3
- and CM2
- and CM1
- grow 5
- shrink 5
- calma CV2 61 *
 
  layer m3 CM3
  and-not CRM
@@ -9988,30 +5442,7 @@ style  lambda=0.10()
  labels CMTP
  calma CMTP 83 *
 
- layer m234c CV3
- and-not CV4
- and CV2
- and-not XP
- grow 10
- and CM4
- and CM3
- and CM2
- grow 10
- shrink 10
- calma CV3 30 *
 
- layer m234c CV3
- and CV4
- and CV5
- and CV2
- and-not XP
- grow 10
- and CM4
- and CM3
- and CM2
- grow 10
- shrink 10
- calma CV3 30 *
 
  layer m4 CM4
  and-not CRM
@@ -10037,8 +5468,6 @@ style  lambda=0.10()
  calma CMQP 84 *
 
  layer m4c CV3
- and-not CV4
- and-not CV2
  and-not XP
  grow 10
  and CM4
@@ -10046,31 +5475,6 @@ style  lambda=0.10()
  grow 10
  shrink 10
  calma CV3 30 *
-
- layer m4c CV3
- and CV4
- and CV5
- and-not CV2
- and-not XP
- grow 10
- and CM4
- and CM3
- grow 10
- shrink 10
- calma CV3 30 *
-
- layer m345c CV4
- 
- and CV3
- and-not CV5
- and-not XP
- grow 10
- and CM5
- and CM4
- and CM3
- grow 10
- shrink 10
- calma CV4 32 *
 
  layer m5 CM5
  and-not CRM
@@ -10096,9 +5500,6 @@ style  lambda=0.10()
  calma CMPP 85 *
 
  layer m5c CV4
- 
- and-not CV5
- and-not CV3
  and-not XP
  grow 10
  and CM5
@@ -10107,20 +5508,6 @@ style  lambda=0.10()
  shrink 10
  calma CV4 32 *
 
- layer m456c CV5
- grow 5
- and-not CTM
- shrink 10
- and CV4
- grow 10
- and-not XP
- grow 10
- and CM6
- and CM5
- and CM4
- grow 10
- shrink 10
- calma CV5 36 *
 
  layer m6 CM6
  and-not CRM
@@ -10148,9 +5535,6 @@ style  lambda=0.10()
  layer m6c CV5
  grow 5
  and-not CTM
- shrink 10
- and-not CV4
- grow 10
  and-not XP
  grow 10
  and CM6
@@ -10246,7 +5630,6 @@ style  lambda=0.10()
 
  calma CTA 60 *
 
-#CRE/CRM
  calma CRW 65 *
  calma CRG 67 *
  calma CRD 66 *
@@ -10674,7 +6057,7 @@ style  lambda=0.10(c)
  calma CMQP 84 *
 
  layer gv4 CV4
- 
+
  calma CV4 32 *
 
  layer m5 CM5
@@ -10804,7 +6187,6 @@ style  lambda=0.10(c)
 
  calma CTA 60 *
 
-#CRE/CRM
  calma CRW 65 *
  calma CRG 67 *
  calma CRD 66 *
@@ -11234,7 +6616,7 @@ style  lambda=0.10(cs)
  calma CMQP 84 *
 
  layer gv4 CV4
- 
+
  calma CV4 32 *
 
  layer m5 CM5
@@ -11364,7 +6746,6 @@ style  lambda=0.10(cs)
 
  calma CTA 60 *
 
-#CRE/CRM
  calma CRW 65 *
  calma CRG 67 *
  calma CRD 66 *
@@ -11795,7 +7176,7 @@ style  lambda=0.10(cps)
  calma CMQP 84 *
 
  layer gv4 CV4
- 
+
  calma CV4 32 *
 
  layer m5 CM5
@@ -11925,7 +7306,6 @@ style  lambda=0.10(cps)
 
  calma CTA 60 *
 
-#CRE/CRM
  calma CRW 65 *
  calma CRG 67 *
  calma CRD 66 *
@@ -12354,7 +7734,7 @@ style  lambda=0.10(cp)
  calma CMQP 84 *
 
  layer gv4 CV4
- 
+
  calma CV4 32 *
 
  layer m5 CM5
@@ -12484,7 +7864,6 @@ style  lambda=0.10(cp)
 
  calma CTA 60 *
 
-#CRE/CRM
  calma CRW 65 *
  calma CRG 67 *
  calma CRD 66 *
@@ -12573,22 +7952,22 @@ drc
  width pwell 12 \
  "P-well width < 12 (Mosis #1.1)"
 
- width diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a 3 \
+ width diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a 3 \
  "Diffusion width < 3 (Mosis #2.1)"
 
- edge4way nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a pdiff,apres,rpd,pdc/a,pdm12c/a 3 ~(nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a)/active pdiff,apres,rpd,pdc/a,pdm12c/a 3 \
+ edge4way nsd,nwsd,nsc/a,nwsc/a pdiff,apres,rpd,pdc/a 3 ~(nsd,nwsd,nsc/a,nwsc/a)/active pdiff,apres,rpd,pdc/a 3 \
  "P-Diffusion width in N-Ohmic < 3 (Mosis #2.1)" active
 
- edge4way psd,psc/a,psm12c/a ndiff,anres,rnd,ndc/a,ndm12c/a 3 ~(psd,psc/a,psm12c/a)/active ndiff,anres,rnd,ndc/a,ndm12c/a 3 \
+ edge4way psd,psc/a ndiff,anres,rnd,ndc/a 3 ~(psd,psc/a)/active ndiff,anres,rnd,ndc/a 3 \
  "N-Diffusion width in P-Ohmic < 3 (Mosis #2.1)" active
 
- edge4way pdiff,apres,rpd,pdc/a,pdm12c/a nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a 3 ~(pdiff,apres,rpd,pdc/a,pdm12c/a)/active nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a 3 \
+ edge4way pdiff,apres,rpd,pdc/a nsd,nwsd,nsc/a,nwsc/a 3 ~(pdiff,apres,rpd,pdc/a)/active nsd,nwsd,nsc/a,nwsc/a 3 \
  "N-Ohmic width in P-Diffusion < 3 (Mosis #2.1)" active
 
- edge4way ndiff,anres,rnd,ndc/a,ndm12c/a psd,psc/a,psm12c/a 3 ~(ndiff,anres,rnd,ndc/a,ndm12c/a)/active psd,psc/a,psm12c/a 3 \
+ edge4way ndiff,anres,rnd,ndc/a psd,psc/a 3 ~(ndiff,anres,rnd,ndc/a)/active psd,psc/a 3 \
  "P-Ohmic width in N-Diffusion < 3 (Mosis #2.1)" active
 
- width poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,nfet,pfet,fet 2 \
+ width poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,nfet,pfet,fet 2 \
  "Poly width < 2 (Mosis #3.1)"
 
  width nselect 3 \
@@ -12597,10 +7976,10 @@ drc
  width pselect 3 \
  "P-Select width < 3 (Mosis #4.4)"
 
- width ndiff,anres,rnd,ndc/a,ndm12c/a,nsd,nsc/a,nsm12c/a 3 \
+ width ndiff,anres,rnd,ndc/a,nsd,nsc/a 3 \
  "N-Diffusion,N-Ohmic width < 3 (Mosis #4.4)"
 
- width pdiff,apres,rpd,pdc/a,pdm12c/a,psd,psc/a,psm12c/a 3 \
+ width pdiff,apres,rpd,pdc/a,psd,psc/a 3 \
  "P-Diffusion,P-Ohmic width < 3 (Mosis #4.4)"
 
  width pc/m1 4 \
@@ -12612,14 +7991,8 @@ drc
  width pnc/m1 4 \
  "Poly contact width < 4 (Mosis #5.1)"
 
- width pm12c/m1 4 \
- "Poly contact width < 4 (Mosis #5.1)"
 
- width ppm12c/m1 4 \
- "Poly contact width < 4 (Mosis #5.1)"
 
- width pnm12c/m1 4 \
- "Poly contact width < 4 (Mosis #5.1)"
 
  width gc 2 \
  "GC contact width < 2 (Mosis #6.1)"
@@ -12627,8 +8000,6 @@ drc
  width ndc/m1 4 \
  "Diffusion contact width < 4 (Mosis #6.1)"
 
- width ndm12c/m1 4 \
- "Diffusion contact width < 4 (Mosis #6.1)"
 
  width nsc/m1 4 \
  "Diffusion contact width < 4 (Mosis #6.1)"
@@ -12636,11 +8007,7 @@ drc
  width nwsc/m1 4 \
  "Diffusion contact width < 4 (Mosis #6.1)"
 
- width nsm12c/m1 4 \
- "Diffusion contact width < 4 (Mosis #6.1)"
 
- width nwsm12c/m1 4 \
- "Diffusion contact width < 4 (Mosis #6.1)"
 
  width nwsc 6 \
  "nwr (for Fig1b resistor) active Contact width < 6 (Mosis #Fig1b)"
@@ -12648,19 +8015,15 @@ drc
  width pdc/m1 4 \
  "Diffusion contact width < 4 (Mosis #6.1)"
 
- width pdm12c/m1 4 \
- "Diffusion contact width < 4 (Mosis #6.1)"
 
  width psc/m1 4 \
  "Diffusion contact width < 4 (Mosis #6.1)"
 
- width psm12c/m1 4 \
- "Diffusion contact width < 4 (Mosis #6.1)"
 
- width m1,fm1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,m123c/m1 3 \
+ width m1,fm1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1 3 \
  "Metal1 width < 3 (Mosis #7.1)"
 
-  area m1,fm1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,m123c/m1 20 3 \
+  area m1,fm1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1 20 3 \
  "Metal1 area < 20 (Mosis #+++)"
 
  width gv1 2 \
@@ -12669,31 +8032,17 @@ drc
  width m2c/m1 4 \
  "Metal2 contact width < 4 (Mosis #8.1)"
 
- width pdm12c/m1 4 \
- "Metal2 contact width < 4 (Mosis #8.1)"
 
- width ndm12c/m1 4 \
- "Metal2 contact width < 4 (Mosis #8.1)"
 
- width psm12c/m1 4 \
- "Metal2 contact width < 4 (Mosis #8.1)"
 
- width nsm12c/m1 4 \
- "Metal2 contact width < 4 (Mosis #8.1)"
 
- width pm12c/m1 4 \
- "Metal2 contact width < 4 (Mosis #8.1)"
 
- width m123c/m1 4 \
- "Metal2 contact width < 4 (Mosis #8.1)"
 
- width nwsm12c/m1 4 \
- "Metal2 contact width < 4 (Mosis #8.1)"
 
- width m2,fm2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m234c/m2 3 \
+ width m2,fm2,rm2,m2c/m2,m3c/m2 3 \
  "Metal2 width < 3 (Mosis #9.1)"
 
-  area m2,fm2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m234c/m2 20 3 \
+  area m2,fm2,rm2,m2c/m2,m3c/m2 20 3 \
  "Metal2 area < 20 (Mosis #+++)"
 
  width gv2 2 \
@@ -12702,16 +8051,12 @@ drc
  width m3c/m2 4 \
  "Metal3 contact width < 4 (Mosis #14.1)"
 
- width m123c/m2 4 \
- "Metal3 contact width < 4 (Mosis #14.1)"
 
- width m234c/m2 4 \
- "Metal3 contact width < 4 (Mosis #14.1)"
 
- width m3,fm3,rm3,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m345c/m3 3 \
+ width m3,fm3,rm3,m3c/m3,m4c/m3 3 \
  "Metal3 width < 3 (Mosis #15.1)"
 
-  area m3,fm3,rm3,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m345c/m3 20 3 \
+  area m3,fm3,rm3,m3c/m3,m4c/m3 20 3 \
  "Metal3 area < 20 (Mosis #+++)"
 
  width sb,pres,anres,apres 4 \
@@ -12729,16 +8074,12 @@ drc
  width m4c/m3 4 \
  "Metal4 contact width < 4 (Mosis #21.3)"
 
- width m234c/m3 4 \
- "Metal4 contact width < 4 (Mosis #21.3)"
 
- width m345c/m3 4 \
- "Metal4 contact width < 4 (Mosis #21.3)"
 
- width m4,fm4,rm4,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m456c/m4 3 \
+ width m4,fm4,rm4,m4c/m4,m5c/m4 3 \
  "Metal4 width < 3 (Mosis #22.1)"
 
-  area m4,fm4,rm4,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m456c/m4 20 3 \
+  area m4,fm4,rm4,m4c/m4,m5c/m4 20 3 \
  "Metal4 area < 20 (Mosis #+++)"
 
  width nfi,pfi 4 \
@@ -12750,31 +8091,25 @@ drc
  width m5c/m4 4 \
  "Metal5 contact width < 4 (Mosis #25.4)"
 
- width m345c/m4 4 \
- "Metal5 contact width < 4 (Mosis #25.4)"
 
- width m456c/m4 4 \
- "Metal5 contact width < 4 (Mosis #25.4)"
 
- width m5,fm5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5 3 \
+ width m5,fm5,rm5,m5c/m5,m6c/m5 3 \
  "Metal5 width < 3 (Mosis #26.2)"
 
-  area m5,fm5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5 20 3 \
+  area m5,fm5,rm5,m5c/m5,m6c/m5 20 3 \
  "Metal5 area < 20 (Mosis #+++)"
 
  width gv5 4 \
  "GV5 via width < 4 (Mosis #29.4)"
 
- width m6c/m5 6 \
- "Metal6 contact width < 6 (Mosis #29.4)"
+ width m6c/m5 5 \
+ "Metal6 contact width < 5 (Mosis #29.4)"
 
- width m456c/m5 6 \
- "Metal6 contact width < 6 (Mosis #29.4)"
 
- width m6,fm6,rm6,m6c/m6,m456c/m6,mic/m6,pad 5 \
+ width m6,fm6,rm6,m6c/m6,mic/m6,pad 5 \
  "Metal6 width < 5 (Mosis #30.2)"
 
-  area m6,fm6,rm6,m6c/m6,m456c/m6,mic/m6,pad 56 5 \
+  area m6,fm6,rm6,m6c/m6,mic/m6,pad 56 5 \
  "Metal6 area < 56 (Mosis #+++)"
 
  width gvi 4 \
@@ -12804,73 +8139,73 @@ drc
  edge4way ~(pwell)/well pwell 1 ~(nwr)/active 0 0 \
  "P-well cannot touch nwr (for Fig1b resistor L/W extraction) (Mosis #1.4)" active
 
- spacing diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a 3 touching_ok \
+ spacing diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a 3 touching_ok \
  "Diffusion spacing < 3 (Mosis #2.2)"
 
- spacing nwell ndiff,anres,rnd,nfet,ndc/a,ndm12c/a 6 touching_illegal \
+ spacing nwell ndiff,anres,rnd,nfet,ndc/a 6 touching_illegal \
  "N-well spacing to N-Diffusion < 6 (Mosis #2.3)"
 
- spacing pwell pdiff,apres,rpd,pfet,pdc/a,pdm12c/a 6 touching_illegal \
+ spacing pwell pdiff,apres,rpd,pfet,pdc/a 6 touching_illegal \
  "P-well spacing to P-Diffusion < 6 (Mosis #2.3)"
 
- spacing ndiff,anres,rnd,nfet,ndc/a,ndm12c/a pdiff,apres,rpd,pfet,pdc/a,pdm12c/a 12 touching_illegal \
+ spacing ndiff,anres,rnd,nfet,ndc/a pdiff,apres,rpd,pfet,pdc/a 12 touching_illegal \
  "N-Diffusion spacing to P-Diffusion < 12 (Mosis #2.3+2.3)"
 
- edge4way ~(nwell)/well nwell 6 ~(pdiff,apres,rpd,pfet,pdc/a,pdm12c/a)/active nwell 6 \
+ edge4way ~(nwell)/well nwell 6 ~(pdiff,apres,rpd,pfet,pdc/a)/active nwell 6 \
  "N-well overlap of P-Diffusion < 6 (Mosis #2.4)" active
 
- edge4way ~(pwell)/well pwell 6 ~(ndiff,anres,rnd,nfet,ndc/a,ndm12c/a)/active pwell 6 \
+ edge4way ~(pwell)/well pwell 6 ~(ndiff,anres,rnd,nfet,ndc/a)/active pwell 6 \
  "P-well overlap of N-Diffusion < 6 (Mosis #2.4)" active
 
- edge4way ~(nwell)/well nwell 3 ~(nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a)/active nwell 3 \
+ edge4way ~(nwell)/well nwell 3 ~(nsd,nwsd,nsc/a,nwsc/a)/active nwell 3 \
  "N-well overlap of N-Ohmic < 3 (Mosis #2.4)" active
 
- edge4way ~(pwell)/well pwell 3 ~(psd,psc/a,psm12c/a)/active pwell 3 \
+ edge4way ~(pwell)/well pwell 3 ~(psd,psc/a)/active pwell 3 \
  "P-well overlap of P-Ohmic < 3 (Mosis #2.4)" active
 
- spacing ndiff,anres,rnd,ndc/a,ndm12c/a nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a 9 touching_illegal \
+ spacing ndiff,anres,rnd,ndc/a nsd,nwsd,nsc/a,nwsc/a 9 touching_illegal \
  "N-Diffusion spacing to N-Ohmic < 9 (Mosis #2.3+2.4)"
 
- spacing pdiff,apres,rpd,pdc/a,pdm12c/a psd,psc/a,psm12c/a 9 touching_illegal \
+ spacing pdiff,apres,rpd,pdc/a psd,psc/a 9 touching_illegal \
  "P-Diffusion spacing to P-Ohmic < 9 (Mosis #2.3+2.4)"
 
- spacing nwell psd,psc/a,psm12c/a 3 touching_illegal \
+ spacing nwell psd,psc/a 3 touching_illegal \
  "N-well spacing to P-Ohmic < 3 (Mosis #2.4)"
 
- spacing pwell nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a 3 touching_illegal \
+ spacing pwell nsd,nwsd,nsc/a,nwsc/a 3 touching_illegal \
  "P-well spacing to N-Ohmic < 3 (Mosis #2.4)"
 
- spacing psd,psc/a,psm12c/a rnw,prnw 3 touching_illegal \
+ spacing psd,psc/a rnw,prnw 3 touching_illegal \
  "P-Ohmic spacing to rnw,prnw < 3 (Mosis #2.4)"
 
- spacing psd,psc/a,psm12c/a nwr,pnwr 3 touching_illegal \
+ spacing psd,psc/a nwr,pnwr 3 touching_illegal \
  "P-Ohmic spacing to nwr,pnwr (for Fig1b Resistor) < 3 (Mosis #2.4)"
 
- spacing nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a psd,psc/a,psm12c/a 6 touching_illegal \
+ spacing nsd,nwsd,nsc/a,nwsc/a psd,psc/a 6 touching_illegal \
  "N-Ohmic spacing to P-Ohmic < 6 (Mosis #2.4+2.4)"
 
- spacing ndiff,anres,rnd,nfet,ndc/a,ndm12c/a,nfet psd,psc/a,psm12c/a 4 touching_ok \
+ spacing ndiff,anres,rnd,nfet,ndc/a,nfet psd,psc/a 4 touching_ok \
  "N-Diffusion spacing to P-Ohmic < 4 (Mosis #2.5)"
 
- spacing pdiff,apres,rpd,pfet,pdc/a,pdm12c/a,pfet nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a 4 touching_ok \
+ spacing pdiff,apres,rpd,pfet,pdc/a,pfet nsd,nwsd,nsc/a,nwsc/a 4 touching_ok \
  "P-Diffusion spacing to N-Ohmic < 4 (Mosis #2.5)"
 
- spacing poly,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,nfet,pfet,fet poly,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,nfet,pfet,fet 3 touching_ok \
+ spacing poly,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,nfet,pfet,fet poly,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,nfet,pfet,fet 3 touching_ok \
  "Poly spacing < 3 (Mosis #3.2)"
 
- spacing poly,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,nfet,pfet,fet fp,fapm 3 touching_illegal \
+ spacing poly,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,nfet,pfet,fet fp,fapm 3 touching_illegal \
  "Poly spacing to fill layer (fp) < 3 (Mosis #3.2)"
 
  spacing fp fp 4 touching_ok \
  "Poly fill layer (fp) spacing < 4 (Mosis #0)"
 
- edge4way nfet,pfet,fet space/active,poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a 2 poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a 0 0 \
+ edge4way nfet,pfet,fet space/active,poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a 2 poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a 0 0 \
  "Poly overhang of Transistor < 2 (Mosis #3.3)" active
 
- edge4way nfet,pfet,fet space/active,ndiff,anres,rnd,ndc/a,ndm12c/a,pdiff,apres,rpd,pdc/a,pdm12c/a 3 ndiff,anres,rnd,ndc/a,ndm12c/a,pdiff,apres,rpd,pdc/a,pdm12c/a,nfet,pfet,fet 0 0 \
+ edge4way nfet,pfet,fet space/active,ndiff,anres,rnd,ndc/a,pdiff,apres,rpd,pdc/a 3 ndiff,anres,rnd,ndc/a,pdiff,apres,rpd,pdc/a,nfet,pfet,fet 0 0 \
  "N-Diffusion,P-Diffusion overhang of Transistor < 3 (Mosis #3.4)" active
 
- edge4way poly,fp,pp,pn,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a ~(poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,nfet,pfet,fet,prp)/active 1 space space 1 \
+ edge4way poly,fp,pp,pn,rp,pc/a,ppc/a,pnc/a ~(poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,nfet,pfet,fet,prp)/active 1 space space 1 \
  "Poly spacing to Diffusion < 1 (Mosis #3.5)"
 
  edge4way nfet ~(nfet)/active 2 ~(pselect)/select ~(nfet)/active 2 \
@@ -12879,19 +8214,19 @@ drc
  edge4way pfet ~(pfet)/active 2 ~(nselect)/select ~(pfet)/active 2 \
  "P-Transistor space to N-Select < 2 (Mosis #4.1)" select
 
- edge4way nfet ~(nfet)/active 3 ~(psd,psc/a,psm12c/a)/active ~(nfet)/active 2 \
+ edge4way nfet ~(nfet)/active 3 ~(psd,psc/a)/active ~(nfet)/active 2 \
  "N-Transistor space to P-Ohmic < 3 (Mosis #4.1)" active
 
- edge4way pfet ~(pfet)/active 3 ~(nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a)/active ~(pfet)/active 2 \
+ edge4way pfet ~(pfet)/active 3 ~(nsd,nwsd,nsc/a,nwsc/a)/active ~(pfet)/active 2 \
  "P-Transistor space to N-Ohmic < 3 (Mosis #4.1)" active
 
-#PEZ edge4way psd,psc/a,psm12c/a space  ~(nfet)/active space  \
+#PEZ edge4way psd,psc/a space  ~(nfet)/active space  \
 #PEZ "P-Ohmic space to N-Transistor <  (Mosis #4.1)" active
 
-#PEZ edge4way nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a space  ~(pfet)/active space  \
+#PEZ edge4way nsd,nwsd,nsc/a,nwsc/a space  ~(pfet)/active space  \
 #PEZ "N-Ohmic space to P-Transistor <  (Mosis #4.1)" active
 
- edge4way ~(nselect,pselect)/select nselect,pselect 2 ~(diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a)/active nselect,pselect 2 \
+ edge4way ~(nselect,pselect)/select nselect,pselect 2 ~(diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a)/active nselect,pselect 2 \
  "N-Select,P-Select overlap of Diffusion < 2 (Mosis #4.2_)" active
 
  edge4way ~(nselect,pselect)/select nselect,pselect 1 ~(pp,pn)/active nselect,pselect 1 \
@@ -12903,28 +8238,28 @@ drc
 #SOC edge4way ~(pselect)/select pselect 1 ~(gc)/contact pselect 1 \
 #SOC "P-Select overlap of Generic contact < 1 (Mosis #?.?__)" contact
 
- edge4way space nselect,pselect 2 ~(ndiff,anres,rnd,nfet,ndc/a,ndm12c/a)/active nselect 2 \
+ edge4way space nselect,pselect 2 ~(ndiff,anres,rnd,nfet,ndc/a)/active nselect 2 \
  "N-Select space to N-Diffusion < 2 (Mosis #4.2a)" active
 
- edge4way nselect,pselect space 2 ~(ndiff,anres,rnd,nfet,ndc/a,ndm12c/a)/active nselect 2 \
+ edge4way nselect,pselect space 2 ~(ndiff,anres,rnd,nfet,ndc/a)/active nselect 2 \
  "N-Select space to N-Diffusion < 2 (Mosis #4.2b)" active
 
- edge4way nselect,pselect space 2 ~(ndiff,anres,rnd,nfet,ndc/a,ndm12c/a)/active space,nselect,pselect 2 \
+ edge4way nselect,pselect space 2 ~(ndiff,anres,rnd,nfet,ndc/a)/active space,nselect,pselect 2 \
  "N-Select space to N-Diffusion < 2 (Mosis #4.2c)" active
 
- edge4way space nselect,pselect 2 ~(pdiff,apres,rpd,pfet,pdc/a,pdm12c/a)/active pselect 2 \
+ edge4way space nselect,pselect 2 ~(pdiff,apres,rpd,pfet,pdc/a)/active pselect 2 \
  "P-Select space to P-Diffusion < 2 (Mosis #4.2aa)" active
 
- edge4way nselect,pselect space 2 ~(pdiff,apres,rpd,pfet,pdc/a,pdm12c/a)/active pselect 2 \
+ edge4way nselect,pselect space 2 ~(pdiff,apres,rpd,pfet,pdc/a)/active pselect 2 \
  "P-Select space to P-Diffusion < 2 (Mosis #4.2bb)" active
 
- edge4way nselect,pselect space 2 ~(pdiff,apres,rpd,pfet,pdc/a,pdm12c/a)/active space,nselect,pselect 2 \
+ edge4way nselect,pselect space 2 ~(pdiff,apres,rpd,pfet,pdc/a)/active space,nselect,pselect 2 \
  "P-Select space to P-Diffusion < 2 (Mosis #4.2cc)" active
 
-#SOC edge4way ~(nselect)/select nselect 0 ~(ndc/a,ndm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a)/active nselect 0 \
+#SOC edge4way ~(nselect)/select nselect 0 ~(ndc/a,pdc/a,psc/a,nsc/a,nwsc/a)/active nselect 0 \
 #SOC "N-Select overlap of Diffusion contact < 0 (Mosis #?.?__)" active
 
-#SOC edge4way ~(pselect,dps)/select pselect,dps 0 ~(ndc/a,ndm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a)/active pselect,dps 0 \
+#SOC edge4way ~(pselect,dps)/select pselect,dps 0 ~(ndc/a,pdc/a,psc/a,nsc/a,nwsc/a)/active pselect,dps 0 \
 #SOC "P-Select overlap of Diffusion contact < 0 (Mosis #?.?__)" active
 
  edge4way space nselect 1 ~(pn)/active nselect 1 \
@@ -12945,7 +8280,7 @@ drc
  edge4way pselect space 1 ~(pp)/active space,pselect 1 \
  "P-Select space to Poly < 1 (Mosis #4.2f)" active
 
-  area nsd,nwsd,psd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,psc/a,psm12c/a 16 3 \
+  area nsd,nwsd,psd,nsc/a,nwsc/a,psc/a 16 3 \
  "Ohmic-Diffusion area < 16 (Mosis #+++)"
 
  edge4way pn space 1 ~(pselect)/select space 1 \
@@ -12960,16 +8295,16 @@ drc
  edge4way diff space 2 pselect space 2 \
  "P-Select must overlap Diffusion by 2 (Mosis #4.2)" select
 
- edge4way ndiff,anres,rnd,nfet,ndc/a,ndm12c/a space 2 ~(pselect)/select space 2 \
+ edge4way ndiff,anres,rnd,nfet,ndc/a space 2 ~(pselect)/select space 2 \
  "P-Select space to N-Diffusion < 2 (Mosis #4.2e)" select
 
- edge4way pdiff,apres,rpd,pfet,pdc/a,pdm12c/a space 2 ~(nselect)/select space 2 \
+ edge4way pdiff,apres,rpd,pfet,pdc/a space 2 ~(nselect)/select space 2 \
  "N-Select space to P-Diffusion < 2 (Mosis #4.2e)" select
 
- edge4way ~(pdiff,apres,rpd,pfet,pdc/a,pdm12c/a,psd,psc/a,psm12c/a)/active pdiff,apres,rpd,pfet,pdc/a,pdm12c/a,psd,psc/a,psm12c/a 1 ~(nselect)/select 0 0 \
+ edge4way ~(pdiff,apres,rpd,pfet,pdc/a,psd,psc/a)/active pdiff,apres,rpd,pfet,pdc/a,psd,psc/a 1 ~(nselect)/select 0 0 \
  "N-Select cannot touch P-Diffusion,P-Ohmic (Mosis #4.2f)" select
 
- edge4way ~(ndiff,anres,rnd,nfet,ndc/a,ndm12c/a,nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a)/active ndiff,anres,rnd,nfet,ndc/a,ndm12c/a,nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a 1 ~(pselect)/select 0 0 \
+ edge4way ~(ndiff,anres,rnd,nfet,ndc/a,nsd,nwsd,nsc/a,nwsc/a)/active ndiff,anres,rnd,nfet,ndc/a,nsd,nwsd,nsc/a,nwsc/a 1 ~(pselect)/select 0 0 \
  "P-Select cannot touch N-Diffusion,N-Ohmic (Mosis #4.2f)" select
 
  spacing nselect nselect 3 touching_ok \
@@ -12978,13 +8313,13 @@ drc
  spacing pselect pselect 3 touching_ok \
  "P-Select spacing < 3 (Mosis #4.4)"
 
-  edge4way ndiff,anres,rnd,ndc/a,ndm12c/a psd,psc/a,psm12c/a 2 ~(ndiff,anres,rnd,ndc/a,ndm12c/a)/active 0 0 \
+  edge4way ndiff,anres,rnd,ndc/a psd,psc/a 2 ~(ndiff,anres,rnd,ndc/a)/active 0 0 \
  "P-Ohmic(that touches N-Diffusion) width < 2 (Mosis #4.4)"
 
-  edge4way pdiff,apres,rpd,pdc/a,pdm12c/a nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a 2 ~(pdiff,apres,rpd,pdc/a,pdm12c/a)/active 0 0 \
+  edge4way pdiff,apres,rpd,pdc/a nsd,nwsd,nsc/a,nwsc/a 2 ~(pdiff,apres,rpd,pdc/a)/active 0 0 \
  "N-Ohmic(that touches P-Diffusion) width < 2 (Mosis #4.4)"
 
- edge4way gc ~(gc)/contact 1 poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a ~(gc)/contact 1 \
+ edge4way gc ~(gc)/contact 1 poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a ~(gc)/contact 1 \
  "Poly,Diffusion overlap of GC contact < 1 (Mosis #5.2)" active
 
  edge4way ~(nwsd)/active nwsd 2 ~(gc)/contact nwsd 2 \
@@ -12993,121 +8328,103 @@ drc
  spacing nwr gc 5 touching_illegal \
  "nwr (for Fig1b resistor) spacing to GC contact < 5 (Mosis #Fig1b)"
 
- spacing nwr ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a 3 touching_illegal \
+ spacing nwr ndc/a,nsc/a,nwsc/a 3 touching_illegal \
  "nwr (for Fig1b resistor) spacing to Diffusion contact < 3 (Mosis #Fig1b)"
 
- edge4way gc space 1 poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a space 1 \
+ edge4way gc space 1 poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a space 1 \
  "one of: Poly,Diffusion must overlap GC contact by 1 (Mosis #5.2a,6.2a)" active
 
- edge4way ~(poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a)/active poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a 1 ~(gc)/contact 0 0 \
+ edge4way ~(poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a)/active poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a 1 ~(gc)/contact 0 0 \
  "Edge to one of: Poly,Diffusion cannot touch GC contact (Mosis #5.2a,6.2a)" contact
 
  spacing gc gc 3 touching_ok \
  "Generic contact spacing < 3 (Mosis #5.3)"
 
- edge4way ~(gc)/contact gc 1 ~(ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1)/metal1 0 0 \
+ edge4way ~(gc)/contact gc 1 ~(ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1)/metal1 0 0 \
  "GC contact cannot touch Metal1 contacts (Mosis #0)" metal1
 
- spacing gv1 m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2 2 touching_illegal \
+ spacing gv1 m2c/m2 2 touching_illegal \
  "GV1 via spacing to Metal2 contacts < 2 (Mosis #14.2)"
 
-#PSC spacing poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a 4 touching_ok \
+#PSC spacing poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a pc/a,ppc/a,pnc/a 4 touching_ok \
 #PSC "Poly spacing to Poly contact < 4 (Mosis #5.5.b)"
 
- edge4way gc ~(gc)/contact 1 diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a,poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a ~(gc)/contact 1 \
+ edge4way gc ~(gc)/contact 1 diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a,poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a ~(gc)/contact 1 \
  "Diffusion,Poly overlap of GC contact < 1 (Mosis #6.2)" active
 
- spacing gc pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,ndc/a,ndm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a 2 touching_illegal \
+ spacing gc pc/a,ppc/a,pnc/a,ndc/a,pdc/a,psc/a,nsc/a,nwsc/a 2 touching_illegal \
  "Generic contact spacing to Poly contact,Diffusion contact < 2 (Mosis #5.3)"
 
- spacing nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1 pdc/m1,pdm12c/m1 1 touching_illegal \
+ spacing nsc/m1,nwsc/m1 pdc/m1 1 touching_illegal \
  "nsc spacing to pdc < 1 (Mosis #6.3)"
 
- spacing psc/m1,psm12c/m1 ndc/m1,ndm12c/m1 1 touching_illegal \
+ spacing psc/m1 ndc/m1 1 touching_illegal \
  "psc spacing to ndc < 1 (Mosis #6.3)"
 
- spacing pdm12c/m1 pdc/m1,m2c/m1,nsm12c/m1 1 touching_illegal \
- "pdm12c spacing to pdc or m2c or nsm12c < 1 (Mosis #6.3)"
 
- spacing psm12c/m1 psc/m1,m2c/m1 1 touching_illegal \
- "psm12c spacing to psc or m2c < 1 (Mosis #6.3)"
 
- spacing ndm12c/m1 ndc/m1,m2c/m1,nsm12c/m1 1 touching_illegal \
- "ndm12c spacing to ndc or m2c or nsm12c < 1 (Mosis #6.3)"
 
- spacing nsm12c/m1 nsc/m1,m2c/m1 1 touching_illegal \
- "nsm12c spacing to nsc or m2c < 1 (Mosis #6.3)"
 
- spacing pm12c/m1 pc/m1,m2c/m1 1 touching_illegal \
- "pm12c spacing to pc or m2c < 1 (Mosis #6.3)"
 
- spacing m123c/m2 pdm12c/m2,psm12c/m2,ndm12c/m2,nsm12c/m2,pm12c/m2,m2c/m2,m3c/m2 1 touching_illegal \
- "m123c spacing to *m12c or m2c or m3c < 1 (Mosis #6.3)"
 
- spacing m234c/m3 m3c/m3,m4c/m3,m123c/m3 1 touching_illegal \
- "m234c spacing to m3c or m4c or m123c < 1 (Mosis #6.3)"
 
- spacing m345c/m4 m4c/m4,m5c/m4,m234c/m4 1 touching_illegal \
- "m345c spacing to m4c or m5c or m234c < 1 (Mosis #6.3)"
 
- spacing m456c/m5 m5c/m5,m6c/m5,m345c/m5 1 touching_illegal \
- "m456c spacing to m5c or m6c or m345c < 1 (Mosis #6.3)"
 
- spacing nfet,pfet ndc/a,ndm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a 1 touching_illegal \
+ spacing nfet,pfet ndc/a,pdc/a,psc/a,nsc/a,nwsc/a 1 touching_illegal \
  "N-Transistor,P-Transistor spacing to Diffusion contact < 1 (Mosis #6.4)"
 
  spacing nfet,pfet gc 2 touching_illegal \
  "N-Transistor,P-Transistor spacing to Generic contact < 2 (Mosis #6.4)"
 
- spacing diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a 1 touching_illegal \
+ spacing diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a pc/a,ppc/a,pnc/a 1 touching_illegal \
  "Diffusion spacing to Poly contact < 1 (Mosis #6.5.b)"
 
- spacing diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a,nfet,pfet ndc/a,ndm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a 4 touching_ok \
+ spacing diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a,nfet,pfet ndc/a,pdc/a,psc/a,nsc/a,nwsc/a 4 touching_ok \
  "Diffusion spacing to Diffusion contact < 4 (Mosis #6.5.b)"
 
- spacing pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a ndc/a,ndm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a 2 touching_illegal \
- "pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a spacing to ndc/a,ndm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a < 2 (Mosis #6.7)"
+ spacing pc/a,ppc/a,pnc/a ndc/a,pdc/a,psc/a,nsc/a,nwsc/a 2 touching_illegal \
+ "pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a spacing to ndc/a,pdc/a,psc/a,nsc/a,nwsc/a < 2 (Mosis #6.7)"
 
- spacing m1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,m123c/m1 m1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,m123c/m1 3 touching_ok \
+ spacing m1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1 m1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1 3 touching_ok \
  "Metal1 spacing < 3 (Mosis #7.2)"
 
- spacing m1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,m123c/m1 fm1,fapm 3 touching_illegal \
+ spacing m1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1 fm1,fapm 3 touching_illegal \
  "Metal1 spacing to fill layer (fm1) < 3 (Mosis #7.2)"
 
  spacing fm1 fm1 4 touching_ok \
  "Metal1 fill layer (fm1) spacing < 4 (Mosis #0)"
 
- edge4way gc space 1 m1,fm1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,m123c/m1 space 1 \
+ edge4way gc space 1 m1,fm1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1 space 1 \
  "Metal1 must overlap GC contact by 1 (Mosis #7.3,7.4)" metal1
 
- edge4way ~(m1,fm1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,m123c/m1)/metal1 m1,fm1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,m123c/m1 1 ~(gc)/contact 0 0 \
+ edge4way ~(m1,fm1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1)/metal1 m1,fm1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1 1 ~(gc)/contact 0 0 \
  "Metal1(edge) cannot touch GC contact (Mosis #7.3+7.4)" contact
 
  spacing gv1 gv1 3 touching_ok \
  "GV1 via spacing < 3 (Mosis #8.2)"
 
- edge4way gv1 ~(gv1)/via1 1 m1,fm1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,m123c/m1 ~(gv1)/via1 1 \
+ edge4way gv1 ~(gv1)/via1 1 m1,fm1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1 ~(gv1)/via1 1 \
  "Metal1 overlap of GV1 via < 1 (Mosis #8.3)" metal1
 
- edge4way gv1 space 1 m1,fm1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,m123c/m1 space 1 \
+ edge4way gv1 space 1 m1,fm1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1 space 1 \
  "Metal1 must overlap GV1 via by 1 (Mosis #8.3)" metal1
 
- edge4way ~(m1,fm1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,m123c/m1)/metal1 m1,fm1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,m123c/m1 1 ~(gv1)/via1 0 0 \
+ edge4way ~(m1,fm1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1)/metal1 m1,fm1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1 1 ~(gv1)/via1 0 0 \
  "Metal1(edge) cannot touch GV1 via (Mosis #8.3)" via1
 
- spacing m2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m234c/m2 m2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m234c/m2 3 touching_ok \
+ spacing m2,rm2,m2c/m2,m3c/m2 m2,rm2,m2c/m2,m3c/m2 3 touching_ok \
  "Metal2 spacing < 3 (Mosis #9.2)"
 
- spacing m2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m234c/m2 fm2,fapm 3 touching_illegal \
+ spacing m2,rm2,m2c/m2,m3c/m2 fm2,fapm 3 touching_illegal \
  "Metal2 spacing to fill layer (fm2) < 3 (Mosis #9.2)"
 
  spacing fm2 fm2 4 touching_ok \
  "Metal2 fill layer (fm2) spacing < 4 (Mosis #0)"
 
- edge4way gv1 space 1 m2,fm2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m234c/m2 space 1 \
+ edge4way gv1 space 1 m2,fm2,rm2,m2c/m2,m3c/m2 space 1 \
  "Metal2 must overlap GV1 via by 1 (Mosis #9.3)" metal2
 
- edge4way ~(m2,fm2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m234c/m2)/metal2 m2,fm2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m234c/m2 1 ~(gv1)/via1 0 0 \
+ edge4way ~(m2,fm2,rm2,m2c/m2,m3c/m2)/metal2 m2,fm2,rm2,m2c/m2,m3c/m2 1 ~(gv1)/via1 0 0 \
  "Metal2(edge) cannot touch GV1 via (Mosis #9.3)" via1
 
  width glass 10 \
@@ -13119,46 +8436,46 @@ drc
  spacing gv2 gv2 3 touching_ok \
  "GV2 via spacing < 3 (Mosis #14.2)"
 
- spacing gv2 m3c/m2,m123c/m2,m234c/m2 2 touching_illegal \
+ spacing gv2 m3c/m2 2 touching_illegal \
  "GV2 via spacing to Metal3 contact < 2 (Mosis #14.2)"
 
- edge4way gv2 space 1 m2,fm2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m234c/m2 space 1 \
+ edge4way gv2 space 1 m2,fm2,rm2,m2c/m2,m3c/m2 space 1 \
  "Metal2 must overlap GV2 via by 1 (Mosis #14.3)" metal2
 
- edge4way ~(m2,fm2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m234c/m2)/metal2 m2,fm2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m234c/m2 1 ~(gv2)/via2 0 0 \
+ edge4way ~(m2,fm2,rm2,m2c/m2,m3c/m2)/metal2 m2,fm2,rm2,m2c/m2,m3c/m2 1 ~(gv2)/via2 0 0 \
  "Metal2(edge) cannot touch GV2 via (Mosis #14.3)" via2
 
- spacing m3,rm3,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m345c/m3 m3,rm3,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m345c/m3 3 touching_ok \
+ spacing m3,rm3,m3c/m3,m4c/m3 m3,rm3,m3c/m3,m4c/m3 3 touching_ok \
  "Metal3 spacing < 3 (Mosis #15.2)"
 
- spacing m3,rm3,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m345c/m3 fm3,fapm 3 touching_illegal \
+ spacing m3,rm3,m3c/m3,m4c/m3 fm3,fapm 3 touching_illegal \
  "Metal3 spacing to fill layer (fm3) < 3 (Mosis #15.2)"
 
  spacing fm3 fm3 4 touching_ok \
  "Metal3 fill layer (fm3) spacing < 4 (Mosis #0)"
 
- edge4way gv2 space 1 m3,fm3,rm3,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m345c/m3 space 1 \
+ edge4way gv2 space 1 m3,fm3,rm3,m3c/m3,m4c/m3 space 1 \
  "Metal3 must overlap GV2 via by 1 (Mosis #15.3)" metal3
 
- edge4way ~(m3,fm3,rm3,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m345c/m3)/metal3 m3,fm3,rm3,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m345c/m3 1 ~(gv2)/via2 0 0 \
+ edge4way ~(m3,fm3,rm3,m3c/m3,m4c/m3)/metal3 m3,fm3,rm3,m3c/m3,m4c/m3 1 ~(gv2)/via2 0 0 \
  "Metal3(edge) cannot touch GV2 via (Mosis #15.3)" via2
 
  spacing sb,pres,anres,apres sb,pres,anres,apres 4 touching_ok \
  "Silicide-Block spacing < 4 (Mosis #20.2)"
 
- spacing sb,pres,anres,apres,pres,anres,apres pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,ndc/a,ndm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a 1 touching_illegal \
+ spacing sb,pres,anres,apres,pres,anres,apres pc/a,ppc/a,pnc/a,ndc/a,pdc/a,psc/a,nsc/a,nwsc/a 1 touching_illegal \
  "Silicide-Block spacing to Diffusion contact,Poly contact < 1 (Mosis #20.3)"
 
  spacing sb,pres,anres,apres,pres,anres,apres gc 2 touching_illegal \
  "Silicide-Block spacing to GC contact < 2 (Mosis #20.3)"
 
- edge4way sb,pres,anres,apres space 2 ~(diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a)/active 0 2 \
+ edge4way sb,pres,anres,apres space 2 ~(diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a)/active 0 2 \
  "Silicide-Block space to Diffusion < 2 (Mosis #20.4)" active
 
- spacing sb,pres,anres,apres,pres poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a 2 touching_ok \
+ spacing sb,pres,anres,apres,pres poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a 2 touching_ok \
  "Silicide-Block spacing to other Poly < 2 (Mosis #20.5)"
 
- edge4way sb,pres,anres,apres space 2 ~(poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a)/contact sb,pres,anres,apres 2 \
+ edge4way sb,pres,anres,apres space 2 ~(poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a)/contact sb,pres,anres,apres 2 \
  "Silicide-Block space to Poly < 2 (Mosis #20.5x)" contact
 
  spacing sb,pres,anres,apres,pres nfet,pfet,fet 2 touching_ok \
@@ -13173,97 +8490,97 @@ drc
  edge4way pres,anres,apres space/active,sb 2 sb sb 2 \
  "Silicide-Block overlap of Silicide-Block polyR/activeR < 2 (Mosis #20.15)"
 
- edge4way sb,pres,anres,apres diff,ndiff,rnd,nfet,nsd,nwsd,pdiff,rpd,pfet,psd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a 3 diff,ndiff,rnd,nfet,nsd,nwsd,pdiff,rpd,pfet,psd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a 0 0 \
+ edge4way sb,pres,anres,apres diff,ndiff,rnd,nfet,nsd,nwsd,pdiff,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a 3 diff,ndiff,rnd,nfet,nsd,nwsd,pdiff,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a 0 0 \
  "Diffusion overhang of Silicide-Block < 3 (Mosis #20.17) 
 
  spacing gv3 gv3 3 touching_ok \
  "GV3 via spacing < 3 (Mosis #21.2)"
 
- spacing gv3 m4c/m3,m234c/m3,m345c/m3 2 touching_illegal \
+ spacing gv3 m4c/m3 2 touching_illegal \
  "GV3 via spacing to Metal4 contact < 2 (Mosis #21.2)"
 
- edge4way gv3 space 1 m3,fm3,rm3,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m345c/m3 space 1 \
+ edge4way gv3 space 1 m3,fm3,rm3,m3c/m3,m4c/m3 space 1 \
  "Metal3 must overlap GV3 via by 1 (Mosis #21.3)" metal3
 
- edge4way ~(m3,fm3,rm3,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m345c/m3)/metal3 m3,fm3,rm3,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m345c/m3 1 ~(gv3)/via3 0 0 \
+ edge4way ~(m3,fm3,rm3,m3c/m3,m4c/m3)/metal3 m3,fm3,rm3,m3c/m3,m4c/m3 1 ~(gv3)/via3 0 0 \
  "Metal3(edge) cannot touch GV3 via (Mosis #21.3)" via3
 
- spacing m4,rm4,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m456c/m4 m4,rm4,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m456c/m4 3 touching_ok \
+ spacing m4,rm4,m4c/m4,m5c/m4 m4,rm4,m4c/m4,m5c/m4 3 touching_ok \
  "Metal4 spacing < 3 (Mosis #22.2)"
 
- spacing m4,rm4,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m456c/m4 fm4,fapm 3 touching_illegal \
+ spacing m4,rm4,m4c/m4,m5c/m4 fm4,fapm 3 touching_illegal \
  "Metal4 spacing to fill layer (fm4) < 3 (Mosis #22.2)"
 
  spacing fm4 fm4 4 touching_ok \
  "Metal4 fill layer (fm4) spacing < 4 (Mosis #0)"
 
- edge4way gv3 space 1 m4,fm4,rm4,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m456c/m4 space 1 \
+ edge4way gv3 space 1 m4,fm4,rm4,m4c/m4,m5c/m4 space 1 \
  "Metal4 must overlap GV3 via by 1 (Mosis #22.3)" metal4
 
- edge4way ~(m4,fm4,rm4,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m456c/m4)/metal4 m4,fm4,rm4,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m456c/m4 1 ~(gv3)/via3 0 0 \
+ edge4way ~(m4,fm4,rm4,m4c/m4,m5c/m4)/metal4 m4,fm4,rm4,m4c/m4,m5c/m4 1 ~(gv3)/via3 0 0 \
  "Metal4(edge) cannot touch GV3 via (Mosis #22.3)" via3
 
  spacing gv4 gv4 3 touching_ok \
  "GV4 via spacing < 3 (Mosis #25.3)"
 
- edge4way ~(gv4)/via4 gv4 1 ~(m5c/m5,m345c/m5,m456c/m5)/metal5 0 0 \
+ edge4way ~(gv4)/via4 gv4 1 ~(m5c/m5)/metal5 0 0 \
  "GV4 via cannot touch Metal5 contacts (Mosis #0)" metal5
 
- edge4way gv4 space 1 m4,fm4,rm4,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m456c/m4 space 1 \
+ edge4way gv4 space 1 m4,fm4,rm4,m4c/m4,m5c/m4 space 1 \
  "Metal4 must overlap GV4 via by 1 (Mosis #25.4)" metal4
 
- edge4way ~(m4,fm4,rm4,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m456c/m4)/metal4 m4,fm4,rm4,m4c/m4,m234c/m4,m345c/m4,m5c/m4,m456c/m4 1 ~(gv4)/via4 0 0 \
+ edge4way ~(m4,fm4,rm4,m4c/m4,m5c/m4)/metal4 m4,fm4,rm4,m4c/m4,m5c/m4 1 ~(gv4)/via4 0 0 \
  "Metal4(edge) cannot touch GV4 via (Mosis #25.4)" via4
 
- spacing m5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5 m5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5 3 touching_ok \
+ spacing m5,rm5,m5c/m5,m6c/m5 m5,rm5,m5c/m5,m6c/m5 3 touching_ok \
  "Metal5 spacing < 3 (Mosis #26.3)"
 
- spacing m5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5 fm5,fapm 3 touching_illegal \
+ spacing m5,rm5,m5c/m5,m6c/m5 fm5,fapm 3 touching_illegal \
  "Metal5 spacing to fill layer (fm5) < 3 (Mosis #26.3)"
 
  spacing fm5 fm5 4 touching_ok \
  "Metal5 fill layer (fm5) spacing < 4 (Mosis #0)"
 
- edge4way space gv4 1 m5,fm5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5 0 0 \
+ edge4way space gv4 1 m5,fm5,rm5,m5c/m5,m6c/m5 0 0 \
  "Metal5 must overlap GV4 via (Mosis #26.1)" metal5
 
- edge4way gv4 space 1 m5,fm5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5 space 1 \
+ edge4way gv4 space 1 m5,fm5,rm5,m5c/m5,m6c/m5 space 1 \
  "Metal5 must overlap GV4 via by 1 (Mosis #26.1)" metal5
 
- edge4way ~(m5,fm5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5)/metal5 m5,fm5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5 1 ~(gv4)/via4 0 0 \
+ edge4way ~(m5,fm5,rm5,m5c/m5,m6c/m5)/metal5 m5,fm5,rm5,m5c/m5,m6c/m5 1 ~(gv4)/via4 0 0 \
  "Metal5(edge) cannot touch GV4 via (Mosis #26.1)" via4
 
  spacing gv5 gv5 4 touching_ok \
  "GV5 via spacing < 4 (Mosis #29.3)"
 
- spacing gv5 m6c/m5,m456c/m5 3 touching_illegal \
+ spacing gv5 m6c/m5 3 touching_illegal \
  "GV5 via spacing to Metal6 contact < 3 (Mosis #29.2)"
 
- spacing m6c/m5,m456c/m5 m6c/m5,m456c/m5 2 touching_ok \
+ spacing m6c/m5 m6c/m5 2 touching_ok \
  "Metal6 contact spacing < 2 (Mosis #29.3b)"
 
- edge4way gv5 space 1 m5,fm5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5 space 1 \
+ edge4way gv5 space 1 m5,fm5,rm5,m5c/m5,m6c/m5 space 1 \
  "Metal5 must overlap GV5 via by 1 (Mosis #29.5)" metal5
 
- edge4way ~(m5,fm5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5)/metal5 m5,fm5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5 1 ~(gv5)/via5 0 0 \
+ edge4way ~(m5,fm5,rm5,m5c/m5,m6c/m5)/metal5 m5,fm5,rm5,m5c/m5,m6c/m5 1 ~(gv5)/via5 0 0 \
  "Metal5(edge) cannot touch GV5 via (Mosis #29.5)" via5
 
- spacing m6,rm6,m6c/m6,m456c/m6,mic/m6,pad m6,rm6,m6c/m6,m456c/m6,mic/m6,pad 5 touching_ok \
+ spacing m6,rm6,m6c/m6,mic/m6,pad m6,rm6,m6c/m6,mic/m6,pad 5 touching_ok \
  "Metal6 spacing < 5 (Mosis #30.3)"
 
- spacing m6,rm6,m6c/m6,m456c/m6,mic/m6,pad fm6,fapm 5 touching_illegal \
+ spacing m6,rm6,m6c/m6,mic/m6,pad fm6,fapm 5 touching_illegal \
  "Metal6 spacing to fill layer (fm6) < 5 (Mosis #30.3)"
 
  spacing fm6 fm6 4 touching_ok \
  "Metal6 fill layer (fm6) spacing < 4 (Mosis #0)"
 
- edge4way space gv5 1 m6,fm6,rm6,m6c/m6,m456c/m6,mic/m6,pad 0 0 \
+ edge4way space gv5 1 m6,fm6,rm6,m6c/m6,mic/m6,pad 0 0 \
  "Metal6 must overlap GV5 via (Mosis #30.1)" metal6
 
- edge4way gv5 space 1 m6,fm6,rm6,m6c/m6,m456c/m6,mic/m6,pad space 1 \
+ edge4way gv5 space 1 m6,fm6,rm6,m6c/m6,mic/m6,pad space 1 \
  "Metal6 must overlap GV5 via by 1 (Mosis #30.1)" metal6
 
- edge4way ~(m6,fm6,rm6,m6c/m6,m456c/m6,mic/m6,pad)/metal6 m6,fm6,rm6,m6c/m6,m456c/m6,mic/m6,pad 1 ~(gv5)/via5 0 0 \
+ edge4way ~(m6,fm6,rm6,m6c/m6,mic/m6,pad)/metal6 m6,fm6,rm6,m6c/m6,mic/m6,pad 1 ~(gv5)/via5 0 0 \
  "Metal6(edge) cannot touch GV5 via (Mosis #30.1)" via5
 
  spacing mi,mic/mi mi,mic/mi 12 touching_ok \
@@ -13275,10 +8592,10 @@ drc
  spacing mic/mi mic/mi 14 touching_ok \
  "MIM contact spacing < 14 (Mosis #28.2)"
 
- edge4way mi,mic/mi ~(mi,mic/mi)/metali 4 m5,fm5,rm5,m5c/m5,m345c/m5,m456c/m5,m6c/m5 ~(mi,mic/mi)/metali 4 \
+ edge4way mi,mic/mi ~(mi,mic/mi)/metali 4 m5,fm5,rm5,m5c/m5,m6c/m5 ~(mi,mic/mi)/metali 4 \
  "Metal5 overlap of MIM < 4 (Mosis #28.3)" metal5
 
- edge4way gvi ~(gvi)/viai 1 m6,fm6,rm6,m6c/m6,m456c/m6,mic/m6,pad ~(gvi)/viai 1 \
+ edge4way gvi ~(gvi)/viai 1 m6,fm6,rm6,m6c/m6,mic/m6,pad ~(gvi)/viai 1 \
  "Metal6 overlap of MIM via < 1 (Mosis #28.4)" metal6
 
  spacing gvi gvi 20 touching_ok \
@@ -13290,31 +8607,31 @@ drc
  edge4way ~(mi,mic/mi)/metali mi,mic/mi 1 ~(gvi)/viai 0 0 \
  "MIM(edge) cannot touch MIM via (Mosis #28.4)" viai
 
- spacing mi,mic/mi m1,fm1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,m123c/m1 30 touching_illegal \
+ spacing mi,mic/mi m1,fm1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1 30 touching_illegal \
  "MIM spacing to Metal1 < 30 (Mosis #28.7)"
 
- spacing mi,mic/mi m2,fm2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m234c/m2 30 touching_illegal \
+ spacing mi,mic/mi m2,fm2,rm2,m2c/m2,m3c/m2 30 touching_illegal \
  "MIM spacing to Metal2 < 30 (Mosis #28.7)"
 
- spacing mi,mic/mi m3,fm3,rm3,m3c/m3,m123c/m3,m234c/m3,m4c/m3,m345c/m3 30 touching_illegal \
+ spacing mi,mic/mi m3,fm3,rm3,m3c/m3,m4c/m3 30 touching_illegal \
  "MIM spacing to Metal3 < 30 (Mosis #28.7)"
 
- spacing mi,mic/mi poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a 30 touching_illegal \
+ spacing mi,mic/mi poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a 30 touching_illegal \
  "MIM spacing to Poly < 30 (Mosis #28.7)"
 
- spacing mi,mic/mi diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a 30 touching_illegal \
+ spacing mi,mic/mi diff,ndiff,anres,rnd,nfet,nsd,nwsd,pdiff,apres,rpd,pfet,psd,ndc/a,nsc/a,nwsc/a,pdc/a,psc/a 30 touching_illegal \
  "MIM spacing to Diffusion < 30 (Mosis #28.7)"
 
  spacing mi,mic/mi gv4 4 touching_illegal \
  "MIM spacing to GV4 via < 4 (Mosis #28.5)"
 
- spacing mi,mic/mi m5c/m4,m345c/m4,m456c/m4 3 touching_illegal \
+ spacing mi,mic/mi m5c/m4 3 touching_illegal \
  "MIM spacing to Metal5 contact < 3 (Mosis #28.5)"
 
  spacing mi,mic/mi gv5 4 touching_illegal \
  "MIM spacing to GV5 via < 4 (Mosis #28.5)"
 
- spacing mi,mic/mi m6c/m5,m456c/m5 3 touching_illegal \
+ spacing mi,mic/mi m6c/m5 3 touching_illegal \
  "MIM spacing to Metal6 contact < 3 (Mosis #28.5)"
 
  edge4way gvi space 3 mi,mic/mi space 3 \
@@ -13332,10 +8649,10 @@ drc
  spacing nfi pfi 4 touching_illegal \
  "N_field-implant spacing to P_field-implant < 4 (Mosis #35.2)"
 
- spacing nwell,pdiff,apres,rpd,pfet,pdc/a,pdm12c/a pfi 4 touching_illegal \
+ spacing nwell,pdiff,apres,rpd,pfet,pdc/a pfi 4 touching_illegal \
  "N-well,P-Diffusion spacing to P_field-implant < 4 (Mosis #2.1)"
 
- spacing pwell,ndiff,anres,rnd,nfet,ndc/a,ndm12c/a nfi 4 touching_illegal \
+ spacing pwell,ndiff,anres,rnd,nfet,ndc/a nfi 4 touching_illegal \
  "P-well,N-Diffusion spacing to N_field-implant < 4 (Mosis #2.1)"
 
  edge4way ~(nwell)/well nwell 4 ~(nfi)/implant nwell 4 \
@@ -13440,13 +8757,13 @@ drc
  edge4way rmi space/metali 1 prmi 0 0 \
  "prmi overhang of rmetali (for resistor L/W extraction) < 1 (Mosis #0)" metali
 
- edge4way ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a ~(ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a)/active 1 ~(ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a)/active (~(ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a),ndc/a,ndm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a)/active 1 \
+ edge4way ndc/a,nsc/a,nwsc/a ~(ndc/a,nsc/a,nwsc/a)/active 1 ~(ndc/a,nsc/a,nwsc/a)/active (~(ndc/a,nsc/a,nwsc/a),ndc/a,nsc/a,nwsc/a)/active 1 \
  "Contact not rectangular (Magic rule)"
 
- edge4way pdc/a,pdm12c/a,psc/a,psm12c/a ~(pdc/a,pdm12c/a,psc/a,psm12c/a)/active 1 ~(pdc/a,pdm12c/a,psc/a,psm12c/a)/active (~(pdc/a,pdm12c/a,psc/a,psm12c/a),pdc/a,pdm12c/a,psc/a,psm12c/a)/active 1 \
+ edge4way pdc/a,psc/a ~(pdc/a,psc/a)/active 1 ~(pdc/a,psc/a)/active (~(pdc/a,psc/a),pdc/a,psc/a)/active 1 \
  "Contact not rectangular (Magic rule)"
 
- edge4way pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a ~(pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a)/active 1 ~(pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a)/active (~(pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a),pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a)/active 1 \
+ edge4way pc/a,ppc/a,pnc/a ~(pc/a,ppc/a,pnc/a)/active 1 ~(pc/a,ppc/a,pnc/a)/active (~(pc/a,ppc/a,pnc/a),pc/a,ppc/a,pnc/a)/active 1 \
  "Contact not rectangular (Magic rule)"
 
  edge4way gc ~(gc)/contact 1 ~(gc)/contact (~(gc),gc)/contact 1 \
@@ -13455,31 +8772,31 @@ drc
  edge4way gv1 ~(gv1)/via1 1 ~(gv1)/via1 (~(gv1),gv1)/via1 1 \
  "Contact not rectangular (Magic rule)"
 
- edge4way m2c/m1,pdm12c/m1,ndm12c/m1,psm12c/m1,nsm12c/m1,pm12c/m1,m123c/m1,nwsm12c/m1 ~(m2c/m1,pdm12c/m1,ndm12c/m1,psm12c/m1,nsm12c/m1,pm12c/m1,m123c/m1,nwsm12c/m1)/metal1 1 ~(m2c/m1,pdm12c/m1,ndm12c/m1,psm12c/m1,nsm12c/m1,pm12c/m1,m123c/m1,nwsm12c/m1)/metal1 (~(m2c/m1,pdm12c/m1,ndm12c/m1,psm12c/m1,nsm12c/m1,pm12c/m1,m123c/m1,nwsm12c/m1),m2c/m1,pdm12c/m1,ndm12c/m1,psm12c/m1,nsm12c/m1,pm12c/m1,m123c/m1,nwsm12c/m1)/metal1 1 \
+ edge4way m2c/m1 ~(m2c/m1)/metal1 1 ~(m2c/m1)/metal1 (~(m2c/m1),m2c/m1)/metal1 1 \
  "Contact not rectangular (Magic rule)"
 
  edge4way gv2 ~(gv2)/via2 1 ~(gv2)/via2 (~(gv2),gv2)/via2 1 \
  "Contact not rectangular (Magic rule)"
 
- edge4way m3c/m2,m123c/m2,m234c/m2 ~(m3c/m2,m123c/m2,m234c/m2)/metal2 1 ~(m3c/m2,m123c/m2,m234c/m2)/metal2 (~(m3c/m2,m123c/m2,m234c/m2),m3c/m2,m123c/m2,m234c/m2)/metal2 1 \
+ edge4way m3c/m2 ~(m3c/m2)/metal2 1 ~(m3c/m2)/metal2 (~(m3c/m2),m3c/m2)/metal2 1 \
  "Contact not rectangular (Magic rule)"
 
  edge4way gv3 ~(gv3)/via3 1 ~(gv3)/via3 (~(gv3),gv3)/via3 1 \
  "Contact not rectangular (Magic rule)"
 
- edge4way m4c/m3,m234c/m3,m345c/m3 ~(m4c/m3,m234c/m3,m345c/m3)/metal3 1 ~(m4c/m3,m234c/m3,m345c/m3)/metal3 (~(m4c/m3,m234c/m3,m345c/m3),m4c/m3,m234c/m3,m345c/m3)/metal3 1 \
+ edge4way m4c/m3 ~(m4c/m3)/metal3 1 ~(m4c/m3)/metal3 (~(m4c/m3),m4c/m3)/metal3 1 \
  "Contact not rectangular (Magic rule)"
 
  edge4way gv4 ~(gv4)/via4 1 ~(gv4)/via4 (~(gv4),gv4)/via4 1 \
  "Contact not rectangular (Magic rule)"
 
- edge4way m5c/m4,m345c/m4,m456c/m4 ~(m5c/m4,m345c/m4,m456c/m4)/metal4 1 ~(m5c/m4,m345c/m4,m456c/m4)/metal4 (~(m5c/m4,m345c/m4,m456c/m4),m5c/m4,m345c/m4,m456c/m4)/metal4 1 \
+ edge4way m5c/m4 ~(m5c/m4)/metal4 1 ~(m5c/m4)/metal4 (~(m5c/m4),m5c/m4)/metal4 1 \
  "Contact not rectangular (Magic rule)"
 
  edge4way gv5 ~(gv5)/via5 1 ~(gv5)/via5 (~(gv5),gv5)/via5 1 \
  "Contact not rectangular (Magic rule)"
 
- edge4way m6c/m5,m456c/m5 ~(m6c/m5,m456c/m5)/metal5 1 ~(m6c/m5,m456c/m5)/metal5 (~(m6c/m5,m456c/m5),m6c/m5,m456c/m5)/metal5 1 \
+ edge4way m6c/m5 ~(m6c/m5)/metal5 1 ~(m6c/m5)/metal5 (~(m6c/m5),m6c/m5)/metal5 1 \
  "Contact not rectangular (Magic rule)"
 
  edge4way gvi ~(gvi)/viai 1 ~(gvi)/viai (~(gvi),gvi)/viai 1 \
@@ -13488,22 +8805,22 @@ drc
  edge4way mic/mi ~(mic/mi)/metali 1 ~(mic/mi)/metali (~(mic/mi),mic/mi)/metali 1 \
  "Contact not rectangular (Magic rule)"
 
- exact_overlap gc,ndc/a,ndm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,gc,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,gc
+ exact_overlap gc,ndc/a,pdc/a,psc/a,nsc/a,nwsc/a,gc,pc/a,ppc/a,pnc/a,gc
 
  edge4way pad ~(pad)/m6 1 ~(pad)/m6 (~(pad),pad)/m6 1 \
  "Contact not rectangular (Magic rule)"
 
- exact_overlap ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1
+ exact_overlap ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1
 
- exact_overlap m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2
+ exact_overlap m2c/m2
 
- exact_overlap m3c/m3,m123c/m3,m234c/m3
+ exact_overlap m3c/m3
 
- exact_overlap m4c/m4,m234c/m4,m345c/m4
+ exact_overlap m4c/m4
 
- exact_overlap m5c/m5,m345c/m5,m456c/m5
+ exact_overlap m5c/m5
 
- exact_overlap m6c/m6,m456c/m6
+ exact_overlap m6c/m6
 
  exact_overlap mic/mi
 
@@ -13580,21 +8897,21 @@ drc
 
 end
 
-#-----------------------------------------------------
+#-----------------------------------------------------------
 # LEF format definitions
-#-----------------------------------------------------
+#-----------------------------------------------------------
 
 lef
 
   ignore PC
   ignore CA
 
-  routing m1	M1 m1 met1
-  routing m2	M2 m2 met2
-  routing m3	M3 m3 met3
-  routing m4	M4 m4 met4
-  routing m5	M5 m5 met5
-  routing m6	M6 m6 met6
+  routing m1    M1 m1 met1
+  routing m2    M2 m2 met2
+  routing m3    M3 m3 met3
+  routing m4    M4 m4 met4
+  routing m5    M5 m5 met5
+  routing m6    M6 m6 met6
 
   contact m2c via via1 V1 v1
   contact m3c via2 V2 v2
@@ -13633,19 +8950,19 @@ extract
  planeorder viai 20
  planeorder fill 21
 
- resist (ndiff,anres,rnd,ndc,ndm12c,nsd,nwsd,nsc,nwsc,nsm12c,nwsm12c)/active 6700
- resist (pdiff,apres,rpd,pdc,pdm12c,psd,psc,psm12c)/active 7500
+ resist (ndiff,anres,rnd,ndc,nsd,nwsd,nsc,nwsc)/active 6700
+ resist (pdiff,apres,rpd,pdc,psd,psc)/active 7500
  resist (nwell)/well 929000
  resist (rnw,nwr)/active 929000
  resist (pwell)/well 1
- resist (poly,fp,pp,pn,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active 7700
+ resist (poly,fp,pp,pn,rp,pc,ppc,pnc,pc,ppc,pnc,nfet,pfet,fet)/active 7700
  resist (pres)/active 7700
- resist (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c)/metal1  80
- resist (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c,m3c,m123c,m234c)/metal2  80
- resist (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c,m4c,m234c,m345c)/metal3  80
- resist (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c,m5c,m345c,m456c)/metal4  70
- resist (m5,fm5,rm5,m5c,m345c,m456c,m6c,m6c,m456c)/metal5  70
- resist (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6  40
+ resist (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c,m2c)/metal1  80
+ resist (m2,fm2,rm2,m2c,m3c,m3c)/metal2  80
+ resist (m3,fm3,rm3,m3c,m4c,m4c)/metal3  80
+ resist (m4,fm4,rm4,m4c,m5c,m5c)/metal4  70
+ resist (m5,fm5,rm5,m5c,m6c,m6c)/metal5  70
+ resist (m6,fm6,rm6,m6c,mic,pad)/metal6  40
 
  contact ndc 4 12000
  contact pdc 4 12500
@@ -13662,10 +8979,10 @@ extract
  areacap (rnw,nwr)/active   0.760
 
 #ndiff
-# MODEL HANDLES THIS: areacap (ndiff,ndc,ndm12c)/active   9.980
-# MODEL HANDLES THIS: overlap (ndiff,ndc,ndm12c)/active ~space/w   9.980
-# MODEL HANDLES THIS: perimc (ndiff,ndc,ndm12c)/active ~(ndiff,ndc,ndm12c,nfet,pfet,fet)/active  26
-# MODEL HANDLES THIS: sideoverlap (ndiff,ndc,ndm12c)/active ~(ndiff,ndc,ndm12c,nfet,pfet,fet)/active ~space/w  26
+# MODEL HANDLES THIS: areacap (ndiff,ndc)/active   9.980
+# MODEL HANDLES THIS: overlap (ndiff,ndc)/active ~space/w   9.980
+# MODEL HANDLES THIS: perimc (ndiff,ndc)/active ~(ndiff,ndc,nfet,pfet,fet)/active  26
+# MODEL HANDLES THIS: sideoverlap (ndiff,ndc)/active ~(ndiff,ndc,nfet,pfet,fet)/active ~space/w  26
 
  areacap (rnd,anres)/active   9.980
  overlap (rnd,anres)/active ~space/w   9.980
@@ -13673,10 +8990,10 @@ extract
  sideoverlap (rnd,anres)/active ~(rnd,anres)/active ~space/w  26
 
 #pdiff
-# MODEL HANDLES THIS: areacap (pdiff,pdc,pdm12c)/active  11.920
-# MODEL HANDLES THIS: overlap (pdiff,pdc,pdm12c)/active ~space/w  11.920
-# MODEL HANDLES THIS: perimc (pdiff,pdc,pdm12c)/active ~(pdiff,pdc,pdm12c,nfet,pfet,fet)/active  23.600
-# MODEL HANDLES THIS: sideoverlap (pdiff,pdc,pdm12c)/active ~(pdiff,pdc,pdm12c,nfet,pfet,fet)/active ~space/w  23.600
+# MODEL HANDLES THIS: areacap (pdiff,pdc)/active  11.920
+# MODEL HANDLES THIS: overlap (pdiff,pdc)/active ~space/w  11.920
+# MODEL HANDLES THIS: perimc (pdiff,pdc)/active ~(pdiff,pdc,nfet,pfet,fet)/active  23.600
+# MODEL HANDLES THIS: sideoverlap (pdiff,pdc)/active ~(pdiff,pdc,nfet,pfet,fet)/active ~space/w  23.600
 
  areacap (rpd,apres)/active  11.920
  overlap (rpd,apres)/active ~space/w  11.920
@@ -13686,257 +9003,257 @@ extract
 #rnw
 
 #poly
-# MODEL HANDLES THIS: overlap (nfet)/active (ndiff,anres,rnd,ndc,ndm12c)/active  83.270
-# MODEL HANDLES THIS: sideoverlap (nfet)/active ~(nfet)/active (ndiff,anres,rnd,ndc,ndm12c)/active  72.900
-# MODEL HANDLES THIS: overlap (pfet)/active (pdiff,apres,rpd,pdc,pdm12c)/active  81.070
-# MODEL HANDLES THIS: sideoverlap (pfet)/active ~(pfet)/active (pdiff,apres,rpd,pdc,pdm12c)/active  70
+# MODEL HANDLES THIS: overlap (nfet)/active (ndiff,anres,rnd,ndc)/active  83.270
+# MODEL HANDLES THIS: sideoverlap (nfet)/active ~(nfet)/active (ndiff,anres,rnd,ndc)/active  72.900
+# MODEL HANDLES THIS: overlap (pfet)/active (pdiff,apres,rpd,pdc)/active  81.070
+# MODEL HANDLES THIS: sideoverlap (pfet)/active ~(pfet)/active (pdiff,apres,rpd,pdc)/active  70
 
- sidewall (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c)/active (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c)/active  11.331
- areacap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c)/active   1.018
- overlap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c)/active ~space/w   1.018
- perimc (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c)/active   2.311
- sideoverlap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c)/active ~space/w   2.311
+ sidewall (poly,fp,pp,pn,pres,rp,pc,ppc,pnc)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc)/active (poly,fp,pp,pn,pres,rp,pc,ppc,pnc)/active  11.331
+ areacap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc)/active   1.018
+ overlap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc)/active ~space/w   1.018
+ perimc (poly,fp,pp,pn,pres,rp,pc,ppc,pnc)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc)/active   2.311
+ sideoverlap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc)/active ~space/w   2.311
 
 #poly2
 
 #rnw
 
 #metal1
- sidewall (m1,fm1,rm1,ndc,ndm12c,pdc,pdm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 ~(m1,fm1,rm1,ndc,ndm12c,pdc,pdm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 ~(m1,fm1,rm1,ndc,ndm12c,pdc,pdm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 (m1,fm1,rm1,ndc,ndm12c,pdc,pdm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1  20.619
- areacap (m1,fm1,rm1,ndc,ndm12c,pdc,pdm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1   0.417
+ sidewall (m1,fm1,rm1,ndc,pdc,pc,ppc,pnc,m2c)/metal1 ~(m1,fm1,rm1,ndc,pdc,pc,ppc,pnc,m2c)/metal1 ~(m1,fm1,rm1,ndc,pdc,pc,ppc,pnc,m2c)/metal1 (m1,fm1,rm1,ndc,pdc,pc,ppc,pnc,m2c)/metal1  20.619
+ areacap (m1,fm1,rm1,ndc,pdc,pc,ppc,pnc,m2c)/metal1   0.417
 
 #metal1-sub blocked by ~space/a
- overlap (m1,fm1,rm1,ndc,ndm12c,pdc,pdm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 ~space/w   0.417 ~space/a
- perimc (m1,fm1,rm1,ndc,ndm12c,pdc,pdm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 ~(m1,fm1,rm1,ndc,ndm12c,pdc,pdm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1   1.113
- sideoverlap (m1,fm1,rm1,ndc,ndm12c,pdc,pdm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 ~(m1,fm1,rm1,ndc,ndm12c,pdc,pdm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 ~space/w   1.113 ~space/a
+ overlap (m1,fm1,rm1,ndc,pdc,pc,ppc,pnc,m2c)/metal1 ~space/w   0.417 ~space/a
+ perimc (m1,fm1,rm1,ndc,pdc,pc,ppc,pnc,m2c)/metal1 ~(m1,fm1,rm1,ndc,pdc,pc,ppc,pnc,m2c)/metal1   1.113
+ sideoverlap (m1,fm1,rm1,ndc,pdc,pc,ppc,pnc,m2c)/metal1 ~(m1,fm1,rm1,ndc,pdc,pc,ppc,pnc,m2c)/metal1 ~space/w   1.113 ~space/a
 
 #rnw
- overlap (m1,fm1,rm1,ndc,ndm12c,pdc,pdm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 rnw,nwr/active   0.417 
- sideoverlap (m1,fm1,rm1,ndc,ndm12c,pdc,pdm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 ~(m1,fm1,rm1,ndc,ndm12c,pdc,pdm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 rnw,nwr/active   1.113 
+ overlap (m1,fm1,rm1,ndc,pdc,pc,ppc,pnc,m2c)/metal1 rnw,nwr/active   0.417 
+ sideoverlap (m1,fm1,rm1,ndc,pdc,pc,ppc,pnc,m2c)/metal1 ~(m1,fm1,rm1,ndc,pdc,pc,ppc,pnc,m2c)/metal1 rnw,nwr/active   1.113 
 
 #metal1-diff blocked by 
- overlap (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 (ndiff,anres,rnd,ndc,ndm12c)/active   0.490 
- sideoverlap (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 ~(m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 (ndiff,anres,rnd,ndc,ndm12c)/active   1.113 
- overlap (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 (pdiff,apres,rpd,pdc,pdm12c)/active   0.490 
- sideoverlap (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 ~(m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 (pdiff,apres,rpd,pdc,pdm12c)/active   1.113 
+ overlap (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 (ndiff,anres,rnd,ndc)/active   0.490 
+ sideoverlap (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 ~(m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 (ndiff,anres,rnd,ndc)/active   1.113 
+ overlap (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 (pdiff,apres,rpd,pdc)/active   0.490 
+ sideoverlap (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 ~(m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 (pdiff,apres,rpd,pdc)/active   1.113 
 
 #metal1-poly blocked by 
- overlap (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active   0.422 
- sideoverlap (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 ~(m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active   1.125 
- sideoverlap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1   1.125 
+ overlap (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active   0.422 
+ sideoverlap (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 ~(m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active   1.125 
+ sideoverlap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1   1.125 
 
 #metal2
- sidewall (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 ~(m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 ~(m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2  23.532
- areacap (m2,fm2,rm2,m3c,m123c,m234c)/metal2   0.145
+ sidewall (m2,fm2,rm2,m2c,m3c)/metal2 ~(m2,fm2,rm2,m2c,m3c)/metal2 ~(m2,fm2,rm2,m2c,m3c)/metal2 (m2,fm2,rm2,m2c,m3c)/metal2  23.532
+ areacap (m2,fm2,rm2,m3c)/metal2   0.145
 
 #metal2-sub blocked by 
- overlap (m2,fm2,rm2,m3c,m123c,m234c)/metal2 ~space/w   0.145 ~space/a,~space/m1
- perimc (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 ~(m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2   0.418
- sideoverlap (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 ~(m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 ~space/w   0.418 ~space/a,~space/m1
- overlap (m2,fm2,rm2,m3c,m123c,m234c)/metal2 rnw,nwr/active   0.145 ~space/m1
- sideoverlap (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 ~(m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 rnw,nwr/active   0.418 ~space/m1
+ overlap (m2,fm2,rm2,m3c)/metal2 ~space/w   0.145 ~space/a,~space/m1
+ perimc (m2,fm2,rm2,m2c,m3c)/metal2 ~(m2,fm2,rm2,m2c,m3c)/metal2   0.418
+ sideoverlap (m2,fm2,rm2,m2c,m3c)/metal2 ~(m2,fm2,rm2,m2c,m3c)/metal2 ~space/w   0.418 ~space/a,~space/m1
+ overlap (m2,fm2,rm2,m3c)/metal2 rnw,nwr/active   0.145 ~space/m1
+ sideoverlap (m2,fm2,rm2,m2c,m3c)/metal2 ~(m2,fm2,rm2,m2c,m3c)/metal2 rnw,nwr/active   0.418 ~space/m1
 
 #metal2-*diff blocked by ~space/m1
- overlap (m2,fm2,rm2,m3c,m123c,m234c)/metal2 (ndiff,anres,rnd,ndc,ndm12c)/active   0.190 ~space/m1
- sideoverlap (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 ~(m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 (ndiff,anres,rnd,ndc,ndm12c)/active   0.418 ~space/m1
- overlap (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 (pdiff,apres,rpd,pdc,pdm12c)/active   0.190 ~space/m1
- sideoverlap (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 ~(m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 (pdiff,apres,rpd,pdc,pdm12c)/active   0.418 ~space/m1
+ overlap (m2,fm2,rm2,m3c)/metal2 (ndiff,anres,rnd,ndc)/active   0.190 ~space/m1
+ sideoverlap (m2,fm2,rm2,m2c,m3c)/metal2 ~(m2,fm2,rm2,m2c,m3c)/metal2 (ndiff,anres,rnd,ndc)/active   0.418 ~space/m1
+ overlap (m2,fm2,rm2,m2c,m3c)/metal2 (pdiff,apres,rpd,pdc)/active   0.190 ~space/m1
+ sideoverlap (m2,fm2,rm2,m2c,m3c)/metal2 ~(m2,fm2,rm2,m2c,m3c)/metal2 (pdiff,apres,rpd,pdc)/active   0.418 ~space/m1
 
 #metal2-poly blocked by ~space/m1
- overlap (m2,fm2,rm2,m3c,m123c,m234c)/metal2 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active   0.146 ~space/m1
- sideoverlap (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 ~(m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active   0.420 ~space/m1
- sideoverlap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2   0.420 ~space/m1
+ overlap (m2,fm2,rm2,m3c)/metal2 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active   0.146 ~space/m1
+ sideoverlap (m2,fm2,rm2,m2c,m3c)/metal2 ~(m2,fm2,rm2,m2c,m3c)/metal2 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active   0.420 ~space/m1
+ sideoverlap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active (m2,fm2,rm2,m2c,m3c)/metal2   0.420 ~space/m1
 
 #M2->M1
- overlap (m2,fm2,rm2,m3c,m123c,m234c)/metal2 (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1   0.461
- sideoverlap (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 ~(m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1   1.216
- sideoverlap (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 ~(m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2   1.216
+ overlap (m2,fm2,rm2,m3c)/metal2 (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1   0.461
+ sideoverlap (m2,fm2,rm2,m2c,m3c)/metal2 ~(m2,fm2,rm2,m2c,m3c)/metal2 (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1   1.216
+ sideoverlap (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 ~(m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 (m2,fm2,rm2,m2c,m3c)/metal2   1.216
 
 #metal3
- sidewall (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 ~(m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 ~(m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3  24.216
- areacap (m3,fm3,rm3,m4c,m234c,m345c)/metal3   0.088
+ sidewall (m3,fm3,rm3,m3c,m4c)/metal3 ~(m3,fm3,rm3,m3c,m4c)/metal3 ~(m3,fm3,rm3,m3c,m4c)/metal3 (m3,fm3,rm3,m3c,m4c)/metal3  24.216
+ areacap (m3,fm3,rm3,m4c)/metal3   0.088
 
 #metal3-sub blocked by ~space/a,~space/m1,~space/m2
- overlap (m3,fm3,rm3,m4c,m234c,m345c)/metal3 ~space/w   0.088 ~space/a,~space/m1,~space/m2
- perimc (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 ~(m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3   0.257
- sideoverlap (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 ~(m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 ~space/w   0.257 ~space/a,~space/m1,~space/m2
+ overlap (m3,fm3,rm3,m4c)/metal3 ~space/w   0.088 ~space/a,~space/m1,~space/m2
+ perimc (m3,fm3,rm3,m3c,m4c)/metal3 ~(m3,fm3,rm3,m3c,m4c)/metal3   0.257
+ sideoverlap (m3,fm3,rm3,m3c,m4c)/metal3 ~(m3,fm3,rm3,m3c,m4c)/metal3 ~space/w   0.257 ~space/a,~space/m1,~space/m2
 
 #rnw
- overlap (m3,fm3,rm3,m4c,m234c,m345c)/metal3 rnw,nwr/active   0.088 ~space/m1,~space/m2
- sideoverlap (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 ~(m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 rnw,nwr/active   0.257 ~space/m1,~space/m2
+ overlap (m3,fm3,rm3,m4c)/metal3 rnw,nwr/active   0.088 ~space/m1,~space/m2
+ sideoverlap (m3,fm3,rm3,m3c,m4c)/metal3 ~(m3,fm3,rm3,m3c,m4c)/metal3 rnw,nwr/active   0.257 ~space/m1,~space/m2
 
 #metal3-*diff blocked by ~space/m1,~space/m2
- overlap (m3,fm3,rm3,m4c,m234c,m345c)/metal3 (ndiff,anres,rnd,ndc,ndm12c)/active   0.130 ~space/m1,~space/m2
- sideoverlap (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 ~(m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 (ndiff,anres,rnd,ndc,ndm12c)/active   0.257 ~space/m1,~space/m2
- overlap (m3,fm3,rm3,m4c,m234c,m345c)/metal3 (pdiff,apres,rpd,pdc,pdm12c)/active   0.130 ~space/m1,~space/m2
- sideoverlap (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 ~(m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 (pdiff,apres,rpd,pdc,pdm12c)/active   0.257 ~space/m1,~space/m2
+ overlap (m3,fm3,rm3,m4c)/metal3 (ndiff,anres,rnd,ndc)/active   0.130 ~space/m1,~space/m2
+ sideoverlap (m3,fm3,rm3,m3c,m4c)/metal3 ~(m3,fm3,rm3,m3c,m4c)/metal3 (ndiff,anres,rnd,ndc)/active   0.257 ~space/m1,~space/m2
+ overlap (m3,fm3,rm3,m4c)/metal3 (pdiff,apres,rpd,pdc)/active   0.130 ~space/m1,~space/m2
+ sideoverlap (m3,fm3,rm3,m3c,m4c)/metal3 ~(m3,fm3,rm3,m3c,m4c)/metal3 (pdiff,apres,rpd,pdc)/active   0.257 ~space/m1,~space/m2
 
 #metal3-poly blocked by ~space/m1,~space/m2
- overlap (m3,fm3,rm3,m4c,m234c,m345c)/metal3 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active   0.088 ~space/m1,~space/m2
- sideoverlap (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 ~(m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active   0.258 ~space/m1,~space/m2
- sideoverlap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3   0.258 ~space/m1,~space/m2
+ overlap (m3,fm3,rm3,m4c)/metal3 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active   0.088 ~space/m1,~space/m2
+ sideoverlap (m3,fm3,rm3,m3c,m4c)/metal3 ~(m3,fm3,rm3,m3c,m4c)/metal3 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active   0.258 ~space/m1,~space/m2
+ sideoverlap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active (m3,fm3,rm3,m3c,m4c)/metal3   0.258 ~space/m1,~space/m2
 
 #M3->M1
 
 #metal3-metal1 blocked by ~space/m2
- overlap (m3,fm3,rm3,m4c,m234c,m345c)/metal3 (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1   0.150 ~space/m2
- sideoverlap (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 ~(m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1   0.432 ~space/m2
- sideoverlap (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 ~(m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3   0.432 ~space/m2
+ overlap (m3,fm3,rm3,m4c)/metal3 (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1   0.150 ~space/m2
+ sideoverlap (m3,fm3,rm3,m3c,m4c)/metal3 ~(m3,fm3,rm3,m3c,m4c)/metal3 (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1   0.432 ~space/m2
+ sideoverlap (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 ~(m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 (m3,fm3,rm3,m3c,m4c)/metal3   0.432 ~space/m2
 
 #M3->M2
- overlap (m3,fm3,rm3,m4c,m234c,m345c)/metal3 (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2   0.461
- sideoverlap (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 ~(m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2   1.215
- sideoverlap (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 ~(m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3   1.215
+ overlap (m3,fm3,rm3,m4c)/metal3 (m2,fm2,rm2,m2c,m3c)/metal2   0.461
+ sideoverlap (m3,fm3,rm3,m3c,m4c)/metal3 ~(m3,fm3,rm3,m3c,m4c)/metal3 (m2,fm2,rm2,m2c,m3c)/metal2   1.215
+ sideoverlap (m2,fm2,rm2,m2c,m3c)/metal2 ~(m2,fm2,rm2,m2c,m3c)/metal2 (m3,fm3,rm3,m3c,m4c)/metal3   1.215
 
 #metal4
- sidewall (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 ~(m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 ~(m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4  64.860
+ sidewall (m4,fm4,rm4,m4c,m5c)/metal4 ~(m4,fm4,rm4,m4c,m5c)/metal4 ~(m4,fm4,rm4,m4c,m5c)/metal4 (m4,fm4,rm4,m4c,m5c)/metal4  64.860
  areacap (m4,fm4,rm4)/metal4   0.059
 
 #metal4-sub blocked by ~space/a,~space/m1,~space/m2,~space/m3
  overlap (m4,fm4,rm4)/metal4 ~space/w   0.059 ~space/a,~space/m1,~space/m2,~space/m3
- perimc (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 ~(m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4   0.401
- sideoverlap (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 ~(m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 ~space/w   0.401 ~space/a,~space/m1,~space/m2,~space/m3
+ perimc (m4,fm4,rm4,m4c,m5c)/metal4 ~(m4,fm4,rm4,m4c,m5c)/metal4   0.401
+ sideoverlap (m4,fm4,rm4,m4c,m5c)/metal4 ~(m4,fm4,rm4,m4c,m5c)/metal4 ~space/w   0.401 ~space/a,~space/m1,~space/m2,~space/m3
 
 #rnw
  overlap (m4,fm4,rm4)/metal4 rnw,nwr/active   0.059 ~space/m1,~space/m2,~space/m3
- sideoverlap (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 ~(m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 rnw,nwr/active   0.401 ~space/m1,~space/m2,~space/m3
+ sideoverlap (m4,fm4,rm4,m4c,m5c)/metal4 ~(m4,fm4,rm4,m4c,m5c)/metal4 rnw,nwr/active   0.401 ~space/m1,~space/m2,~space/m3
 
 #metal4-*diff blocked by ~space/m1,~space/m2,~space/m3
- overlap (m4,fm4,rm4)/metal4 (ndiff,anres,rnd,ndc,ndm12c)/active   0.110 ~space/m1,~space/m2,~space/m3
- sideoverlap (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 ~(m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 (ndiff,anres,rnd,ndc,ndm12c)/active   0.401 ~space/m1,~space/m2,~space/m3
- overlap (m4,fm4,rm4)/metal4 (pdiff,apres,rpd,pdc,pdm12c)/active   0.110 ~space/m1,~space/m2,~space/m3
- sideoverlap (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 ~(m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 (pdiff,apres,rpd,pdc,pdm12c)/active   0.401 ~space/m1,~space/m2,~space/m3
+ overlap (m4,fm4,rm4)/metal4 (ndiff,anres,rnd,ndc)/active   0.110 ~space/m1,~space/m2,~space/m3
+ sideoverlap (m4,fm4,rm4,m4c,m5c)/metal4 ~(m4,fm4,rm4,m4c,m5c)/metal4 (ndiff,anres,rnd,ndc)/active   0.401 ~space/m1,~space/m2,~space/m3
+ overlap (m4,fm4,rm4)/metal4 (pdiff,apres,rpd,pdc)/active   0.110 ~space/m1,~space/m2,~space/m3
+ sideoverlap (m4,fm4,rm4,m4c,m5c)/metal4 ~(m4,fm4,rm4,m4c,m5c)/metal4 (pdiff,apres,rpd,pdc)/active   0.401 ~space/m1,~space/m2,~space/m3
 
 #metal4-poly blocked by ~space/m1,~space/m2,~space/m3
- overlap (m4,fm4,rm4)/metal4 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active   0.068 ~space/m1,~space/m2,~space/m3
- sideoverlap (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 ~(m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active   0.333 ~space/m1,~space/m2,~space/m3
- sideoverlap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4   0.333 ~space/m1,~space/m2,~space/m3
+ overlap (m4,fm4,rm4)/metal4 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active   0.068 ~space/m1,~space/m2,~space/m3
+ sideoverlap (m4,fm4,rm4,m4c,m5c)/metal4 ~(m4,fm4,rm4,m4c,m5c)/metal4 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active   0.333 ~space/m1,~space/m2,~space/m3
+ sideoverlap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active (m4,fm4,rm4,m4c,m5c)/metal4   0.333 ~space/m1,~space/m2,~space/m3
 
 #M4->M1
 
 #metal4-metal1 blocked by ~space/m2,~space/m3
- overlap (m4,fm4,rm4)/metal4 (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1   0.090 ~space/m2,~space/m3
- sideoverlap (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 ~(m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1   0.519 ~space/m2,~space/m3
- sideoverlap (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 ~(m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4   0.519 ~space/m2,~space/m3
+ overlap (m4,fm4,rm4)/metal4 (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1   0.090 ~space/m2,~space/m3
+ sideoverlap (m4,fm4,rm4,m4c,m5c)/metal4 ~(m4,fm4,rm4,m4c,m5c)/metal4 (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1   0.519 ~space/m2,~space/m3
+ sideoverlap (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 ~(m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 (m4,fm4,rm4,m4c,m5c)/metal4   0.519 ~space/m2,~space/m3
 
 #M4->M2
 
 #metal4-metal2 blocked by ~space/m3
- overlap (m4,fm4,rm4)/metal4 (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2   0.150 ~space/m3
- sideoverlap (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 ~(m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2   0.849 ~space/m3
- sideoverlap (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 ~(m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4   0.849 ~space/m3
+ overlap (m4,fm4,rm4)/metal4 (m2,fm2,rm2,m2c,m3c)/metal2   0.150 ~space/m3
+ sideoverlap (m4,fm4,rm4,m4c,m5c)/metal4 ~(m4,fm4,rm4,m4c,m5c)/metal4 (m2,fm2,rm2,m2c,m3c)/metal2   0.849 ~space/m3
+ sideoverlap (m2,fm2,rm2,m2c,m3c)/metal2 ~(m2,fm2,rm2,m2c,m3c)/metal2 (m4,fm4,rm4,m4c,m5c)/metal4   0.849 ~space/m3
 
 #M4->M3
- overlap (m4,fm4,rm4)/metal4 (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3   0.461
- sideoverlap (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 ~(m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3   2.302
- sideoverlap (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 ~(m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4   2.302
+ overlap (m4,fm4,rm4)/metal4 (m3,fm3,rm3,m3c,m4c)/metal3   0.461
+ sideoverlap (m4,fm4,rm4,m4c,m5c)/metal4 ~(m4,fm4,rm4,m4c,m5c)/metal4 (m3,fm3,rm3,m3c,m4c)/metal3   2.302
+ sideoverlap (m3,fm3,rm3,m3c,m4c)/metal3 ~(m3,fm3,rm3,m3c,m4c)/metal3 (m4,fm4,rm4,m4c,m5c)/metal4   2.302
 
 #metal5
- sidewall (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5  13.090
+ sidewall (m5,fm5,rm5,m5c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m6c)/metal5 (m5,fm5,rm5,m5c,m6c)/metal5  13.090
  areacap (m5,fm5,rm5)/metal5   0.080
 
 #metal5-sub blocked by ~space/a,~space/m1,~space/m2,~space/m3,~space/m4
  overlap (m5,fm5,rm5)/metal5 ~space/w   0.080 ~space/a,~space/m1,~space/m2,~space/m3,~space/m4
- perimc (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5   2.300
- sideoverlap (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 ~space/w   2.300 ~space/a,~space/m1,~space/m2,~space/m3,~space/m4
+ perimc (m5,fm5,rm5,m5c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m6c)/metal5   2.300
+ sideoverlap (m5,fm5,rm5,m5c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m6c)/metal5 ~space/w   2.300 ~space/a,~space/m1,~space/m2,~space/m3,~space/m4
 
 #rnw
  overlap (m5,fm5,rm5)/metal5 rnw,nwr/active   0.080 ~space/m1,~space/m2,~space/m3,~space/m4
- sideoverlap (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 rnw,nwr/active   2.300 ~space/m1,~space/m2,~space/m3,~space/m4
+ sideoverlap (m5,fm5,rm5,m5c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m6c)/metal5 rnw,nwr/active   2.300 ~space/m1,~space/m2,~space/m3,~space/m4
 
 #metal5-*diff blocked by ~space/m1,~space/m2,~space/m3,~space/m4
- overlap (m5,fm5,rm5)/metal5 (ndiff,anres,rnd,ndc,ndm12c)/active   0.090 ~space/m1,~space/m2,~space/m3,~space/m4
- sideoverlap (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 (ndiff,anres,rnd,ndc,ndm12c)/active   2.300 ~space/m1,~space/m2,~space/m3,~space/m4
- overlap (m5,fm5,rm5)/metal5 (pdiff,apres,rpd,pdc,pdm12c)/active   0.090 ~space/m1,~space/m2,~space/m3,~space/m4
- sideoverlap (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 (pdiff,apres,rpd,pdc,pdm12c)/active   2.300 ~space/m1,~space/m2,~space/m3,~space/m4
+ overlap (m5,fm5,rm5)/metal5 (ndiff,anres,rnd,ndc)/active   0.090 ~space/m1,~space/m2,~space/m3,~space/m4
+ sideoverlap (m5,fm5,rm5,m5c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m6c)/metal5 (ndiff,anres,rnd,ndc)/active   2.300 ~space/m1,~space/m2,~space/m3,~space/m4
+ overlap (m5,fm5,rm5)/metal5 (pdiff,apres,rpd,pdc)/active   0.090 ~space/m1,~space/m2,~space/m3,~space/m4
+ sideoverlap (m5,fm5,rm5,m5c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m6c)/metal5 (pdiff,apres,rpd,pdc)/active   2.300 ~space/m1,~space/m2,~space/m3,~space/m4
 
 #metal5-poly blocked by ~space/m1,~space/m2,~space/m3,~space/m4
- overlap (m5,fm5,rm5)/metal5 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active   0.050 ~space/m1,~space/m2,~space/m3,~space/m4
- sideoverlap (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active   2 ~space/m1,~space/m2,~space/m3,~space/m4
- sideoverlap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5   2 ~space/m1,~space/m2,~space/m3,~space/m4
+ overlap (m5,fm5,rm5)/metal5 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active   0.050 ~space/m1,~space/m2,~space/m3,~space/m4
+ sideoverlap (m5,fm5,rm5,m5c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m6c)/metal5 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active   2 ~space/m1,~space/m2,~space/m3,~space/m4
+ sideoverlap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active (m5,fm5,rm5,m5c,m6c)/metal5   2 ~space/m1,~space/m2,~space/m3,~space/m4
 
 #M5->M1
 
 #metal5-metal1 blocked by ~space/m2,~space/m3,~space/m4
- overlap (m5,fm5,rm5)/metal5 (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1   0.090 ~space/m2,~space/m3,~space/m4
- sideoverlap (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1   2.200 ~space/m2,~space/m3,~space/m4
- sideoverlap (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 ~(m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5   2.200 ~space/m2,~space/m3,~space/m4
+ overlap (m5,fm5,rm5)/metal5 (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1   0.090 ~space/m2,~space/m3,~space/m4
+ sideoverlap (m5,fm5,rm5,m5c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m6c)/metal5 (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1   2.200 ~space/m2,~space/m3,~space/m4
+ sideoverlap (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 ~(m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 (m5,fm5,rm5,m5c,m6c)/metal5   2.200 ~space/m2,~space/m3,~space/m4
 
 #M5->M2
 
 #metal5-metal2 blocked by ~space/m3,~space/m4
- overlap (m5,fm5,rm5)/metal5 (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2   0.090 ~space/m3,~space/m4
- sideoverlap (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2   2.700 ~space/m3,~space/m4
- sideoverlap (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 ~(m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5   2.700 ~space/m3,~space/m4
+ overlap (m5,fm5,rm5)/metal5 (m2,fm2,rm2,m2c,m3c)/metal2   0.090 ~space/m3,~space/m4
+ sideoverlap (m5,fm5,rm5,m5c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m6c)/metal5 (m2,fm2,rm2,m2c,m3c)/metal2   2.700 ~space/m3,~space/m4
+ sideoverlap (m2,fm2,rm2,m2c,m3c)/metal2 ~(m2,fm2,rm2,m2c,m3c)/metal2 (m5,fm5,rm5,m5c,m6c)/metal5   2.700 ~space/m3,~space/m4
 
 #M5->M3
 
 #metal5-metal3 blocked by ~space/m4
- overlap (m5,fm5,rm5)/metal5 (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3   0.150 ~space/m4
- sideoverlap (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3   3.500 ~space/m4
- sideoverlap (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 ~(m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5   3.500 ~space/m4
+ overlap (m5,fm5,rm5)/metal5 (m3,fm3,rm3,m3c,m4c)/metal3   0.150 ~space/m4
+ sideoverlap (m5,fm5,rm5,m5c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m6c)/metal5 (m3,fm3,rm3,m3c,m4c)/metal3   3.500 ~space/m4
+ sideoverlap (m3,fm3,rm3,m3c,m4c)/metal3 ~(m3,fm3,rm3,m3c,m4c)/metal3 (m5,fm5,rm5,m5c,m6c)/metal5   3.500 ~space/m4
 
 #M5->M4
- overlap (m5,fm5,rm5)/metal5 (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4   0.400 
- sideoverlap (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4   5.600 
- sideoverlap (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 ~(m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5   5.600 
+ overlap (m5,fm5,rm5)/metal5 (m4,fm4,rm4,m4c,m5c)/metal4   0.400 
+ sideoverlap (m5,fm5,rm5,m5c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m6c)/metal5 (m4,fm4,rm4,m4c,m5c)/metal4   5.600 
+ sideoverlap (m4,fm4,rm4,m4c,m5c)/metal4 ~(m4,fm4,rm4,m4c,m5c)/metal4 (m5,fm5,rm5,m5c,m6c)/metal5   5.600 
 
 #metal6
- sidewall (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6  27.675
+ sidewall (m6,fm6,rm6,m6c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,mic,pad)/metal6 (m6,fm6,rm6,m6c,mic,pad)/metal6  27.675
  areacap (m6,fm6,rm6,pad)/metal6   0.030
 
 #metal6-sub blocked by ~space/a,~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
  overlap (m6,fm6,rm6,pad)/metal6 ~space/w   0.030 ~space/a,~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
- perimc (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,m456c,mic,pad)/metal6   4.200
- sideoverlap (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 ~space/w   4.200 ~space/a,~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
+ perimc (m6,fm6,rm6,m6c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,mic,pad)/metal6   4.200
+ sideoverlap (m6,fm6,rm6,m6c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,mic,pad)/metal6 ~space/w   4.200 ~space/a,~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
 
 #rnw
  overlap (m6,fm6,rm6,pad)/metal6 rnw,nwr/active   0.030 ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
- sideoverlap (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 rnw,nwr/active   4.200 ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
+ sideoverlap (m6,fm6,rm6,m6c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,mic,pad)/metal6 rnw,nwr/active   4.200 ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
 
 #metal6-*diff blocked by ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
- overlap (m6,fm6,rm6,pad)/metal6 (ndiff,anres,rnd,ndc,ndm12c)/active   0.080 ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
- sideoverlap (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 (ndiff,anres,rnd,ndc,ndm12c)/active   4.200 ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
- overlap (m6,fm6,rm6,pad)/metal6 (pdiff,apres,rpd,pdc,pdm12c)/active   0.080 ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
- sideoverlap (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 (pdiff,apres,rpd,pdc,pdm12c)/active   4.200 ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
+ overlap (m6,fm6,rm6,pad)/metal6 (ndiff,anres,rnd,ndc)/active   0.080 ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
+ sideoverlap (m6,fm6,rm6,m6c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,mic,pad)/metal6 (ndiff,anres,rnd,ndc)/active   4.200 ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
+ overlap (m6,fm6,rm6,pad)/metal6 (pdiff,apres,rpd,pdc)/active   0.080 ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
+ sideoverlap (m6,fm6,rm6,m6c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,mic,pad)/metal6 (pdiff,apres,rpd,pdc)/active   4.200 ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
 
 #metal6-poly blocked by ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
- overlap (m6,fm6,rm6,pad)/metal6 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active   0.040 ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
- sideoverlap (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active   1.700 ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
- sideoverlap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc,pm12c,ppm12c,pnm12c,nfet,pfet,fet)/active (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6   1.700 ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
+ overlap (m6,fm6,rm6,pad)/metal6 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active   0.040 ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
+ sideoverlap (m6,fm6,rm6,m6c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,mic,pad)/metal6 (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active   1.700 ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
+ sideoverlap (poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active ~(poly,fp,pp,pn,pres,rp,pc,ppc,pnc,nfet,pfet,fet)/active (m6,fm6,rm6,m6c,mic,pad)/metal6   1.700 ~space/m1,~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
 
 #M6->M1
 
 #metal6-metal1 blocked by ~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
- overlap (m6,fm6,rm6,pad)/metal6 (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1   0.070 ~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
- sideoverlap (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1   1.900 ~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
- sideoverlap (m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 ~(m1,fm1,rm1,ndc,ndm12c,nsc,nwsc,nsm12c,nwsm12c,pdc,pdm12c,psc,psm12c,pc,ppc,pnc,pm12c,ppm12c,pnm12c,m2c,m123c)/metal1 (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6   1.900 ~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
+ overlap (m6,fm6,rm6,pad)/metal6 (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1   0.070 ~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
+ sideoverlap (m6,fm6,rm6,m6c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,mic,pad)/metal6 (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1   1.900 ~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
+ sideoverlap (m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 ~(m1,fm1,rm1,ndc,nsc,nwsc,pdc,psc,pc,ppc,pnc,m2c)/metal1 (m6,fm6,rm6,m6c,mic,pad)/metal6   1.900 ~space/m2,~space/m3,~space/m4,~space/m5,~space/mi
 
 #M6->M2
 
 #metal6-metal2 blocked by ~space/m3,~space/m4,~space/m5,~space/mi
- overlap (m6,fm6,rm6,pad)/metal6 (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2   0.070 ~space/m3,~space/m4,~space/m5,~space/mi
- sideoverlap (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2   2.300 ~space/m3,~space/m4,~space/m5,~space/mi
- sideoverlap (m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 ~(m2,fm2,rm2,m2c,pdm12c,ndm12c,psm12c,nsm12c,pm12c,m123c,nwsm12c,m3c,m234c)/metal2 (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6   2.300 ~space/m3,~space/m4,~space/m5,~space/mi
+ overlap (m6,fm6,rm6,pad)/metal6 (m2,fm2,rm2,m2c,m3c)/metal2   0.070 ~space/m3,~space/m4,~space/m5,~space/mi
+ sideoverlap (m6,fm6,rm6,m6c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,mic,pad)/metal6 (m2,fm2,rm2,m2c,m3c)/metal2   2.300 ~space/m3,~space/m4,~space/m5,~space/mi
+ sideoverlap (m2,fm2,rm2,m2c,m3c)/metal2 ~(m2,fm2,rm2,m2c,m3c)/metal2 (m6,fm6,rm6,m6c,mic,pad)/metal6   2.300 ~space/m3,~space/m4,~space/m5,~space/mi
 
 #M6->M3
 
 #metal6-metal3 blocked by ~space/m4,~space/m5,~space/mi
- overlap (m6,fm6,rm6,pad)/metal6 (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3   0.090 ~space/m4,~space/m5,~space/mi
- sideoverlap (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3   2.800 ~space/m4,~space/m5,~space/mi
- sideoverlap (m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 ~(m3,fm3,rm3,m3c,m123c,m234c,m4c,m345c)/metal3 (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6   2.800 ~space/m4,~space/m5,~space/mi
+ overlap (m6,fm6,rm6,pad)/metal6 (m3,fm3,rm3,m3c,m4c)/metal3   0.090 ~space/m4,~space/m5,~space/mi
+ sideoverlap (m6,fm6,rm6,m6c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,mic,pad)/metal6 (m3,fm3,rm3,m3c,m4c)/metal3   2.800 ~space/m4,~space/m5,~space/mi
+ sideoverlap (m3,fm3,rm3,m3c,m4c)/metal3 ~(m3,fm3,rm3,m3c,m4c)/metal3 (m6,fm6,rm6,m6c,mic,pad)/metal6   2.800 ~space/m4,~space/m5,~space/mi
 
 #M6->M4
 
 #metal6-metal4 blocked by ~space/m5,~space/mi
- overlap (m6,fm6,rm6,pad)/metal6 (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4   0.140 ~space/m5,~space/mi
- sideoverlap (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4   3.600 ~space/m5,~space/mi
- sideoverlap (m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 ~(m4,fm4,rm4,m4c,m234c,m345c,m5c,m456c)/metal4 (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6   3.600 ~space/m5,~space/mi
+ overlap (m6,fm6,rm6,pad)/metal6 (m4,fm4,rm4,m4c,m5c)/metal4   0.140 ~space/m5,~space/mi
+ sideoverlap (m6,fm6,rm6,m6c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,mic,pad)/metal6 (m4,fm4,rm4,m4c,m5c)/metal4   3.600 ~space/m5,~space/mi
+ sideoverlap (m4,fm4,rm4,m4c,m5c)/metal4 ~(m4,fm4,rm4,m4c,m5c)/metal4 (m6,fm6,rm6,m6c,mic,pad)/metal6   3.600 ~space/m5,~space/mi
 
 #M6->M5
- overlap (m6,fm6,rm6,pad)/metal6 (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5   0.380
- sideoverlap (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,m456c,mic,pad)/metal6 (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5   5.600 ~space/mi
- sideoverlap (m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m345c,m456c,m6c)/metal5 (m6,fm6,rm6,m6c,m456c,mic,pad)/metal6   5.600 ~space/mi
+ overlap (m6,fm6,rm6,pad)/metal6 (m5,fm5,rm5,m5c,m6c)/metal5   0.380
+ sideoverlap (m6,fm6,rm6,m6c,mic,pad)/metal6 ~(m6,fm6,rm6,m6c,mic,pad)/metal6 (m5,fm5,rm5,m5c,m6c)/metal5   5.600 ~space/mi
+ sideoverlap (m5,fm5,rm5,m5c,m6c)/metal5 ~(m5,fm5,rm5,m5c,m6c)/metal5 (m6,fm6,rm6,m6c,mic,pad)/metal6   5.600 ~space/mi
 
 #metal7
 
@@ -13992,8 +9309,8 @@ wiring
 end
 
 router
- layer2 metal2 3 m2,fm2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m123c/m2,m234c/m2,m3c/m2,m123c/m2,m234c/m2 4 poly,fp,pp,pn,pres,rp,ndiff,anres,rnd,nsd,nwsd,pdiff,apres,rpd,psd,m1,fm1,rm1 1
- layer1 metal1 3 m1,fm1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,pdm12c/m1,ndm12c/m1,psm12c/m1,nsm12c/m1,pm12c/m1,m123c/m1,nwsm12c/m1 3
+ layer2 metal2 3 m2,fm2,rm2,m2c/m2,m3c/m2,m3c/m2 4 poly,fp,pp,pn,pres,rp,ndiff,anres,rnd,nsd,nwsd,pdiff,apres,rpd,psd,m1,fm1,rm1 1
+ layer1 metal1 3 m1,fm1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1 3
  contacts m2contact 4
  gridspacing 8
 
@@ -14008,57 +9325,57 @@ end
 
 plot
 style colorversatec
- ndiff,anres,rnd,ndc/a,ndm12c/a yellow \
+ ndiff,anres,rnd,ndc/a yellow \
  5555 AAAA 5555 AAAA \
  5555 AAAA 5555 AAAA \
  5555 AAAA 5555 AAAA \
  5555 AAAA 5555 AAAA
- ndiff,anres,rnd,ndc/a,ndm12c/a cyan \
+ ndiff,anres,rnd,ndc/a cyan \
  0000 5555 0000 5555 \
  0000 5555 0000 5555 \
  0000 5555 0000 5555 \
  0000 5555 0000 5555
- nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a yellow \
+ nsd,nwsd,nsc/a,nwsc/a yellow \
  1515 2A2A 5151 A2A2 \
  1515 2A2A 5151 A2A2 \
  1515 2A2A 5151 A2A2 \
  1515 2A2A 5151 A2A2
- nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a cyan \
+ nsd,nwsd,nsc/a,nwsc/a cyan \
  0000 1515 0000 5151 \
  0000 1515 0000 5151 \
  0000 1515 0000 5151 \
  0000 1515 0000 5151
- pdiff,apres,rpd,pdc/a,pdm12c/a yellow \
+ pdiff,apres,rpd,pdc/a yellow \
  5555 AAAA 5555 AAAA \
  5555 AAAA 5555 AAAA \
  5555 AAAA 5555 AAAA \
  5555 AAAA 5555 AAAA
- pdiff,apres,rpd,pdc/a,pdm12c/a cyan \
+ pdiff,apres,rpd,pdc/a cyan \
  0000 5555 0000 5555 \
  0000 5555 0000 5555 \
  0000 5555 0000 5555 \
  0000 5555 0000 5555
- pdiff,apres,rpd,pdc/a,pdm12c/a magenta \
+ pdiff,apres,rpd,pdc/a magenta \
  AAAA 0000 AAAA 0000 \
  AAAA 0000 AAAA 0000 \
  AAAA 0000 AAAA 0000 \
  AAAA 0000 AAAA 0000
- psd,psc/a,psm12c/a yellow \
+ psd,psc/a yellow \
  1515 2A2A 5151 A2A2 \
  1515 2A2A 5151 A2A2 \
  1515 2A2A 5151 A2A2 \
  1515 2A2A 5151 A2A2
- psd,psc/a,psm12c/a cyan \
+ psd,psc/a cyan \
  0000 1515 0000 5151 \
  0000 1515 0000 5151 \
  0000 1515 0000 5151 \
  0000 1515 0000 5151
- psd,psc/a,psm12c/a magenta \
+ psd,psc/a magenta \
  2A2A 0000 A2A2 0000 \
  2A2A 0000 A2A2 0000 \
  2A2A 0000 A2A2 0000 \
  2A2A 0000 A2A2 0000
- poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a magenta \
+ poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a magenta \
  5555 AAAA 5555 AAAA \
  5555 AAAA 5555 AAAA \
  5555 AAAA 5555 AAAA \
@@ -14093,22 +9410,22 @@ style colorversatec
  4949 A0A0 5252 2828 \
  9494 0A0A 2525 8282 \
  4949 A0A0 5252 2828
- m1,fm1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,m123c/m1 cyan \
+ m1,fm1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1 cyan \
  AAAA 0000 AAAA 0000 \
  AAAA 0000 AAAA 0000 \
  AAAA 0000 AAAA 0000 \
  AAAA 0000 AAAA 0000
- m2,fm2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m234c/m2 cyan \
+ m2,fm2,rm2,m2c/m2,m3c/m2 cyan \
  0000 1111 0000 4444 \
  0000 1111 0000 4444 \
  0000 1111 0000 4444 \
  0000 1111 0000 4444
- m2,fm2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m234c/m2 magenta \
+ m2,fm2,rm2,m2c/m2,m3c/m2 magenta \
  0000 4444 0000 1111 \
  0000 4444 0000 1111 \
  0000 4444 0000 1111 \
  0000 4444 0000 1111
- m2c/m1,pdm12c/m1,ndm12c/m1,psm12c/m1,nsm12c/m1,pm12c/m1,m123c/m1,nwsm12c/m1,gv1 black \
+ m2c/m1,gv1 black \
  0000 6666 6666 0000 \
  0000 9999 9999 0000 \
  0000 6666 6666 0000 \
@@ -14143,22 +9460,22 @@ style colorversatec
  0080 0000 0020 0000 \
  0008 0000 0002 0000 \
  8000 0000 2000 0000
- m3c/m2,m123c/m2,m234c/m2,gv2 black \
+ m3c/m2,gv2 black \
  0100 0000 0000 0000 \
  1010 0000 0000 0000 \
  0001 0000 0000 0000 \
  1010 0000 0000 0000
- m3c/m2,m123c/m2,m234c/m2,gv2 cyan \
+ m3c/m2,gv2 cyan \
  0280 0000 0820 0000 \
  2008 0000 8002 0000 \
  8002 0000 2008 0000 \
  0820 0000 0280 0000
- m3c/m2,m123c/m2,m234c/m2,gv2 magenta \
+ m3c/m2,gv2 magenta \
  0100 06C0 0440 1830 \
  1010 600C 4004 8003 \
  0001 C006 4004 3018 \
  1010 0C60 0440 0380
- m3c/m2,m123c/m2,m234c/m2,gv2 black \
+ m3c/m2,gv2 black \
  0820 0820 0820 0FE0 \
  E00F 2008 2008 2008 \
  2008 2008 2008 E00F \
@@ -14183,7 +9500,7 @@ style colorversatec
  0000 0000 0000 0000 \
  0000 E0E0 E0E0 E0E0 \
  0000 0000 0000 0000
- pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,ndc/a,ndm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,gc,gc,gc X
+ pc/a,ppc/a,pnc/a,ndc/a,pdc/a,psc/a,nsc/a,nwsc/a,gc,gc,gc X
 
 style versatec
  pfet \
@@ -14211,12 +9528,12 @@ style versatec
  0000 0000 0000 0000 \
  0808 0404 0202 0101 \
  0000 0000 0000 0000
- poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,nfet,pfet \
+ poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,nfet,pfet \
  0808 0400 0202 0101 \
  8080 4000 2020 1010 \
  0808 0004 0202 0101 \
  8080 0040 2020 1010
- m1,fm1,rm1,ndc/m1,ndm12c/m1,nsc/m1,nwsc/m1,nsm12c/m1,nwsm12c/m1,pdc/m1,pdm12c/m1,psc/m1,psm12c/m1,pc/m1,ppc/m1,pnc/m1,pm12c/m1,ppm12c/m1,pnm12c/m1,m2c/m1,m123c/m1 \
+ m1,fm1,rm1,ndc/m1,nsc/m1,nwsc/m1,pdc/m1,psc/m1,pc/m1,ppc/m1,pnc/m1,m2c/m1 \
  8080 0000 0000 0000 \
  0808 0000 0000 0000 \
  8080 0000 0000 0000 \
@@ -14226,32 +9543,32 @@ style versatec
  3636 3e3e 1c1c 0000 \
  0000 0000 1c1c 3e3e \
  3636 3e3e 1c1c 0000
- nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a \
+ nsd,nwsd,nsc/a,nwsc/a \
  0808 1414 2222 4141 \
  8080 4040 2020 1010 \
  0808 1414 2222 4141 \
  8080 4040 2020 1010
- m2,fm2,rm2,m2c/m2,pdm12c/m2,ndm12c/m2,psm12c/m2,nsm12c/m2,pm12c/m2,m123c/m2,nwsm12c/m2,m3c/m2,m234c/m2 \
+ m2,fm2,rm2,m2c/m2,m3c/m2 \
  0000 1111 0000 0000 \
  0000 1111 0000 0000 \
  0000 1111 0000 0000 \
  0000 1111 0000 0000
- pdiff,apres,rpd,pdc/a,pdm12c/a,pfet \
+ pdiff,apres,rpd,pdc/a,pfet \
  0000 0808 5555 8080 \
  0000 8080 5555 0808 \
  0000 0808 5555 8080 \
  0000 8080 5555 0808
- psd,psc/a,psm12c/a \
+ psd,psc/a \
  1414 2222 0000 2222 \
  4141 2222 0000 2222 \
  1414 2222 0000 2222 \
  4141 2222 0000 2222
- ndiff,anres,rnd,ndc/a,ndm12c/a,nfet \
+ ndiff,anres,rnd,ndc/a,nfet \
  0808 1010 2020 4040 \
  8080 4141 2222 1414 \
  0808 1010 2020 4040 \
  8080 4141 2222 1414
- pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,ndc/a,ndm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,gc,gc,gc X
+ pc/a,ppc/a,pnc/a,ndc/a,pdc/a,psc/a,nsc/a,nwsc/a,gc,gc,gc X
 
 style gremlin
  pfet 9
@@ -14259,15 +9576,15 @@ style gremlin
  gv1 11
  pwell 15
  nwell 16
- poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,nfet,pfet 19
- pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,ndc/a,ndm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,gc,gc,gc 22
+ poly,fp,pp,pn,pres,rp,pc/a,ppc/a,pnc/a,nfet,pfet 19
+ pc/a,ppc/a,pnc/a,ndc/a,pdc/a,psc/a,nsc/a,nwsc/a,gc,gc,gc 22
  pad,glass 23
- nsd,nwsd,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a 24
+ nsd,nwsd,nsc/a,nwsc/a 24
  gv1 28
- pdiff,apres,rpd,pdc/a,pdm12c/a,pfet 29
- psd,psc/a,psm12c/a 30
- ndiff,anres,rnd,ndc/a,ndm12c/a,nfet 31
- pc/a,ppc/a,pnc/a,pm12c/a,ppm12c/a,pnm12c/a,ndc/a,ndm12c/a,pdc/a,pdm12c/a,psc/a,psm12c/a,nsc/a,nwsc/a,nsm12c/a,nwsm12c/a,gc,gc,gc,gv1 X
+ pdiff,apres,rpd,pdc/a,pfet 29
+ psd,psc/a 30
+ ndiff,anres,rnd,ndc/a,nfet 31
+ pc/a,ppc/a,pnc/a,ndc/a,pdc/a,psc/a,nsc/a,nwsc/a,gc,gc,gc,gv1 X
 
 end
 

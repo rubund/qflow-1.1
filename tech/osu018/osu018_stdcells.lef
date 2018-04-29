@@ -176,11 +176,11 @@ END M5_M4
 
 VIA M6_M5 DEFAULT
   LAYER metal5 ;
-    RECT -0.250 -0.250 0.250 0.250 ;
+    RECT -0.25 -0.25 0.25 0.25 ;
   LAYER via5 ;
-    RECT -0.150 -0.150 0.150 0.150 ;
+    RECT -0.15 -0.15 0.15 0.15 ;
   LAYER metal6 ;
-    RECT -0.250 -0.250 0.250 0.250 ;
+    RECT -0.25 -0.25 0.25 0.25 ;
 END M6_M5
 
 

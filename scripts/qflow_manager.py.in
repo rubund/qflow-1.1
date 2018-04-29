@@ -753,8 +753,10 @@ class QflowManager(ttk.Frame):
         pane.add(self.botpane)
         pane.paneconfig(self.toppane, stretch='first')
 
-    def print(self, message, file=sys.stdout):
+    def print(self, message, file=None):
         # Local print routine.  
+        if not file:
+            file = ConsoleText.StdoutRedirector(self.text_box)
         if self.stdout:
             print(message, file=file)
         else:
@@ -2302,11 +2304,12 @@ class QflowManager(ttk.Frame):
                 self.print(line, file=sys.stderr)
                 self.print(line, file=ofile)
    
-        # Prepare netlist/stub and netlist/func directories if they don't exist
+        # Prepare netlist/layout, netlist/schem, and netlist/func directories
+        # if they don't exist
 
-        stub_path = self.netlistdir + '/stub'
+        schem_path = self.netlistdir + '/schem'
         func_path = self.netlistdir + '/func'
-        pex_path = self.netlistdir + '/pex'
+        lay_path = self.netlistdir + '/layout'
 
         if not os.path.exists(self.netlistdir):
             os.makedirs(self.netlistdir)
@@ -2314,16 +2317,16 @@ class QflowManager(ttk.Frame):
         if not os.path.exists(func_path):
             os.makedirs(func_path)
 
-        if not os.path.exists(stub_path):
-            os.makedirs(stub_path)
+        if not os.path.exists(schem_path):
+            os.makedirs(schem_path)
 
-        if not os.path.exists(pex_path):
-            os.makedirs(pex_path)
+        if not os.path.exists(lay_path):
+            os.makedirs(lay_path)
 
-        # Put spice netlist in netlist/stub and xspice netlist in netlist/func
-        # NOTE: qflow setup was corrected 8/23/2017 to use the stub file for blif2BSpice.
+        # Put spice netlist in netlist/schem and xspice netlist in netlist/func
+        # NOTE: qflow setup was corrected 8/23/2017 to use the schem file for blif2BSpice.
 
-        shutil.copy(synthdir + '/' + self.project + '.spc', stub_path + '/' + self.project + '.spi')
+        shutil.copy(synthdir + '/' + self.project + '.spc', schem_path + '/' + self.project + '.spi')
         shutil.copy(synthdir + '/' + self.project + '.xspice', func_path + '/' + self.project + '.spi')
 
         # Only advance to LVS and mark Migrate as pass/fail when full == True.
@@ -2431,8 +2434,8 @@ class QflowManager(ttk.Frame):
         datestring = datetime.datetime.now().strftime('%c')
 
         mag_path = self.layoutdir
-        stub_path = self.netlistdir + '/stub'
-        pex_path = self.netlistdir + '/pex'
+        schem_path = self.netlistdir + '/schem'
+        lay_path = self.netlistdir + '/layout'
 
         leffiles = self.get_project_leffiles()
 
@@ -2468,7 +2471,7 @@ class QflowManager(ttk.Frame):
         mproc.stdin.write("ext2spice cthresh infinite\n")
         mproc.stdin.write("ext2spice rthresh infinite\n")
         mproc.stdin.write("ext2spice blackbox on\n")
-        mproc.stdin.write("ext2spice -o " + pex_path + "/" + self.project + ".spi\n")
+        mproc.stdin.write("ext2spice -o " + lay_path + "/" + self.project + ".spi\n")
         mproc.stdin.write("quit -noprompt\n")
         magicpair = mproc.communicate(timeout=mtimeout)
 
@@ -2497,11 +2500,11 @@ class QflowManager(ttk.Frame):
             self.print('Error:  No LVS setup file at ' + lvs_setup, file=sys.stderr)
             # self.print('Diagnostic:  self.techdir is ' + self.techdir)
 
-        self.print('Running netgen -batch lvs "' + pex_path + '/' + self.project + '.spi ' + self.project + '" "' + stub_path + '/' + self.project + '.spi ' + self.project + '" ' + lvs_setup + ' comp.out -json -blackbox')
+        self.print('Running netgen -batch lvs "' + lay_path + '/' + self.project + '.spi ' + self.project + '" "' + schem_path + '/' + self.project + '.spi ' + self.project + '" ' + lvs_setup + ' comp.out -json -blackbox')
 
         lvsproc = subprocess.Popen([qflow_bin_dir + '/netgen', '-batch', 'lvs',
-		pex_path + '/' + self.project + '.spi ' + self.project,
-		stub_path + '/' + self.project + '.spi ' + self.project,
+		lay_path + '/' + self.project + '.spi ' + self.project,
+		schem_path + '/' + self.project + '.spi ' + self.project,
 		lvs_setup, 'comp.out', '-json', '-blackbox'], cwd=mag_path,
 		stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -2737,6 +2740,7 @@ class QflowManager(ttk.Frame):
         srcdir = self.sourcedir
         sdir = self.synthdir
         ldir = self.layoutdir
+        ndir = self.netlistdir
         logdir = self.logdir
 
         # Remove files in qflow
@@ -2786,6 +2790,9 @@ class QflowManager(ttk.Frame):
             rfiles.append(ldir + '/comp.json')
             rfiles.append(ldir + '/qflow.magicrc')
             rfiles.append(ldir + '/' + self.project + '_unroute.def')
+            rfiles.append(ndir + '/func/' + self.project + '.spi')
+            rfiles.append(ndir + '/layout/' + self.project + '.spi')
+            rfiles.append(ndir + '/schem/' + self.project + '.spi')
             rfiles.append(logdir + '/drc.log')
             rfiles.append(logdir + '/lvs.log')
             rfiles.append(logdir + '/gds.log')
