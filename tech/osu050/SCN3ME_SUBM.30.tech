@@ -103,6 +103,7 @@ contact
   psc psd metal1
   m2c metal1 metal2
   m3c metal2 metal3
+  stackable
 end
 
 styles

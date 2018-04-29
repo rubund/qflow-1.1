@@ -11,7 +11,7 @@
 # Written by Tim Edwards
 # efabless, inc.
 # Version 1.  August 8-17, 2017
-# Version for qflow distribution: April 19, 2018
+# Version for qflow distribution: April 19-29, 2018
 #---------------------------------------------------
 
 import io
@@ -48,9 +48,9 @@ qflow_tech_dir = 'SUBST_TECH_DIR'
 # Qflow version information
 qflow_version = 'QFLOW_VERSION' + '.' + 'QFLOW_REVISION'
 
-#------------------------------------------------------
-# Simple dialog for confirming quit
-#------------------------------------------------------
+#---------------------------------------------------------------
+# Simple dialog for confirming technology change (full reset)
+#---------------------------------------------------------------
 
 class ConfirmDialog(tksimpledialog.Dialog):
     def body(self, master, warning, seed):
@@ -60,6 +60,25 @@ class ConfirmDialog(tksimpledialog.Dialog):
 
     def apply(self):
         return 'okay'
+
+#---------------------------------------------------------------
+# More proactive dialog for confirming an invasive procedure
+# like a technology change.  Requires user to click a checkbox
+# to ensure this is not a mistake.
+#---------------------------------------------------------------
+
+class ProtectedConfirmDialog(tksimpledialog.Dialog):
+    def body(self, master, warning, seed):
+        if warning:
+            ttk.Label(master, text=warning).grid(row = 0, columnspan = 2, sticky = 'wns')
+        self.confirm = tkinter.IntVar(master)
+        self.confirm.set(0)
+        ttk.Checkbutton(master, text='I am sure I want to do this.',
+                        variable = self.confirm).grid(row = 1, columnspan = 2, sticky = 'enws')
+        return self
+
+    def apply(self):
+        return 'okay' if self.confirm.get() == 1 else ''
 
 #------------------------------------------------------
 # Main class for this application
@@ -82,6 +101,7 @@ class QflowManager(ttk.Frame):
         """Builds GUI."""
         global prefsfile
         global qflow_script_dir
+        global qflow_tech_dir
 
         message = []
         fontsize = 11
@@ -132,7 +152,6 @@ class QflowManager(ttk.Frame):
         self.rootpath = None
         self.project = None
         self.logfile = None
-        self.pdknode = None
         self.help = None
         self.verilog = None
         self.init_messages = []
@@ -143,7 +162,7 @@ class QflowManager(ttk.Frame):
         self.synthdir = None
         self.layoutdir = None
         self.logdir = None
-        self.techdir = None
+        self.pdkdir = None
         self.netlistdir = None
 
         # Create the pin manager
@@ -225,22 +244,55 @@ class QflowManager(ttk.Frame):
         window = self.toppane.settings.prep_settings
         window.title = ttk.Label(window, text = 'Synthesis Preparation', style = 'title.TLabel')
         window.title.pack(side = 'top')
-        if self.pdknode:
-            window.pdk = ttk.Label(window, text = 'Technology: ' + self.pdknode, style = 'blue.TLabel')
-        else:
-            window.pdk = ttk.Label(window, text = 'Technology: (unknown)', style = 'blue.TLabel')
-        window.pdk.pack(side = 'top')
-        window.lframe = ttk.Frame(window)
-        window.lframe.title = ttk.Label(window.lframe, text = 'Standard cell set:', style = 'blue.TLabel')
-        # Seed the "techvariants" option menu with "default", which will be the
-        # only choice if no other variants are found.
-        self.techvariants = ['default']
-        self.technology = tkinter.StringVar(window.lframe)
-        self.technology.set(self.techvariants[0])
-        window.lframe.tech = ttk.Label(window.lframe, text = '(default)', style = 'blue.TLabel')
-        window.lframe.title.pack(side = 'left')
-        window.lframe.tech.pack(side = 'left')
-        window.lframe.pack(side = 'top')
+
+        # "Technology" is an option menu with selectable PDKs.  There are a
+        # limited number of PDKs available from the qflow installation,
+        # plus the 'tech/' subdirectory if it exists, plus the PDK specified
+        # on the command line with '-T', if there was one.  All of these can
+        # be determined on initialization.
+
+        window.pframe = ttk.Frame(window)
+
+        self.allpdknodes = []
+        self.allpdkdirs = []
+        allpdks = []
+        for pdk in os.listdir(qflow_tech_dir):
+            allpdks.append(qflow_tech_dir + '/' + pdk)
+
+        if os.path.exists('tech'):
+            if os.path.islink('tech'):
+                allpdks.append(os.path.realpath('tech'))
+            else:
+                allpdks.append(os.getcwd() + '/tech')
+
+        for pdkdir in allpdks:
+            # Check for variants and add them to the option menu
+            sfiles = glob.glob(pdkdir + '/*.sh')
+            variants = []
+            if len(sfiles) > 0:
+                for variant in sfiles:
+                    varfile = os.path.split(variant)[1]
+                    varroot = os.path.splitext(varfile)[0]
+                    variants.append(varroot)
+                    self.allpdknodes.append(varroot)
+                    self.allpdkdirs.append(pdkdir)
+
+        self.pdknode = tkinter.StringVar(window.pframe)
+        try:
+            self.pdknode.set(self.allpdknodes[0])
+            self.pdkdir = self.allpdkdirs[0]
+            self.currentpdk = self.allpdknodes[0]
+        except:
+            # print('Diagnostic:  self.allpdknodes = ' + str(self.allpdknodes))
+            # print('Diagnostic:  self.allpdkdirs = ' + str(self.allpdkdirs))
+            pass
+
+        window.pframe.title = ttk.Label(window.pframe, text = 'Technology:', style = 'blue.TLabel')
+        window.pframe.choosepdk = ttk.OptionMenu(window.pframe, self.pdknode,
+			self.pdknode.get(), *self.allpdknodes, command = self.check_reset)
+        window.pframe.title.pack(side = 'left')
+        window.pframe.choosepdk.pack(side = 'left')
+        window.pframe.pack(side = 'top')
 
         # New source file select button
         window.verilog = ttk.Frame(window)
@@ -825,16 +877,19 @@ class QflowManager(ttk.Frame):
         elif status == 'timing' or status == 'route':
             self.print('Displaying the placed and unrouted layout')
             laystate = 'place'
-        elif status == 'backanno' or status == 'migrate' or status == 'lvs' or status == 'drc':
+        elif status == 'backanno' or status == 'migrate':
             self.print('Displaying the completed routed layout, abstract view')
-            laystate = 'route'
+            laystate = 'route1'
+        elif  status == 'lvs' or status == 'drc':
+            self.print('Displaying the completed routed layout, abstract view')
+            laystate = 'route2'
         elif status == 'gds' or status == 'clean' or status == 'done':
             self.print('Displaying the completed routed layout, full view')
             laystate = 'gds'
 
         # Pick up LEF files from the project .cfg file
         leffiles = []
-        if laystate == 'place' or laystate == 'route':
+        if laystate == 'place' or laystate == 'route1' or laystate == 'route2':
             leffiles = self.get_project_leffiles()
 
         # Pick up GDS files from the technology .sh file
@@ -867,8 +922,9 @@ class QflowManager(ttk.Frame):
                     print('load gds_top', file=ofile)
                     print('gds read ' + self.project, file=ofile)
                 else:
-                    if laystate == 'route' or laystate == 'backanno':
-                        # .mag file was created by 1st migration, but is not routed.
+                    if laystate == 'route1':
+                        # .mag file was created by 1st migration, but is not routed,
+                        # so use the DEF instead.
                         print('def read ' + self.project, file=ofile)
                     else:
                         print('load ' + self.project, file=ofile)
@@ -1091,14 +1147,14 @@ class QflowManager(ttk.Frame):
         ldir = self.rootpath + '/layout'
         logdir = self.rootpath + '/log'
         netlistdir = self.rootpath + '/netlist'
-        if not self.techdir:
+        if not self.pdkdir:
             tdir = self.rootpath + '/tech'
         else:
-            tdir = self.techdir
-        if not self.pdknode:
+            tdir = self.pdkdir
+        if not self.pdknode.get():
             pdkname = '(unknown)'
         else:
-            pdkname = self.pdknode
+            pdkname = self.pdknode.get()
 
         self.print('Determining current status of project.')
         if self.rootpath:
@@ -1140,9 +1196,9 @@ class QflowManager(ttk.Frame):
         self.synthdir = sdir
         self.layoutdir = ldir
         self.logdir = logdir
-        self.techdir = tdir
+        self.pdkdir = tdir
         self.netlistdir = netlistdir
-        result = self.set_pdk(self.techdir, pdkname)
+        result = self.set_pdk(self.pdkdir, pdkname)
 
         if not result:
             # Failed:  Clear project and module, and require user to set up
@@ -1888,7 +1944,7 @@ class QflowManager(ttk.Frame):
                         except FileExistsError:
                             pass
 
-            if not self.techdir:
+            if not self.pdkdir:
                 # Standard location is '/tech' as a directory or symbolic
                 # link, unless a full path has been provided with -T on the
                 # command line.
@@ -1896,23 +1952,25 @@ class QflowManager(ttk.Frame):
                 techpath = self.rootpath + '/tech'
                 if os.path.islink(techpath) or os.path.isdir(techpath):
                     techpath = os.path.realpath(techpath)
-                    self.techdir = techpath
+                    self.pdkdir = techpath
                 else:
                     # Fallback method if techdir is not set from command line or
                     # technology selection button.
-                    pdkdir = qflow_tech_dir
-                    techpath = pdkdir + '/osu035'
-                    self.techdir = techpath
-                    self.technology.set('osu035')
-                    self.print('Techdir was not set, defaulting to osu035', file=sys.stderr)
+                    self.pdkdir = self.allpdkdirs[0]
+                    self.print('Technology was not set, defaulting to ' + self.allpdknodes[0], file=sys.stderr)
 
             # Set technology from techdir link
-            techpath = os.path.realpath(self.techdir)
+            techpath = os.path.realpath(self.pdkdir)
             techscript = glob.glob(techpath + '/*.sh')
             if len(techscript) > 0:                
                 techroot = os.path.split(techscript[0])[1]
                 techname = os.path.splitext(techroot)[0]
-                self.technology.set(techname)
+                if not techname in self.allpdknodes:
+                    self.allpdknodes.append(techname)
+                    self.allpdkdirs.append(techpath)
+                self.pdknode.set(techname)
+                self.pdkdir = techpath
+                self.currentpdk = techname
 
         if not failed:
 
@@ -1922,7 +1980,7 @@ class QflowManager(ttk.Frame):
             self.read_par_file(remove=True)
 
             # Project name is not necessarily equal to the verilog module name
-            technode = self.technology.get()
+            technode = self.pdknode.get()
 
             self.print('Running: qflow -p ' + self.rootpath + ' -T ' + technode + ' ' + self.project)
             p = subprocess.Popen(['qflow', '-p', self.rootpath, '-T', technode,
@@ -1945,7 +2003,7 @@ class QflowManager(ttk.Frame):
                 self.read_project_vars(remove=False)
 
             # Pull foundry and node from tech directory/symbolic link 
-            pdkdir = os.path.realpath(self.techdir)
+            pdkdir = os.path.realpath(self.pdkdir)
             pdksplit = os.path.split(pdkdir)
             node = pdksplit[1]
             foundry = os.path.split(pdksplit[0])[1]
@@ -2184,8 +2242,8 @@ class QflowManager(ttk.Frame):
     def get_project_gdsfile(self):
         global qflow_bin_dir
 
-        pdkdir = os.path.realpath(self.techdir)
-        pdkscript = pdkdir + '/' + self.pdknode + '.sh'
+        pdkdir = os.path.realpath(self.pdkdir)
+        pdkscript = pdkdir + '/' + self.pdknode.get() + '.sh'
 
         gdsfile = None
         with open(pdkscript, 'r') as ifile:
@@ -2269,7 +2327,7 @@ class QflowManager(ttk.Frame):
 
         if not os.path.exists(layoutdir):
             os.makedirs(layoutdir)
-            pdkdir = os.path.realpath(self.techdir)
+            pdkdir = os.path.realpath(self.pdkdir)
             pdkmagicrc = glob.glob(pdkdir + '*.magicrc')
             shutil.copy(pdkmagicrc, layoutdir + '/.magicrc')
 
@@ -2493,12 +2551,12 @@ class QflowManager(ttk.Frame):
         # Run batch LVS per lvs_manager.  After migration, LVS can be run directly from
         # the project manager, for details.
 
-        pdkdir = os.path.realpath(self.techdir)
-        lvs_setup = pdkdir + '/' + self.pdknode + '_setup.tcl'
+        pdkdir = os.path.realpath(self.pdkdir)
+        lvs_setup = pdkdir + '/' + self.pdknode.get() + '_setup.tcl'
  
         if not os.path.isfile(lvs_setup):
             self.print('Error:  No LVS setup file at ' + lvs_setup, file=sys.stderr)
-            # self.print('Diagnostic:  self.techdir is ' + self.techdir)
+            # self.print('Diagnostic:  self.pdkdir is ' + self.pdkdir)
 
         self.print('Running netgen -batch lvs "' + lay_path + '/' + self.project + '.spi ' + self.project + '" "' + schem_path + '/' + self.project + '.spi ' + self.project + '" ' + lvs_setup + ' comp.out -json -blackbox')
 
@@ -2718,6 +2776,54 @@ class QflowManager(ttk.Frame):
             self.gui_set_status()
         return
 
+    # Check reset:  Callback from PDK selection option menu
+
+    def check_reset(self, args):
+
+        # When the "Technology:" is changed via the option menu button, this
+        # precipitates a full reset in preparation for a technology change.
+        # Must confirm with the user before deleting lots of files!
+
+        newpdk = self.pdknode.get()
+        if newpdk == self.currentpdk:
+            # Selected the current technology, so no need to do anything.
+            return
+
+        self.print('Change technology to ' + newpdk + ' requested.')
+
+        # Okay to just reset if still in preparation
+        if self.status != 'prep' and self.status != 'begin':
+            warning = 'Confirm change of technology to ' + newpdk + '?'
+            confirm = ProtectedConfirmDialog(self, warning).result
+            if not confirm == 'okay':
+               self.pdknode.set(self.currentpdk)
+               return
+            self.print('Technology change confirmed!')
+
+        self.currentpdk = newpdk
+        self.print('Diagnostic:  newpdk is ' + newpdk)
+
+        # Remove the master script files, or the original PDK just gets
+        # read back from qflow_vars.sh.  project_vars.sh has PDK-related
+        # information in it, and qflow_exec.sh is irrelevant anyway.
+
+        self.print('Diagnostic:  Removing master setup files.')
+        os.remove('qflow_vars.sh')
+        os.remove('qflow_exec.sh')
+        os.remove('project_vars.sh')
+
+        # Set the PDK directory path to match the PDK name
+        for testname, testdir in zip(self.allpdknodes, self.allpdkdirs):
+            if testname == newpdk:
+                self.pdkdir = testdir
+
+        self.purge.set(1)
+        self.qflow_cleanup()
+
+        self.qflow_prep()
+        self.qflow_get_status()
+        self.gui_set_status()
+
     def qflow_cleanup(self):
         # Can only run cleanup if DRC has been run and passed, unless the request is to
         # do a complete purge and reset.
@@ -2809,10 +2915,11 @@ class QflowManager(ttk.Frame):
                 os.remove(rfile)
 
         # Remove .ext files in layout
-        mfiles = os.listdir(ldir)
-        for file in mfiles:
-            if os.path.splitext(file)[1] == '.ext':
-                os.remove(ldir + '/' + file)
+        if os.path.isdir(ldir):
+            mfiles = os.listdir(ldir)
+            for file in mfiles:
+                if os.path.splitext(file)[1] == '.ext':
+                    os.remove(ldir + '/' + file)
 
         if failed:
             self.toppane.checklist.clean_result.configure(text="Fail", style='red.TButton')
@@ -3069,47 +3176,34 @@ class QflowManager(ttk.Frame):
                     self.print('Error:  No tech setup file ' + pdkdir + '/' + pdkrootname + '.sh.', file=sys.stderr)
                     return False
             
-
-        self.pdknode = pdkrootname
-        self.techdir = pdkdir
-
         # "Technology" is set to the directory containing the setup file
-        technology = os.path.split(pdkdir)[1]
-        window = self.toppane.settings.prep_settings.pdk
-        window.config(text = 'Technology: ' + technology)
+        found = False
+        for testname, testdir in zip(self.allpdknodes, self.allpdkdirs):
+            if testname == pdkrootname:
+                found = True
+                if testdir != pdkdir:
+                    if self.status != 'begin' and self.status != 'prep':
+                        self.print('Error:  Tech directory mismatch for technology ' + pdkrootname + ': ' + pdkdir + ' vs. ' + testdir, file=sys.stderr)
+                    self.check_reset(args=None)
+                break
 
-        # "Stdcell" is the name of the tech node (selectable, if more than one)
-        window = self.toppane.settings.prep_settings
-        window.lframe.tech.config(text = pdkrootname)
-        self.technology.set(pdkrootname)
+        if not found:
+            self.allpdknodes.append(pdkrootname)
+            self.allpdkdirs.append(pdkdir)
 
-        # If techdir contains more than one setup file, then
-        # allow selection of standard cell set.
+        if self.currentpdk != pdkrootname:
+            self.print('PDK changed from ' + self.currentpdk + ' to ' + pdkrootname)
 
-        # Check for variants and add them to the option menu
-        sfiles = glob.glob(pdkdir + '/*.sh')
-        variants = []
-        if len(sfiles) > 0:
-            for variant in sfiles:
-                varfile = os.path.split(variant)[1]
-                varroot = os.path.splitext(varfile)[0]
-                variants.append(varroot)
-             
-            self.techvariants = variants
-            self.technology.set(pdkrootname)
-            window = self.toppane.settings.prep_settings.lframe
-            window.tech.pack_forget()
-            window.tech.destroy()
-            window.tech = ttk.OptionMenu(window, self.technology,
-			self.technology.get(), *self.techvariants)
-            window.tech.pack(side = 'left')
+        self.pdknode.set(pdkrootname)
+        self.currentpdk = pdkrootname
+        self.pdkdir = pdkdir
 
         # self.print("Diagnostic: set_pdk()")
         # self.print('qflow_tech_dir = ' + qflow_tech_dir)
         # self.print('self.technology = ' + self.technology.get())
         # self.print('self.techvariants = ' + str(self.techvariants))
         # self.print('self.pdknode = ' + pdkrootname)
-        # self.print('self.techdir = ' + pdkdir)
+        # self.print('self.pdkdir = ' + pdkdir)
 
         return True
 
@@ -3150,6 +3244,11 @@ class QflowManager(ttk.Frame):
         # The top-level cell name must match the directory name.
         if not rootpath:
             rootpath = os.getcwd()
+        else:
+            # Make sure selected project directory is the current
+            # working directory or various parts of the script
+            # will fail.
+            os.chdir(rootpath)
 
         rootname = os.path.split(rootpath)[1]
         project = None
