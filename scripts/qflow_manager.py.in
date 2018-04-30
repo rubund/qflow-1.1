@@ -1270,69 +1270,70 @@ class QflowManager(ttk.Frame):
         self.print("Step two.")
         stime = 0
         message = None
-        if os.path.exists(self.rootpath):
-            if os.path.exists(self.sourcedir): 
-                # Check for verilog source file set
-                if self.verilog:
-                    sourcefile = self.verilog
-                else:
-                    sourcefile = srcdir + '/' + self.project + '.v'
-                    if not os.path.exists(sourcefile):
-                        # Check if there is only one source file
-                        sourcefiles = os.listdir(srcdir)
-                        if len(sourcefiles) == 1:
-                            vext = os.path.splitext(sourcefiles[0])[1]
-                            if vext == '.v' or vext == '.sv':
-                                sourcefile = srcdir + '/' + sourcefiles[0] 
-                    # To do:  If there are multiple source files, check
-                    # them all for matching top-level modules.
+        if not os.path.exists(self.rootpath):
+            self.print("No root path.  Status set to 'begin'")
+            self.status = 'begin'
+            return
 
-                # Check timestamp on verilog source file
-                if os.path.exists(sourcefile):
-                    # self.print('Diagnostic: verilog source file is ' + sourcefile)
-                    vfile = os.path.realpath(sourcefile)
-                    statbuf = os.stat(vfile)
-                    stime = statbuf.st_mtime
-                    self.verilog = sourcefile
- 
-                    # If no module has been set, then set the module to the
-                    # first module found in the file.  If the file defines
-                    # multiple modules and one of them is the project name,
-                    # then use that preferentially.
-
-                    modrex = re.compile('[ \t]*module[ \t]+([^ \t]+)[ \t]*\(')
-                    self.print('Reading source file to verify module name.')
-                    with open(sourcefile, 'r') as ifile:
-                        vlines = ifile.read().splitlines()
-                        found = 0
-                        for vline in vlines:
-                            mmatch = modrex.match(vline)
-                            if mmatch:
-                                modname = mmatch.group(1)
-                                if self.project and self.project == modname:
-                                    self.print('Module name is ' + modname)
-                                    self.module.set(modname)
-                                    found = 3
-                                elif self.module.get() == '(none)':
-                                    self.print('Module name is ' + modname)
-                                    self.module.set(modname)
-                                    self.project = modname
-                                    found = 2
-                                elif found == 0:
-                                    tentative = modname
-                                    found = 1
-                        if found == 1:
-                            self.module.set(tentative)
-                            self.project = tentative
-                        if found > 0:
-                            self.toppane.settings.prep_settings.verilog.source_select.config(text = self.project)
-                else:
-                    message = 'No source file ' + str(sourcefile) + ' found.'
-                    self.verilog = None
+        if os.path.exists(self.sourcedir):
+            # Check for verilog source file set
+            if self.verilog:
+                sourcefile = self.verilog
             else:
-                message = 'No source directory ' + str(self.sourcedir) + ' found.'
+                sourcefile = srcdir + '/' + self.project + '.v'
+                if not os.path.exists(sourcefile):
+                    # Check if there is only one source file
+                    sourcefiles = os.listdir(srcdir)
+                    if len(sourcefiles) == 1:
+                        vext = os.path.splitext(sourcefiles[0])[1]
+                        if vext == '.v' or vext == '.sv':
+                            sourcefile = srcdir + '/' + sourcefiles[0] 
+                # To do:  If there are multiple source files, check
+                # them all for matching top-level modules.
+
+            # Check timestamp on verilog source file
+            if os.path.exists(sourcefile):
+                # self.print('Diagnostic: verilog source file is ' + sourcefile)
+                vfile = os.path.realpath(sourcefile)
+                statbuf = os.stat(vfile)
+                stime = statbuf.st_mtime
+                self.verilog = sourcefile
+ 
+                # If no module has been set, then set the module to the
+                # first module found in the file.  If the file defines
+                # multiple modules and one of them is the project name,
+                # then use that preferentially.
+
+                modrex = re.compile('[ \t]*module[ \t]+([^ \t]+)[ \t]*\(')
+                self.print('Reading source file to verify module name.')
+                with open(sourcefile, 'r') as ifile:
+                    vlines = ifile.read().splitlines()
+                    found = 0
+                    for vline in vlines:
+                        mmatch = modrex.match(vline)
+                        if mmatch:
+                            modname = mmatch.group(1)
+                            if self.project and self.project == modname:
+                                self.print('Module name is ' + modname)
+                                self.module.set(modname)
+                                found = 3
+                            elif self.module.get() == '(none)':
+                                self.print('Module name is ' + modname)
+                                self.module.set(modname)
+                                self.project = modname
+                                found = 2
+                            elif found == 0:
+                                tentative = modname
+                                found = 1
+                    if found == 1:
+                        self.module.set(tentative)
+                        self.project = tentative
+                    if found > 0:
+                        self.toppane.settings.prep_settings.verilog.source_select.config(text = self.project)
+            else:
+                message = 'No source file ' + str(sourcefile) + ' found.'
         else:
-            message = 'No project path set.'
+            message = 'No source path created.'
 
         if not os.path.exists(self.rootpath + '/project_vars.sh'):
             message = 'No project_vars.sh file created.'
@@ -1881,9 +1882,8 @@ class QflowManager(ttk.Frame):
         datestring = datetime.datetime.now().strftime('%c')
 
         # Assume verilog source file and module are known
-        # (To-do:  Get these from command line)
 
-        sourcefile = False
+        sourcefile = self.verilog
         vdir = self.sourcedir
         if not os.path.exists(vdir):
             # Was a qflow workspace already created?  If so, does it have a
@@ -1929,7 +1929,7 @@ class QflowManager(ttk.Frame):
                         self.print('No verilog source file found in qflow/source directory.', file=sys.stderr)
                         failed = True
                         return
-        else:
+        elif not sourcefile or not os.path.isfile(sourcefile):
             if os.path.exists(vdir + '/' + self.project + '.v'):
                 sourcefile = vdir + '/' + self.project + '.v'
             elif os.path.exists(vdir + '/' + self.module.get() + '.v'):
@@ -2847,16 +2847,19 @@ class QflowManager(ttk.Frame):
             self.print('Technology change confirmed!')
 
         self.currentpdk = newpdk
-        self.print('Diagnostic:  newpdk is ' + newpdk)
+        # self.print('Diagnostic:  newpdk is ' + newpdk)
 
         # Remove the master script files, or the original PDK just gets
         # read back from qflow_vars.sh.  project_vars.sh has PDK-related
         # information in it, and qflow_exec.sh is irrelevant anyway.
 
-        self.print('Diagnostic:  Removing master setup files.')
-        os.remove('qflow_vars.sh')
-        os.remove('qflow_exec.sh')
-        os.remove('project_vars.sh')
+        # self.print('Diagnostic:  Removing master setup files.')
+        if os.path.exists('qflow_vars.sh'):
+            os.remove('qflow_vars.sh')
+        if os.path.exists('qflow_exec.sh'):
+            os.remove('qflow_exec.sh')
+        if os.path.exists('project_vars.sh'):
+            os.remove('project_vars.sh')
 
         # Set the PDK directory path to match the PDK name
         for testname, testdir in zip(self.allpdknodes, self.allpdkdirs):
@@ -2865,8 +2868,6 @@ class QflowManager(ttk.Frame):
 
         self.purge.set(1)
         self.qflow_cleanup()
-
-        self.qflow_prep()
         self.qflow_get_status()
         self.gui_set_status()
 
@@ -3160,6 +3161,7 @@ class QflowManager(ttk.Frame):
         if srcfile != '':
             self.print("Selected source file " + str(srcfile))
             self.set_verilog(srcfile)
+            self.qflow_get_status()
 
     def choose_project(self):
         project = filedialog.askdirectory(initialdir = os.getcwd(),
@@ -3260,16 +3262,24 @@ class QflowManager(ttk.Frame):
         if srcfile and os.path.exists(srcfile):
             rootname = os.path.split(srcfile)[1]
             srcpath = os.path.split(srcfile)[0]
+            if srcpath == '':
+                srcpath = '.'
 
             if self.rootpath:
                 # Create a source directory and put the file here as a
                 # symbolic link.
-                if not os.path.exists(self.rootpath + '/source'):
-                    os.makedirs(self.rootpath + '/source')
-                if not os.path.islink(self.rootpath + '/source/' + rootname):
-                    relpath = os.path.relpath(srcpath + '/' + rootname, self.rootpath + '/source')
-                    os.symlink(relpath, self.rootpath + '/source/' + rootname)
-                self.verilog = None
+                if not self.sourcedir:
+                    sourcedir = self.rootpath + '/source'
+                    self.sourcedir = sourcedir
+                else:
+                    sourcedir = self.sourcedir
+                    
+                if not os.path.exists(sourcedir):
+                    os.makedirs(sourcedir)
+                if not os.path.islink(sourcedir + '/' + rootname):
+                    relpath = os.path.relpath(srcpath + '/' + rootname, sourcedir)
+                    os.symlink(relpath, sourcedir + '/' + rootname)
+                self.verilog = sourcedir + '/' + rootname
             else:
                 # Save the file and call set_verilog when self.rootpath is known.
                 self.verilog = srcfile
@@ -3290,11 +3300,14 @@ class QflowManager(ttk.Frame):
         # The top-level cell name must match the directory name.
         if not rootpath:
             rootpath = os.getcwd()
-        else:
+        elif os.path.isdir(rootpath):
             # Make sure selected project directory is the current
             # working directory or various parts of the script
             # will fail.
             os.chdir(rootpath)
+       
+        # If rootpath is a verilog filename, then the project path
+        # is the current working directory by definition.
 
         rootname = os.path.split(rootpath)[1]
         project = None
