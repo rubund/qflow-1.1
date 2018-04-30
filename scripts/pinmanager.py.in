@@ -129,15 +129,43 @@ class PinManager(tkinter.Toplevel):
 		style='normal.TMenubutton', menu=self.delgroupmenu)
         self.bbar.delete_button.grid(column=3, row=0, padx = 5)
 
+        self.bbar.auto_button = ttk.Button(self.bbar, text='Auto Group',
+		command=self.auto_group, style='normal.TButton')
+        self.bbar.auto_button.grid(column=4, row=0, padx = 5)
+
         self.padgroups = []
+        self.selected = []
 
     # Functions for drag-and-drop capability
 
-    def add_draggable(self, widget):
+    def add_draggable(self, widget, subwidget):
+        widget.bind("<ButtonPress-3>", lambda event, arg=widget: self.on_select(event, arg))
         widget.bind("<ButtonPress-1>", lambda event, arg=widget: self.on_start(event, arg))
         widget.bind("<B1-Motion>", self.on_drag)
         widget.bind("<ButtonRelease-1>", lambda event, arg=widget: self.on_drop(event, arg))
         widget.configure(cursor="hand1")
+
+        subwidget.bind("<ButtonPress-3>", lambda event, arg=widget: self.on_select(event, arg))
+        subwidget.bind("<ButtonPress-1>", lambda event, arg=widget: self.on_start(event, arg))
+        subwidget.bind("<B1-Motion>", self.on_drag)
+        subwidget.bind("<ButtonRelease-1>", lambda event, arg=widget: self.on_drop(event, arg))
+
+    def on_select(self, event, widget):
+        # Find the item on the canvas under the mouse pointer (it must be a pin name)
+        # and mark it as selected.
+        y = event.widget.winfo_pointery()
+
+        wlist = widget.winfo_children()
+        for w in wlist:
+            if w.winfo_class() == 'TLabel':
+                 pinname = w.cget('text')
+                 if pinname not in self.selected:
+                     self.selected.append(pinname)
+                     w.config(state = 'active')
+                 else:
+                     self.selected.remove(pinname)
+                     w.config(state = 'inactive')
+                 break
 
     def on_start(self, event, widget):
         # Find the item on the canvas under the mouse pointer (it must be a pin name)
@@ -152,8 +180,13 @@ class PinManager(tkinter.Toplevel):
                  newy = widget.winfo_y()
                  break
 
+        if pinname not in self.selected:
+            self.selected.append(pinname)
+
+        allpins = ' '.join(self.selected)
+
         # Create a new pin widget for dragging
-        self.dragwidget = ttk.Label(self.canvas, text = pinname, style = 'select.TLabel')
+        self.dragwidget = ttk.Label(self.canvas, text = allpins, style = 'select.TLabel')
         self.dragy = y
         self.canvas.create_window((newx, newy), window=self.dragwidget, anchor="nw", tag="dragged")
 
@@ -170,7 +203,7 @@ class PinManager(tkinter.Toplevel):
         else:
             y = event.widget.winfo_pointery()
 
-        srcname = None
+        # srcname = None
         trgname = None
         trgtype = None
 
@@ -179,6 +212,10 @@ class PinManager(tkinter.Toplevel):
             if w.winfo_class() == 'TLabel':
                  srcname = w.cget('text')
                  break
+
+        allnames = self.selected
+        if srcname not in allnames:
+            print('Error:  pin ' + srcname + ' is not in the selected pin list!')
 
         # find the widget closest to the cursor.
 
@@ -208,38 +245,38 @@ class PinManager(tkinter.Toplevel):
                         else:
                             direction = 'above'
 
-        if srcname and trgname and (srcname != trgname):
-            # Write GUI values back into the permanent records before they get changed
-            self.writeback_gui()
+        # Write GUI values back into the permanent records before they get changed
+        self.writeback_gui()
 
-            # Find the group of the source and remove the pin
-            tlist = self.padgroups
-            for group in self.padgroups:
-                if srcname in group['pins']:
-                    srcidx = group['pins'].index(srcname)
-                    savefixed = group['fixed'][srcidx]
-                    group['pins'].pop(srcidx)
-                    group['fixed'].pop(srcidx)
-                    break
+        for srcname in allnames:
+            if srcname and trgname and (srcname != trgname):
 
-            # Find the group of the target and add the pin
-            tlist = self.padgroups
-            for group in self.padgroups:
-                if trgtype == 'pin':
-                    if trgname in group['pins']:
-                        trgidx = group['pins'].index(trgname)
-                        if direction == 'below':
-                           trgidx += 1
-                        group['pins'].insert(trgidx, srcname)
-                        group['fixed'].insert(trgidx, savefixed)
+                # Find the group of the source and remove the pin
+                for group in self.padgroups:
+                    if srcname in group['pins']:
+                        srcidx = group['pins'].index(srcname)
+                        savefixed = group['fixed'][srcidx]
+                        group['pins'].pop(srcidx)
+                        group['fixed'].pop(srcidx)
                         break
-                elif group['name'] == trgname:
-                    group['pins'].insert(0, srcname)
-                    group['fixed'].insert(0, savefixed)
-                    break
 
-        elif srcname != trgname:
-            print("Error:  Could not find source and target, not moving pin.", file=sys.stderr)
+                # Find the group of the target and add the pin
+                for group in self.padgroups:
+                    if trgtype == 'pin':
+                        if trgname in group['pins']:
+                            trgidx = group['pins'].index(trgname)
+                            if direction == 'below':
+                               trgidx += 1
+                            group['pins'].insert(trgidx, srcname)
+                            group['fixed'].insert(trgidx, savefixed)
+                            break
+                    elif group['name'] == trgname:
+                        group['pins'].insert(0, srcname)
+                        group['fixed'].insert(0, savefixed)
+                        break
+
+            elif srcname != trgname:
+                print("Error:  Could not find source and target, not moving pin.", file=sys.stderr)
 
         # Remove the dragged label from the canvas
         self.canvas.delete("dragged")
@@ -247,6 +284,8 @@ class PinManager(tkinter.Toplevel):
         if self.dragwidget:
             self.dragwidget.destroy()
             self.dragwidget = None
+
+        self.selected = []
 
         # Redraw
         self.populate()
@@ -278,6 +317,64 @@ class PinManager(tkinter.Toplevel):
     def frame_configure(self, event):
         self.update_idletasks()
         self.canvas.configure(scrollregion = self.canvas.bbox("all"))
+
+    # Automatically group buses that are in the "unassigned" group
+    def auto_group(self):
+        try:
+            unassigned = next(item for item in self.padgroups if item['name'] == 'unassigned')
+        except:
+            return
+
+        rootnames = []
+        del1rex = re.compile('([^<]+)[<][0-9]+[>]')
+        del2rex = re.compile('([^\[]+)[\[][0-9]+[\]]')
+        del3rex = re.compile('([^\(]+)[\(][0-9]+[\)]')
+
+        for pin in unassigned['pins']:
+            # Check for delimiters in the form <>, [], or ()
+            dmatch1 = del1rex.match(pin)
+            dmatch2 = del2rex.match(pin)
+            dmatch3 = del3rex.match(pin)
+            if dmatch1:
+                rootname = dmatch1.group(1)
+                if rootname not in rootnames:
+                    rootnames.append(rootname)
+            elif dmatch2:
+                rootname = dmatch2.group(1)
+                if rootname not in rootnames:
+                    rootnames.append(rootname)
+            elif dmatch2:
+                rootname = dmatch3.group(1)
+                if rootname not in rootnames:
+                    rootnames.append(rootname)
+
+        for rootname in rootnames:
+            newgroup = self.new_group(rootname + '_vector')
+
+            del1rex = re.compile(rootname + '[<][0-9]+[>]')
+            del2rex = re.compile(rootname + '[\[][0-9]+[\]]')
+            del3rex = re.compile(rootname + '[\(][0-9]+[\)]')
+
+            for pin in unassigned['pins'][:]:
+                dmatch1 = del1rex.match(pin)
+                dmatch2 = del2rex.match(pin)
+                dmatch3 = del3rex.match(pin)
+                if dmatch1 or dmatch2 or dmatch3:
+                    # Remove from "unassigned" list
+                    srcidx = unassigned['pins'].index(pin)
+                    savefixed = unassigned['fixed'][srcidx]
+                    unassigned['pins'].pop(srcidx)
+                    unassigned['fixed'].pop(srcidx)
+
+                    # Add to "newgroup" group
+                    newgroup['pins'].append(pin)
+                    newgroup['fixed'].append(savefixed)
+
+            print('newgroup pins = ' + str(len(newgroup['pins'])))
+            print('newgroup fixed = ' + str(len(newgroup['fixed'])))
+        # Redraw
+        self.populate()
+        return
 
     # Prompt for the name of a new pad group
     def prompt_new_group(self):
@@ -428,7 +525,7 @@ class PinManager(tkinter.Toplevel):
                     pinfix.pack(side = 'left', padx = 2)
 
                 # Make the pin draggable
-                self.add_draggable(pinframe)
+                self.add_draggable(pinframe, pinname)
 
     # Read a file of pads.  Either cel2file or bliffile may be specified as the source.
     # If both are specified, then cel2file takes precedence if both files exist.
@@ -616,4 +713,5 @@ class PinManager(tkinter.Toplevel):
         # pop up pin manager window
         self.deiconify()
         self.lift()
+        self.focus()
         
