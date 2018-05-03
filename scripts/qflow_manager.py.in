@@ -803,8 +803,8 @@ class QflowManager(ttk.Frame):
         if self.help:
             self.botpane.bbar.help_button = ttk.Button(self.botpane.bbar, text='Help',
 			command=self.help.open, style = 'normal.TButton')
-        self.botpane.bbar.help_button.grid(column = 1, row = 0, padx = 5)
-        tooltip.ToolTip(self.botpane.bbar.help_button, text = "Show help window")
+            self.botpane.bbar.help_button.grid(column = 1, row = 0, padx = 5)
+            tooltip.ToolTip(self.botpane.bbar.help_button, text = "Show help window")
 
         # Define layout edit button
         self.botpane.bbar.edit_button = ttk.Button(self.botpane.bbar, text='Edit Layout', command=self.edit_layout,
@@ -949,20 +949,33 @@ class QflowManager(ttk.Frame):
         # available graphics options. OpenGL graphics are preferred, if
         # available, followed by Cairo graphic, and finally X11 24-bit.
 
+        # NOTE:  There is a weird effect where OpenGL fails due to a
+        # security clampdown on Nvidia cards, causing the X11 server
+        # to generate an error.  For unknown reasons, this causes
+        # the subprocess to block even though Popen() is supposedly
+        # non-blocking, and doesn't use pipes.  The best workaround
+        # is to not use OpenGL unless the ~/.qflow/prefs.json file
+        # has 'graphics': 'OGL'.  Adding a "Settings" button that
+        # creates the prefs.json file and exposes the known entries
+        # is on the to-do list.
+
         if not self.magicgtype:
             mproc = subprocess.Popen([qflow_bin_dir + '/magic', '-d', '0', '-noconsole'],
 			stdout = subprocess.PIPE, stderr = subprocess.PIPE,
 			universal_newlines = True)
             magicpair = mproc.communicate()
-            self.magicgtype = 'X11'
+            if 'graphics' in self.prefs:
+                self.magicgtype = self.prefs['graphics']
+            else:
+                self.magicgtype = 'X11'
             for line in magicpair[1].splitlines():
-                if 'OGL' in line:
-                    self.magicgtype = 'OGL'
-                    break
-                elif 'XR' in line:
+                if 'XR' in line:
                     self.magicgtype = 'XR'
                     break
-           
+                # elif 'OGL' in line:
+                #     self.magicgtype = 'OGL'
+                #     break
+
         if not self.magicversion:
             mproc = subprocess.Popen([qflow_bin_dir + '/magic', '-dnull', '-noconsole', '--version'],
 			stdout = subprocess.PIPE, stderr = subprocess.PIPE,
