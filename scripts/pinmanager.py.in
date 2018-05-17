@@ -694,7 +694,7 @@ class PinManager(tkinter.Toplevel):
                             print('twpin_' + pin + '  ' + fixed, file=ofile)
                         if group['sides'] != '':
                             print('restrict side ' + group['sides'], file=ofile)
-                        if group['start'] != 0 and group['stop'] != 100:
+                        if group['start'] != 0 or group['stop'] != 100:
                             fstart = str(group['start'] / 100.0)
                             fstop = str(group['stop'] / 100.0)
                             print('sidespace ' + fstart + ' ' + fstop, file=ofile)
