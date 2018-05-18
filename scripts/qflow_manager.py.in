@@ -184,6 +184,7 @@ class QflowManager(ttk.Frame):
         # For status/log reporting
         self.textreport = TextReport(self, fontsize = fontsize)
 
+        self.rootpath = "(no selection)"
         self.project = "(no selection)"
         self.status = 'begin'
 
@@ -221,15 +222,15 @@ class QflowManager(ttk.Frame):
 
         # New project select button
         self.toppane.title2_frame.project_select = ttk.Button(self.toppane.title2_frame,
-                text=self.project, style='normal.TButton', command=self.choose_project)
+                text=self.rootpath, style='normal.TButton', command=self.choose_project)
         self.toppane.title2_frame.project_select.grid(column=1, row=0, ipadx = 5)
 
         tooltip.ToolTip(self.toppane.title2_frame.project_select,
                         text = "Select new project")
 
         # Show path to project
-        self.toppane.title2_frame.path_label = ttk.Label(self.toppane.title2_frame, text=self.project,
-                style = 'normal.TLabel')
+        self.toppane.title2_frame.path_label = ttk.Label(self.toppane.title2_frame,
+			text=self.rootpath, style = 'normal.TLabel')
         self.toppane.title2_frame.path_label.grid(column=2, row=0, ipadx = 5, padx = 10)
 
         tooltip.ToolTip(self.toppane.title2_frame.project_select,
@@ -1256,7 +1257,7 @@ class QflowManager(ttk.Frame):
             self.project = "(no selection)"
             self.status = 'begin'
             self.module.set('(none)')
-            self.toppane.title2_frame.project_select.config(text = self.project)
+            self.toppane.title2_frame.project_select.config(text = self.rootpath)
             return
 
         # Step one:  If qflow_exec.sh exists, then the module name is embedded in the
@@ -1342,7 +1343,7 @@ class QflowManager(ttk.Frame):
                         self.module.set(tentative)
                         self.project = tentative
                     if found > 0:
-                        self.toppane.settings.prep_settings.verilog.source_select.config(text = self.project)
+                        self.toppane.settings.prep_settings.verilog.source_select.config(text = os.path.split(self.verilog)[1])
             else:
                 message = 'No source file ' + str(sourcefile) + ' found.'
         else:
@@ -1894,68 +1895,51 @@ class QflowManager(ttk.Frame):
 
         datestring = datetime.datetime.now().strftime('%c')
 
-        # Assume verilog source file and module are known
-
-        sourcefile = self.verilog
         vdir = self.sourcedir
-        if not os.path.exists(vdir):
-            # Was a qflow workspace already created?  If so, does it have a
-            # directory 'source' with a .v file in it?
-            if not os.path.exists(self.rootpath):
-                self.print('No subdirectories "verilog" or "qflow" exist, cannot continue without verilog source.',
+
+        # Was a qflow workspace already created?  If so, does it have a
+        # directory 'source' with a .v file in it?
+
+        if not os.path.exists(self.rootpath):
+            self.print('No directory "' + self.rootpath + '" exists, cannot continue.',
 				file=sys.stderr)
-                failed = True
+            failed = True
+        elif not self.verilog or not os.path.exists(self.verilog):
+            if not os.path.exists(vdir):
+                # Check for verilog source file in flat qflow workspace
+                found = False
+                filelist = os.listdir(self.rootpath)
+                for filename in filelist:
+                    if os.path.splitext(filename)[1] == '.v':
+                        if os.path.splitext(filename)[0] == self.project:
+                            self.verilog = self.rootpath + '/' + filename
+                            found = True
+                            break
+                        elif os.path.splitext(filename)[0] == self.module.get():
+                            self.verilog = self.rootpath + '/' + filename
+                            found = True
+                            break
+                if not found:
+                    self.print('No verilog source file found in qflow directory.', file=sys.stderr)
+                    failed = True
             else:
-                sdir = self.sourcedir
-                if not os.path.exists(sdir):
-                    # Check for verilog source file in flat qflow workspace
-                    found = False
-                    filelist = os.listdir(self.rootpath)
-                    for filename in filelist:
-                        if os.path.splitext(filename)[1] == '.v':
-                            if os.path.splitext(filename)[0] == self.project:
-                                found = True
-                                break
-                            elif os.path.splitext(filename)[0] == self.module.get():
-                                self.project = self.module.get()
-                                found = True
-                                break
-                    if not found:
-                        self.print('No verilog source file found in qflow directory.', file=sys.stderr)
-                        failed = True
-                    else:
-                        sourcefile = self.rootpath + '/' + filename
-                else:
-                    # Check for verilog source file in normal qflow workspace
-                    found = False
-                    filelist = os.listdir(sdir)
-                    for filename in filelist:
-                        if os.path.splitext(filename)[1] == '.v':
-                            if os.path.splitext(filename)[0] == self.project:
-                                found = True
-                                break
-                            elif os.path.splitext(filename)[0] == self.module.get():
-                                self.project = self.module.get()
-                                found = True
-                                break
-                    if not found:
-                        self.print('No verilog source file found in qflow/source directory.', file=sys.stderr)
-                        failed = True
-                        return
-        elif not sourcefile or not os.path.isfile(sourcefile):
-            if os.path.exists(vdir + '/' + self.project + '.v'):
-                sourcefile = vdir + '/' + self.project + '.v'
-            elif os.path.exists(vdir + '/' + self.module.get() + '.v'):
-                sourcefile = vdir + '/' + self.module.get() + '.v'
-                self.project = self.module.get()
-            elif os.path.exists(vdir + '/source/' + self.project + '.v'):
-                sourcefile = vdir + '/source/' + self.project + '.v'
-            elif os.path.exists(vdir + '/source/' + self.module.get() + '.v'):
-                sourcefile = vdir + '/source/' + self.module.get() + '.v'
-                self.project = self.module.get()
-            else:
-                self.print('No verilog source file found in verilog/ directory.', file=sys.stderr)
-                failed = True
+                # Check for verilog source file in normal qflow workspace
+                found = False
+                filelist = os.listdir(vdir)
+                for filename in filelist:
+                    if os.path.splitext(filename)[1] == '.v':
+                        if os.path.splitext(filename)[0] == self.project:
+                            self.verilog = vdir + '/' + filename
+                            found = True
+                            break
+                        elif os.path.splitext(filename)[0] == self.module.get():
+                            self.verilog = vdir + '/' + filename
+                            found = True
+                            break
+                if not found:
+                    self.print('No verilog source file found in qflow/source directory.', file=sys.stderr)
+                    failed = True
+                    return
 
         if not failed:
             # Make sure hierarchical qflow workspace exists
@@ -1975,16 +1959,17 @@ class QflowManager(ttk.Frame):
                 os.makedirs(self.logdir)
 
             # Create symbolic link to source file(s) from source
-            if sourcefile:
+            vroot = os.path.split(self.verilog)[1]
+            if not os.path.exists(self.sourcedir + '/' + vroot):
                 try:
-                    os.symlink(sourcefile, self.sourcedir + '/' + self.project + '.v')
+                    os.symlink(self.verilog, self.sourcedir + '/' + vroot)
                 except FileExistsError:
                     self.print('Symbolic link to source already exists.')
 
                 else:
                     # Symbolically link all .v or .sv files in the same
                     # directory
-                    sourcedir = os.path.split(sourcefile)[0]
+                    sourcedir = os.path.split(self.verilog)[0]
                     vsrcfiles = glob.glob(sourcedir + '/*.v')
                     vsrcfiles.extend(glob.glob(sourcedir + '/*.sv'))
                     for vsrc in vsrcfiles:
@@ -2029,7 +2014,8 @@ class QflowManager(ttk.Frame):
             existing = self.read_project_vars(remove=True)
             self.read_par_file(remove=True)
 
-            # Project name is not necessarily equal to the verilog module name
+            # Set the project name from the verilog module name
+            self.project = self.module.get()
             technode = self.pdknode.get()
 
             self.print('Running: qflow -p ' + self.rootpath + ' -T ' + technode + ' ' + self.project)
@@ -3337,6 +3323,13 @@ class QflowManager(ttk.Frame):
         # self.print('project = ' + project)
 
         if self.project != project:
+            # The only time that self.project is set from the project
+            # directory name is when the project is selected from the
+            # menu button.  This may be immediately overwritten when
+            # checking the project directory for a qflow_vars.sh, so
+            # it only remains that way as a default if starting a new
+            # project from an empty or non-existing directory.
+
             self.project = project
             self.module.set(project)
 
