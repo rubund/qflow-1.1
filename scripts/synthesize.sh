@@ -237,7 +237,9 @@ set yerrcnt = `echo $yerrors | wc -c`
 
 if ($yerrcnt > 1) then
    set yvalid = `echo $yerrors | grep "referenced in module" | wc -c`
-   if ($yvalid > 1) then
+   # Check error message specific to a missing source file.
+   set ymissing = `echo $yerrors | grep "is not part of" | wc -c`
+   if (($ymissing > 1) && ($yvalid > 1)) then
       set newdep = `echo $yerrors | cut -d " " -f 3 | cut -c3- | cut -d "'" -f 1`
       set uniquedeplist = "${uniquedeplist} ${newdep}"
    else
