@@ -293,7 +293,8 @@ class QflowManager(ttk.Frame):
 
         window.pframe.title = ttk.Label(window.pframe, text = 'Technology:', style = 'blue.TLabel')
         window.pframe.choosepdk = ttk.OptionMenu(window.pframe, self.pdknode,
-			self.pdknode.get(), *self.allpdknodes, command = self.check_reset)
+			self.pdknode.get(), *self.allpdknodes,
+			command = lambda _: self.check_reset(args=None))
         window.pframe.title.pack(side = 'left')
         window.pframe.choosepdk.pack(side = 'left')
         window.pframe.pack(side = 'top')
@@ -1996,16 +1997,29 @@ class QflowManager(ttk.Frame):
 
             # Set technology from techdir link
             techpath = os.path.realpath(self.pdkdir)
-            techscript = glob.glob(techpath + '/*.sh')
-            if len(techscript) > 0:                
-                techroot = os.path.split(techscript[0])[1]
+            techscripts = glob.glob(techpath + '/*.sh')
+            curpdk = self.pdknode.get()
+
+            # Check that the currently selected PDK node is in techscripts,
+            # otherwise set the PDK node to the first entry in techscripts.
+
+            techname = None
+            for script in techscripts:
+                techroot = os.path.split(script)[1]
                 techname = os.path.splitext(techroot)[0]
-                if not techname in self.allpdknodes:
-                    self.allpdknodes.append(techname)
-                    self.allpdkdirs.append(techpath)
-                self.pdknode.set(techname)
-                self.pdkdir = techpath
-                self.currentpdk = techname
+                if techname == curpdk:
+                    break
+
+            if not techname:
+                techroot = os.path.split(techscripts[0])[1]
+                techname = os.path.splitext(techroot)[0]
+
+            if not techname in self.allpdknodes:
+                self.allpdknodes.append(techname)
+                self.allpdkdirs.append(techpath)
+            self.pdknode.set(techname)
+            self.pdkdir = techpath
+            self.currentpdk = techname
 
         if not failed:
 
@@ -2846,7 +2860,6 @@ class QflowManager(ttk.Frame):
             self.print('Technology change confirmed!')
 
         self.currentpdk = newpdk
-        # self.print('Diagnostic:  newpdk is ' + newpdk)
 
         # Remove the master script files, or the original PDK just gets
         # read back from qflow_vars.sh.  project_vars.sh has PDK-related
