@@ -66,7 +66,7 @@
 
 #define  FALSE	     0
 #define  TRUE        1
-#define  MAXLINE     2000
+#define  MAXLINE     16384
 
 char *Inputfname;
 char *Outputfname;

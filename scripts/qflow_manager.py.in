@@ -984,7 +984,7 @@ class QflowManager(ttk.Frame):
 			universal_newlines = True)
             magicpair = mproc.communicate()
             self.magicversion = magicpair[0].splitlines()[0]
-            print('Magic version is ' + self.magicversion)
+            self.print('Magic version is ' + self.magicversion)
 
         # Run magic interactively until the user exits.
         mproc = subprocess.Popen([qflow_bin_dir + '/magic', '-d', self.magicgtype, '-rcfile', 'qflow.magicrc'],
@@ -3288,7 +3288,7 @@ class QflowManager(ttk.Frame):
                     
                 if not os.path.exists(sourcedir):
                     os.makedirs(sourcedir)
-                if not os.path.islink(sourcedir + '/' + rootname):
+                if not os.path.exists(sourcedir + '/' + rootname):
                     relpath = os.path.relpath(srcpath + '/' + rootname, sourcedir)
                     os.symlink(relpath, sourcedir + '/' + rootname)
                 self.verilog = sourcedir + '/' + rootname
