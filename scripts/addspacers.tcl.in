@@ -1528,7 +1528,8 @@ while {[gets $fdef line] >= 0} {
 			    }
 			} else {
 			    foreach sx $rowstripeinfo {
-				if [catch {set sinfo [lindex $stripeinfo $i]}] {
+				if {[catch {set sinfo [lindex $stripeinfo $i]}] || \
+					[llength $sinfo] == 0} {
 				    set slow $sx
 				    set shigh [+ $sx $stripewidth]
 				    set smean [+ $sx [/ $stripewidth 2.0]]
