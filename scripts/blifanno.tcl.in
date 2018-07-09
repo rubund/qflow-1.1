@@ -89,7 +89,7 @@ proc parse_nets {deffile nets} {
       } elseif [regexp {[ \t]*\+[ \t]+([^ \t]+)} $line lmatch option] {
 	 set ignore 1
       } elseif {$ignore == 0} {
-	 if [regexp {[ \t]*\([ \t]*([^ \t]+)[ \t]+([^ \t]+)[ \t]*\)[ \t\n]*$} \
+	 if [regexp {[ \t]*\([ \t]*([^ \t]+)[ \t]+([^ \t]+)[ \t]*\)[ \t\n;]*$} \
 		$line lmatch instname pinname] {
 	    dict set rdict ${instname}/${pinname} $netname
 	 }
