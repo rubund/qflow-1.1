@@ -272,6 +272,8 @@ int main (int argc, char *argv[])
    InitializeHashTable(Drivehash);
    InitializeHashTable(Gatehash);
 
+   fprintf(stdout, "blifFanout for qflow " QFLOW_VERSION "." QFLOW_REVISION "\n");
+
    while ((i = getopt(argc, argv, "fLgnhvl:c:b:i:o:p:s:I:F:")) != EOF) {
       switch (i) {
 	 case 'b':

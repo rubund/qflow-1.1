@@ -773,6 +773,13 @@ read_liberty(char *libfile, char *pattern)
 		      while (isblank(*metric)) metric++;
 		      if (*metric == ',') metric++;
 		      while ((*metric != '\0') && isblank(*metric)) metric++;
+		      if (*metric == '\"') {
+			 char *qptr;
+			 metric++;
+			 qptr = metric;
+			 while ((*qptr != '\"') && (*qptr != '\0')) qptr++;
+			 *qptr = '\0';
+		      }
 		      if (!strcasecmp(metric, "af"))
 			 cap_unit *= 1E-3;
 		      else if (!strcasecmp(metric, "pf"))

@@ -3568,7 +3568,8 @@ main(int objc, char *argv[])
         fflush(stdout);
         fprintf(stdout, "----------------------------------------------\n");
         fprintf(stdout, "Vesta static timing analysis tool\n");
-        fprintf(stdout, "(c) 2013-2017 Tim Edwards, Open Circuit Design\n");
+	fprintf(stdout, "for qflow " QFLOW_VERSION "." QFLOW_REVISION "\n");
+        fprintf(stdout, "(c) 2013-2018 Tim Edwards, Open Circuit Design\n");
         fprintf(stdout, "----------------------------------------------\n\n");
         fflush(stdout);
     }
