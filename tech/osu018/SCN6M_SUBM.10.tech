@@ -8906,14 +8906,14 @@ lef
   ignore PC
   ignore CA
 
-  routing m1    M1 m1 met1
-  routing m2    M2 m2 met2
-  routing m3    M3 m3 met3
-  routing m4    M4 m4 met4
-  routing m5    M5 m5 met5
-  routing m6    M6 m6 met6
+  routing m1    metal1 M1 m1 met1
+  routing m2    metal2 M2 m2 met2
+  routing m3    metal3 M3 m3 met3
+  routing m4    metal4 M4 m4 met4
+  routing m5    metal5 M5 m5 met5
+  routing m6    metal6 M6 m6 met6
 
-  contact m2c via via1 V1 v1
+  contact m2c via1 via V1 v1
   contact m3c via2 V2 v2
   contact m4c via3 V3 v3
   contact m5c via4 V4 v4
