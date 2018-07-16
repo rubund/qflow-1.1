@@ -480,6 +480,7 @@ int main (int argc, char* argv[]) {
     // pointer to last node in a doubly-linked list consisting of node_items
     node_item_ptr currNodeStack = NULL;
     node_item_ptr allNodes = NULL;
+    node_item_ptr lastNode = NULL;
 
     // -Maintain a list of all nodes that are outputs / drivers.
     // -Iterate over the list to walk each interconnect to calculate
@@ -770,7 +771,7 @@ int main (int argc, char* argv[]) {
 
                         // add node to current node stack
                         add_node_item(&currNodeStack, currnode, &currNodeStack);
-                        add_node_item(&allNodes, currnode, NULL);
+                        add_node_item(&allNodes, currnode, &lastNode);
 
                         //printf("%s_n%d\n", tokens[0], nodeNum);
 
@@ -810,7 +811,7 @@ int main (int argc, char* argv[]) {
 
                     // push the most recent node onto the nodestack
                     add_node_item(&currNodeStack, currnode, &currNodeStack);
-                    add_node_item(&allNodes, currnode, NULL);
+                    add_node_item(&allNodes, currnode, &lastNode);
                     //if (verbose > 2) fprintf(stdout, "Add node %s\n", currnode->name);
 
                     t += 3;
@@ -925,7 +926,7 @@ int main (int argc, char* argv[]) {
 
                     // but still add to full node list
                     //if (verbose > 2) fprintf(stdout, "Add node %s\n", currnode->name);
-                    add_node_item(&allNodes, currnode, NULL);
+                    add_node_item(&allNodes, currnode, &lastNode);
 
                     t += 1;
                 }
