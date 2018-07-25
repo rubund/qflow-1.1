@@ -249,19 +249,27 @@ if ($modulename == "") then
 endif
 
 if ($vsource == "") then
-   # Check all .v and .sv files for one with the specified module.
+   # First look for a file list with this name
+   if ( -f "${sourcedir}/${modulename}.fl" ) then
+      set source_file_list = "${sourcedir}/${modulename}.fl"
+   endif
 
-   foreach file ( `ls ${sourcedir}/*.v ${sourcedir}/*.sv` )
-      set mline = `cat $file | grep module | grep ${modulename} | wc -l`
-      if ( $mline > 0 ) then
-	 set vsource = ${file}
-	 break
-      endif
-   end
+   # If no file list found, continue searching for modules with this name
+   if ( ! ($?source_file_list) ) then
+     # Check all .v and .sv files for one with the specified module.
 
-   if ( ${vsource} == "" ) then
-      echo "Error:  No verilog file in ${sourcedir} contains module ${modulename}."
-      exit 1
+     foreach file ( `ls ${sourcedir}/*.v ${sourcedir}/*.sv` )
+        set mline = `cat $file | grep module | grep ${modulename} | wc -l`
+        if ( $mline > 0 ) then
+     set vsource = ${file}
+     break
+        endif
+     end
+
+     if ( ${vsource} == "" ) then
+        echo "Error:  No verilog file in ${sourcedir} contains module ${modulename}."
+        exit 1
+     endif
    endif
 endif
 
@@ -400,6 +408,18 @@ if ( ! -f ${userfile} ) then
       echo \# set fanout_options = \"${fanout_options}\" >> ${userfile}
    else
       echo \# set fanout_options = >> ${userfile}
+   endif
+
+   if ( ${?source_file_list} ) then
+      echo set source_file_list = \"${source_file_list}\" >> ${userfile}
+   else
+      echo \# set source_file_list = >> ${userfile}
+   endif
+
+   if ( ${?is_system_verilog} ) then
+      echo \# set is_system_verilog = \"${is_system_verilog}\" >> ${userfile}
+   else
+      echo \# set is_system_verilog = >> ${userfile}
    endif
 
    echo "" >> ${userfile}
