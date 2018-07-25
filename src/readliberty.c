@@ -74,7 +74,7 @@ advancetoken(FILE *flib, char delimiter)
 		    // continuation character.
 		    char *eptr = lptr + 1;
 		    while (isblank(*eptr)) eptr++;
-		    if (*eptr == '\0') {
+		    if (*eptr == '\n') {
 			result = fgets(lptr, LIB_LINE_MAX - (lptr - line), flib);
 			libCurrentLine++;
 			if (result == NULL) break;
